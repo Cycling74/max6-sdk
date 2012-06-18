@@ -1,0 +1,4 @@
+LIBRARY jit.poke~.mxe
+
+EXPORTS
+	main

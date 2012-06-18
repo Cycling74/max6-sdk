@@ -1,0 +1,4 @@
+LIBRARY split~.mxe
+
+EXPORTS
+	main

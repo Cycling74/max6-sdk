@@ -1,0 +1,6 @@
+;plussz~.def
+
+LIBRARY plussz~.mxe
+
+EXPORTS
+	main

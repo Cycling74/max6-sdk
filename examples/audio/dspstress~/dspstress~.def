@@ -1,0 +1,6 @@
+;dspstress~.def
+
+LIBRARY dspstress~.mxe
+
+EXPORTS
+	main

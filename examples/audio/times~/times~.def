@@ -1,0 +1,6 @@
+;times~.def
+
+LIBRARY times~.mxe
+
+EXPORTS
+	main

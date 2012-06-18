@@ -1,0 +1,6 @@
+;simpwave~.def
+
+LIBRARY simpwave~.mxe
+
+EXPORTS
+	main

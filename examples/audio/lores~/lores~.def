@@ -1,0 +1,6 @@
+;lores~.def
+
+LIBRARY lores~.mxe
+
+EXPORTS
+	main

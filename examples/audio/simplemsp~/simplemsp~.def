@@ -1,0 +1,4 @@
+LIBRARY simplemsp~.mxe
+
+EXPORTS
+	main

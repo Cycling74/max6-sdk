@@ -1,0 +1,6 @@
+;pictmeter~.def
+
+LIBRARY pictmeter~.mxe
+
+EXPORTS
+	main

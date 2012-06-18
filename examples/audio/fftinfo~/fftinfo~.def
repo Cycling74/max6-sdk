@@ -1,0 +1,6 @@
+;fftinfo~.def
+
+LIBRARY fftinfo~.mxe
+
+EXPORTS
+	main
