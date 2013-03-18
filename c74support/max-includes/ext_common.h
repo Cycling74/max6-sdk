@@ -12,7 +12,7 @@
 	@param	hi	The high bound for the range.
 	@return		Returns true if within range, otherwise false.
 */
-#define InRange(v,lo,hi) ((v)<=(hi)&&(v)>=(lo))
+#define INRANGE(v,lo,hi) ((v)<=(hi)&&(v)>=(lo))
 
 
 /**
@@ -45,15 +45,16 @@
 	Limit values to within a specified range.
 
 	@ingroup	misc
-	@param	a	The value to constrain.
+	@param	a	The value to constrain. NB: CLIP_ASSIGN modifies param 'a' but CLAMP only returns limited value
 	@param	lo	The low bound for the range.
 	@param	hi	The high bound for the range.
 	@return		Returns the value a constrained to the range specified by lo and hi.
 */
-#define CLIP(a, lo, hi) ( (a)>(lo)?( (a)<(hi)?(a):(hi) ):(lo) )
+#define CLAMP(a, lo, hi) ( (a)>(lo)?( (a)<(hi)?(a):(hi) ):(lo) )
+#define CLIP_ASSIGN(a, lo, hi) ((a) = ( (a)>(lo)?( (a)<(hi)?(a):(hi) ):(lo) ))
 
-
-#define OSTAsChars(x) (int)((x)>>24)&0xFF,(int)((x)>>16)&0xFF,(int)((x)>>8)&0xFF,(int)((x)&0xFF)
-
+#ifndef ABS
+#define ABS(x) ((x)<0?-(x):(x))
+#endif
 
 #endif /* _EXT_COMMON_H_ */

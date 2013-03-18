@@ -24,10 +24,10 @@ t_max_err simplejs_doabs(t_simplejs *x, t_symbol *s, long ac, t_atom *av, t_atom
 
 
 //////////////////////// global class pointer variable
-void *simplejs_class;
+static t_class *simplejs_class;
 
 
-int main(void)
+int C74_EXPORT main(void)
 {	
 	t_class *c;
 	

@@ -7,7 +7,7 @@
 			"revision" : 0
 		}
 ,
-		"rect" : [ 25.0, 69.0, 700.0, 454.0 ],
+		"rect" : [ 74.0, 60.0, 700.0, 454.0 ],
 		"bglocked" : 0,
 		"openinpresentation" : 0,
 		"default_fontsize" : 12.0,
@@ -62,7 +62,7 @@
 							"revision" : 0
 						}
 ,
-						"rect" : [ 50.0, 94.0, 640.0, 480.0 ],
+						"rect" : [ 74.0, 86.0, 700.0, 428.0 ],
 						"bglocked" : 0,
 						"openinpresentation" : 0,
 						"default_fontsize" : 13.0,
@@ -108,7 +108,6 @@
 									"numinlets" : 1,
 									"numoutlets" : 0,
 									"patching_rect" : [ 190.333344, 165.0, 204.0, 40.0 ],
-									"presentation_rect" : [ 352.0, 189.0, 0.0, 0.0 ],
 									"text" : "report info (info also reported when dac~ is turned on)"
 								}
 
@@ -120,12 +119,11 @@
 									"fontname" : "Arial",
 									"fontsize" : 13.0,
 									"id" : "obj-5",
-									"linecount" : 2,
 									"maxclass" : "comment",
 									"numinlets" : 1,
 									"numoutlets" : 0,
-									"patching_rect" : [ 79.333344, 361.0, 296.0, 40.0 ],
-									"text" : "fftinfo~ only functions within the context of an pfft~. Option-click the fftpatcher to get help"
+									"patching_rect" : [ 72.0, 370.5, 301.0, 25.0 ],
+									"text" : "fftinfo~ only functions within the context of pfft~."
 								}
 
 							}
@@ -136,7 +134,6 @@
 									"numinlets" : 1,
 									"numoutlets" : 1,
 									"outlettype" : [ "int" ],
-									"parameter_enable" : 0,
 									"patching_rect" : [ 229.0, 237.0, 20.0, 20.0 ]
 								}
 
@@ -206,7 +203,6 @@
 									"numinlets" : 1,
 									"numoutlets" : 2,
 									"outlettype" : [ "int", "bang" ],
-									"parameter_enable" : 0,
 									"patching_rect" : [ 209.666687, 261.333313, 53.0, 21.0 ],
 									"triangle" : 0
 								}
@@ -221,7 +217,6 @@
 									"numinlets" : 1,
 									"numoutlets" : 2,
 									"outlettype" : [ "int", "bang" ],
-									"parameter_enable" : 0,
 									"patching_rect" : [ 190.333344, 285.333313, 53.0, 21.0 ],
 									"triangle" : 0
 								}
@@ -236,7 +231,6 @@
 									"numinlets" : 1,
 									"numoutlets" : 2,
 									"outlettype" : [ "int", "bang" ],
-									"parameter_enable" : 0,
 									"patching_rect" : [ 171.0, 309.333313, 53.0, 21.0 ],
 									"triangle" : 0
 								}
@@ -295,7 +289,6 @@
 									"numinlets" : 1,
 									"numoutlets" : 1,
 									"outlettype" : [ "" ],
-									"parameter_enable" : 0,
 									"patching_rect" : [ 10.0, 10.0, 620.0, 125.0 ]
 								}
 
@@ -349,11 +342,13 @@
  ],
 						"dependency_cache" : [ 							{
 								"name" : "helpdetails.js",
+								"bootpath" : "/Applications/Max6/Cycling '74/help-resources",
 								"type" : "TEXT",
 								"implicit" : 1
 							}
 , 							{
 								"name" : "pfft_loadme.maxpat",
+								"bootpath" : "/Users/mzed/Cycling74/max6_trunk/maxmsp-misc/help/msp-help",
 								"type" : "JSON",
 								"implicit" : 1
 							}
@@ -362,16 +357,16 @@
 ,
 					"patching_rect" : [ 10.0, 85.0, 50.0, 20.0 ],
 					"saved_object_attributes" : 					{
+						"fontface" : 0,
+						"fontsize" : 13.0,
+						"default_fontface" : 0,
 						"digest" : "",
 						"default_fontname" : "Arial",
-						"fontname" : "Arial",
 						"tags" : "",
 						"default_fontsize" : 13.0,
 						"description" : "",
-						"globalpatchername" : "",
-						"fontface" : 0,
-						"fontsize" : 13.0,
-						"default_fontface" : 0
+						"fontname" : "Arial",
+						"globalpatchername" : ""
 					}
 ,
 					"text" : "p basic",
@@ -389,7 +384,6 @@
 					"numinlets" : 1,
 					"numoutlets" : 1,
 					"outlettype" : [ "" ],
-					"parameter_enable" : 0,
 					"patching_rect" : [ 10.0, 10.0, 305.0, 55.0 ]
 				}
 
@@ -410,7 +404,7 @@
 							"revision" : 0
 						}
 ,
-						"rect" : [ 50.0, 94.0, 640.0, 480.0 ],
+						"rect" : [ 0.0, 26.0, 700.0, 428.0 ],
 						"bglocked" : 0,
 						"openinpresentation" : 0,
 						"default_fontsize" : 12.0,
@@ -437,16 +431,16 @@
 ,
 					"patching_rect" : [ 205.0, 205.0, 50.0, 20.0 ],
 					"saved_object_attributes" : 					{
+						"fontface" : 0,
+						"fontsize" : 12.0,
+						"default_fontface" : 0,
 						"digest" : "",
 						"default_fontname" : "Arial",
-						"fontname" : "Arial",
 						"tags" : "",
 						"default_fontsize" : 12.0,
 						"description" : "",
-						"globalpatchername" : "",
-						"fontface" : 0,
-						"fontsize" : 12.0,
-						"default_fontface" : 0
+						"fontname" : "Arial",
+						"globalpatchername" : ""
 					}
 ,
 					"text" : "p ?",
@@ -458,21 +452,29 @@
 		"lines" : [  ],
 		"dependency_cache" : [ 			{
 				"name" : "helpname.js",
+				"bootpath" : "/Applications/Max6/Cycling '74/help-resources",
+				"patcherrelativepath" : "../../../../../../../Applications/Max6/Cycling '74/help-resources",
 				"type" : "TEXT",
 				"implicit" : 1
 			}
 , 			{
 				"name" : "helpdetails.js",
+				"bootpath" : "/Applications/Max6/Cycling '74/help-resources",
+				"patcherrelativepath" : "../../../../../../../Applications/Max6/Cycling '74/help-resources",
 				"type" : "TEXT",
 				"implicit" : 1
 			}
 , 			{
 				"name" : "pfft_loadme.maxpat",
+				"bootpath" : "/Users/mzed/Cycling74/max6_trunk/maxmsp-misc/help/msp-help",
+				"patcherrelativepath" : "",
 				"type" : "JSON",
 				"implicit" : 1
 			}
 , 			{
 				"name" : "helpstarter.js",
+				"bootpath" : "/Applications/Max6/Cycling '74/help-resources",
+				"patcherrelativepath" : "../../../../../../../Applications/Max6/Cycling '74/help-resources",
 				"type" : "TEXT",
 				"implicit" : 1
 			}

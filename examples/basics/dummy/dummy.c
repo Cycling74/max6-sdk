@@ -36,7 +36,7 @@ void dummy_acant(t_dummy *x);
 void *dummy_class;
 
 
-int main(void)
+int C74_EXPORT main(void)
 {	
 	t_class *c;
 	

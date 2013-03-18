@@ -52,7 +52,7 @@ static t_class *s_uioptimized_class = NULL;
 /**********************************************************************/
 // Class Definition and Life Cycle
 
-int main(void)
+int C74_EXPORT main(void)
 {
 	t_class *c; 
 	

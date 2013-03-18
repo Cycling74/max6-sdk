@@ -18,6 +18,7 @@ void dict_group_free(t_dict_group *x);
 void dict_group_assist(t_dict_group *x, void *b, long m, long a, char *s);
 void dict_group_bang(t_dict_group *x);
 void dict_group_anything(t_dict_group *x, t_symbol *s, long argc, t_atom *argv);
+void dict_group_list(t_dict_group *x, t_symbol *s, long argc, t_atom *argv);
 void dict_group_setname(t_dict_group *x, void *attr, long argc, t_atom *argv);
 
 
@@ -26,14 +27,15 @@ static t_class	*s_dict_group_class;
 
 
 /************************************************************************************/
-int main(void)
+int C74_EXPORT main(void)
 {
 	t_class	*c;
 	
 	common_symbols_init();
 	c = class_new("dict.group", (method)dict_group_new, (method)dict_group_free, sizeof(t_dict_group), (method)NULL, A_GIMME, 0);
-
+	
 	class_addmethod(c, (method)dict_group_anything, 	"anything", 	A_GIMME, 0);
+	class_addmethod(c, (method)dict_group_list,			"list",			A_GIMME, 0);
 	class_addmethod(c, (method)dict_group_bang,			"bang", 		0);
     class_addmethod(c, (method)dict_group_assist,		"assist",		A_CANT, 0);
 	class_addmethod(c, (method)stdinletinfo,			"inletinfo",	A_CANT, 0);
@@ -124,7 +126,7 @@ void dict_group_anything(t_dict_group *x, t_symbol *s, long argc, t_atom *argv)
 		t_atom			*argv_extended = (t_atom*)sysmem_newptr(sizeof(t_atom) * (argc_extended+1));
 
 		atom_setsym(argv_extended, s);
-		if (!(strrchr(s->s_name, ':') || (atom_gettype(argv) == A_SYM && strchr(atom_getsym(argv)->s_name, ':')))) {
+		if (!(strrchr(s->s_name, ':') || (atom_gettype(argv) == A_SYM && atom_getsym(argv)->s_name[0] == ':'))) {
 			// no colon, so we take s to be the key (and append the colon to it for parsing)			
 			argc_extended++;
 			atom_setsym(argv_extended+1, gensym(":"));
@@ -143,7 +145,18 @@ void dict_group_anything(t_dict_group *x, t_symbol *s, long argc, t_atom *argv)
 
 					dictionary_deleteentry(x->dictionary, keys[i]);
 					dictionary_getatoms(dp, keys[i], &ac, &av);
-					dictionary_appendatoms(x->dictionary, keys[i], ac, av);
+					if (ac > 1)
+						dictionary_appendatoms(x->dictionary, keys[i], ac, av);
+					else {
+						if (atom_gettype(av) == A_LONG)
+							dictionary_appendlong(x->dictionary, keys[i], atom_getlong(av));
+						else if (atom_gettype(av) == A_FLOAT)
+							dictionary_appendfloat(x->dictionary, keys[i], atom_getfloat(av));
+						else if (atom_gettype(av) == A_SYM)
+							dictionary_appendsym(x->dictionary, keys[i], atom_getsym(av));
+						else
+							object_error((t_object*)x, "unknown atom type");
+					}
 				}
 				sysmem_freeptr(keys);
 			}
@@ -164,8 +177,42 @@ void dict_group_anything(t_dict_group *x, t_symbol *s, long argc, t_atom *argv)
 	// not using dictionary syntax, just append the atoms
 	
 	dictionary_deleteentry(x->dictionary, s);
-	dictionary_appendatoms(x->dictionary, s, argc, argv);
+	if (argc > 1)
+		dictionary_appendatoms(x->dictionary, s, argc, argv);
+	else {
+		if (atom_gettype(argv) == A_LONG)
+			dictionary_appendlong(x->dictionary, s, atom_getlong(argv));
+		else if (atom_gettype(argv) == A_FLOAT)
+			dictionary_appendfloat(x->dictionary, s, atom_getfloat(argv));
+		else if (atom_gettype(argv) == A_SYM)
+			dictionary_appendsym(x->dictionary, s, atom_getsym(argv));
+		else
+			object_error((t_object*)x, "unknown atom type");
+	}
 	object_notify(x->dictionary, _sym_modified, NULL);
+}
+
+
+void dict_group_list(t_dict_group *x, t_symbol *s, long argc, t_atom *argv)
+{
+	if (argc) {
+		if (atom_gettype(argv) == A_SYM)
+			dict_group_anything(x, atom_getsym(argv), argc-1, argv+1);
+		else if (atom_gettype(argv) == A_LONG) {
+			char str[32];
+			
+			snprintf_zero(str, 32, "%ld", atom_getlong(argv));
+			dict_group_anything(x, gensym(str), argc-1, argv+1);
+		}
+		else if (atom_gettype(argv) == A_FLOAT) {
+			char str[32];
+			
+			snprintf_zero(str, 32, "%f", atom_getfloat(argv));
+			dict_group_anything(x, gensym(str), argc-1, argv+1);
+		}
+		else
+			object_error((t_object*)x, "unknown atom type received as first element of list");
+	}
 }
 
 

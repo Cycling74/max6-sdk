@@ -182,11 +182,11 @@ void jit_noise_vector_char(long n, t_jit_noise_vecdata *vecdata, t_jit_op_info *
 
 void jit_noise_vector_long(long n, t_jit_noise_vecdata *vecdata, t_jit_op_info *out) 
 {
-	long *op;
+	t_int32 *op;
 	long os;
 	unsigned long  idum=vecdata->randlast,idum2;
 	
-	op  = ((long *)out->p);
+	op  = ((t_int32 *)out->p);
 	os  = out->stride; 
 	
 	if (os==1) {
@@ -244,7 +244,7 @@ void jit_noise_vector_float64(long n, t_jit_noise_vecdata *vecdata, t_jit_op_inf
 	long os;
 	unsigned long  idum=vecdata->randlast,itemp;
 	
-	op  = ((float *)out->p);
+	op  = ((double *)out->p);
 	os  = out->stride; 
 	
 	if (os==1) {

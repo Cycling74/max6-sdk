@@ -50,7 +50,11 @@ extern "C" {
 #define JIT_GL_PF_FLAG_TEXTURE_DEPTH			(1 << 5)
 #define JIT_GL_PF_FLAG_BIND_TO_TEXTURE			(1 << 6)	// render to texture
 
-//...
+#ifdef JIT_GL_NSGL
+typedef uint32_t t_jit_gl_pixel_attribute;
+#else
+typedef GLint t_jit_gl_pixel_attribute;
+#endif
 
 /****************************************************************************/
 
@@ -87,15 +91,15 @@ typedef struct _jit_gl_pixelformat
 /****************************************************************************/
 
 t_jit_gl_pixelformat *jit_gl_pixelformat_new(void);
-t_jit_err jit_gl_pixelformat_create_attributes(t_jit_gl_pixelformat *x, GLint **pfattrib, GLuint *pfcount);
-void *jit_gl_pixelformat_create_native_from_attributes(GLint *attrib, void *device);
+t_jit_err jit_gl_pixelformat_create_attributes(t_jit_gl_pixelformat *x, t_jit_gl_pixel_attribute **pfattrib, GLuint *pfcount);
+void *jit_gl_pixelformat_create_native_from_attributes(t_jit_gl_pixel_attribute *attrib, void *device);
 void *jit_gl_pixelformat_create_native(t_jit_gl_pixelformat *x, void *device);
+void *jit_gl_pixelformat_create_no_context(t_jit_gl_pixelformat *x, void *device, void *window);
 t_jit_err jit_gl_pixelformat_destroy_native(void *native);
 t_jit_err jit_gl_pixelformat_reset(t_jit_gl_pixelformat *x);
 void jit_gl_pixelformat_free(t_jit_gl_pixelformat *x);
 
 /****************************************************************************/
-
 
 // APPLE extended pixel format attribute flags
 #ifndef AGL_PIXEL_SIZE

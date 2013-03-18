@@ -84,7 +84,7 @@ t_jit_err jit_scissors_matrix_calc(t_jit_scissors *x, void *inputs, void *output
 		if (!test)
 			return JIT_ERR_INVALID_OUTPUT;
 	} else
-		CLIP(maxn, 0, x->max);
+		CLIP_ASSIGN(maxn, 0, x->max);
 
 	in_matrix 	= jit_object_method(inputs, _jit_sym_getindex, 0);
 	out_matrix 	= jit_object_method(outputs, _jit_sym_getindex, --maxn);
@@ -98,7 +98,7 @@ t_jit_err jit_scissors_matrix_calc(t_jit_scissors *x, void *inputs, void *output
 		dim[0] = in_minfo.dim[0] / cols;
 		dim[1] = in_minfo.dim[1] / rows;
 		
-		setmem(&conv, sizeof(t_matrix_conv_info), 0);
+		memset(&conv, 0, sizeof(t_matrix_conv_info));
 		for (i = 0; i < JIT_MATRIX_MAX_PLANECOUNT; i++) {
 			conv.planemap[i] = i;
 		}

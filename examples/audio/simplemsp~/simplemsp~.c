@@ -34,7 +34,7 @@ static t_class *simplemsp_class = NULL;
 
 //***********************************************************************************************
 
-int main(void)
+int C74_EXPORT main(void)
 {	
 	// object initialization, note the use of dsp_free for the freemethod, which is required
 	// unless you need to free allocated memory, in which case you should call dsp_free from
@@ -120,12 +120,13 @@ void simplemsp_dsp64(t_simplemsp *x, t_object *dsp64, short *count, double sampl
 	post("my sample rate is: %f", samplerate);
 	
 	// instead of calling dsp_add(), we send the "dsp_add64" message to the object representing the dsp chain
-	// the dsp_add64 arguments are:
+	// the arguments passed are:
 	// 1: the dsp64 object passed-in by the calling function
-	// 2: a pointer to your object
-	// 3: a pointer to your 64-bit perform method
-	// 4: flags to alter how the signal chain handles your object -- just pass 0
-	// 5: a generic pointer that you can use to pass any additional data to your perform method
+	// 2: the symbol of the "dsp_add64" message we are sending
+	// 3: a pointer to your object
+	// 4: a pointer to your 64-bit perform method
+	// 5: flags to alter how the signal chain handles your object -- just pass 0
+	// 6: a generic pointer that you can use to pass any additional data to your perform method
 	
 	object_method(dsp64, gensym("dsp_add64"), x, simplemsp_perform64, 0, NULL);
 }

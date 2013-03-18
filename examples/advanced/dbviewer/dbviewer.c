@@ -61,7 +61,7 @@ static t_symbol	*ps_dbview_query_changed = NULL;
 
 /************************************************************************************/
 
-int main(void)
+int C74_EXPORT main(void)
 {
 	t_class	*c;
 	long	flags; 
@@ -111,7 +111,7 @@ void *dbviewer_new(t_symbol *s, short argc, t_atom *argv)
 		return NULL;
 
 	x = (t_dbviewer*)object_alloc(s_dbviewer_class);
-	if(x){
+	if (x) {
 		flags = 0 
 		| JBOX_DRAWFIRSTIN		
 		| JBOX_NODRAWBOX
@@ -176,28 +176,28 @@ void dbviewer_freepatcherview(t_dbviewer *x, t_object *patcherview)
 
 t_max_err dbviewer_notify(t_dbviewer *x, t_symbol *s, t_symbol *msg, void *sender, void *data)
 {	
-	if(sender == x->d_view){
-		if(msg == ps_dbview_update){
+	if (sender == x->d_view) {
+		if (msg == ps_dbview_update) {
 			dbviewer_bang(x);
 		}
-		else if(msg == ps_dbview_query_changed){	// dump all of the columns
+		else if (msg == ps_dbview_query_changed) {	// dump all of the columns
 			t_object	*column = NULL;
 			t_symbol	**column_names = NULL;
 			long		numcolumns = 0;
 			long		i;
 			
 			hashtab_getkeys(x->d_columns, &numcolumns, &column_names);
-			if(column_names){
-				for(i=0; i<numcolumns; i++){
+			if (column_names) {
+				for (i=0; i<numcolumns; i++) {
 					column = jdataview_getnamedcolumn(x->d_dataview, column_names[i]);
-					if(column)
+					if (column)
 						jdataview_deletecolumn(x->d_dataview, column);
 				}		
 				sysmem_freeptr(column_names);
 			}
 			hashtab_clear(x->d_columns);
 		}
-		else if(msg == _sym_free){
+		else if (msg == _sym_free) {
 			object_detach_byptr((t_object *)x, x->d_view);
 			x->d_view = NULL;		
 		}
@@ -212,16 +212,16 @@ t_max_err dbviewer_notify(t_dbviewer *x, t_symbol *s, t_symbol *msg, void *sende
 // Method for Assistance Messages
 void dbviewer_assist(t_dbviewer *x, void *b, long msg, long arg, char *dst)
 {
-	if(msg==1){ 	// Inlets
-		switch(arg){
+	if (msg==1) { 	// Inlets
+		switch (arg) {
 			case 0: strcpy(dst, "(signal, control) Audio Input and Control Messages"); break;
 			default: strcpy(dst, "(signal) Audio Input"); break;
 		}
 	}	
-	else if(msg==2){ // Outlets
-		if(arg == 0)
+	else if (msg==2) { // Outlets
+		if (arg == 0)
 			strcpy(dst, "(signal) Audio Output");
-		else if(arg == 1)
+		else if (arg == 1)
 			strcpy(dst, "(symbol) Parameter Name Dump");
 		else
 			strcpy(dst, "dumpout");
@@ -238,7 +238,7 @@ void dbviewer_bang(t_dbviewer *x)
 	char		*fieldname = NULL;
 	t_symbol	*sfieldname = NULL;
 	t_object	*column;
-	long		column_index;
+	t_atom_long	column_index;
 	t_rowref	*rowrefs = NULL;
 	t_max_err	err;
 	
@@ -248,14 +248,14 @@ void dbviewer_bang(t_dbviewer *x)
 		return;
 	
 	numrecords = (long)object_method(result, _sym_numrecords);
-	if(numrecords){
+	if (numrecords) {
 		numfields = (long)object_method(result, _sym_numfields);
-		for(i = 0; i < numfields; i++){
+		for (i = 0; i < numfields; i++) {
 			fieldname = (char*)object_method(result, _sym_fieldnamebyindex, i);
-			if(fieldname){
+			if (fieldname) {
 				sfieldname = gensym(fieldname);
-				err = hashtab_lookup(x->d_columns, sfieldname, (t_object**)&column_index);
-				if(!err){
+				err = hashtab_lookuplong(x->d_columns, sfieldname, &column_index);
+				if (!err) {
 					; // column already exists, so we leave it alone
 				}
 				else{
@@ -269,11 +269,11 @@ void dbviewer_bang(t_dbviewer *x)
 		}
 		
 		rowrefs = (t_rowref*)malloc(sizeof(t_rowref) * numrecords);
-		for(i = 0; i < numrecords; i++)
+		for (i = 0; i < numrecords; i++)
 			rowrefs[i] = (t_rowref*)(i+1);
 		jdataview_addrows(x->d_dataview, numrecords, rowrefs);
 		free(rowrefs);
-	}	
+	}
 }
 
 
@@ -281,14 +281,14 @@ void dbviewer_getcelltext(t_dbviewer *x, t_symbol *colname, long index, char *te
 {
 	t_object	*result = (t_object*)object_method(x->d_view, gensym("getresult"));
 	char		*itemtext;
-	long		column_index;
+	t_atom_long	column_index;
 	t_max_err	err;
 	
-	if(!result)
+	if (!result)
 		return;
 	
-	err = hashtab_lookup(x->d_columns, colname, (t_object **)&column_index);
-	if(!err){
+	err = hashtab_lookuplong(x->d_columns, colname, &column_index);
+	if (!err) {
 		itemtext = (char*)object_method(result, _sym_valuebyindex, index-1, column_index);
 		
 		if (itemtext && itemtext[0]) {
@@ -306,7 +306,7 @@ void dbviewer_getcelltext(t_dbviewer *x, t_symbol *colname, long index, char *te
 
 t_max_err dbviewer_set_query(t_dbviewer *x, void *attr, long argc, t_atom *argv)
 {
-	if(argc && argv){
+	if (argc && argv) {
 		x->d_query = atom_getsym(argv);
 		object_attr_setsym(x->d_view, _sym_query, x->d_query);
 		if (x->d_db && x->d_query) {
@@ -322,7 +322,7 @@ t_max_err dbviewer_set_database(t_dbviewer *x, void *attr, long argc, t_atom *ar
 {
 	t_max_err err;
 	
-	if(argc && argv){
+	if (argc && argv) {
 		db_view_remove(x->d_db, &x->d_view);
 		db_close(&x->d_db);
 		

@@ -30,7 +30,7 @@ void *iter_new(long dummy);
 void iter_free(t_iter *x);
 void iter_resize(t_iter *x, long size);
 
-int main()
+int C74_EXPORT main()
 {
 	t_class *c;
 
@@ -88,7 +88,7 @@ void iter_bang(t_iter *x)
 	}
 }
 
-void iter_list(t_iter *x, Symbol *s, short ac, Atom *av)
+void iter_list(t_iter *x, Symbol *s, short ac, t_atom *av)
 {
 	short i;
 	
@@ -105,7 +105,7 @@ void iter_list(t_iter *x, Symbol *s, short ac, Atom *av)
 	x->i_ac = ac;
 }
 
-void iter_anything(t_iter *x, Symbol *s, short ac, Atom *av)
+void iter_anything(t_iter *x, Symbol *s, short ac, t_atom *av)
 {
 	short i;
 	

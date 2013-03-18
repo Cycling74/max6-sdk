@@ -48,7 +48,7 @@ void jit_str_op_thru (long n, t_jit_str_op_vecdata *vecdata, t_jit_op_info *in1,
 void jit_str_op_expand(t_jit_str_op *x, void *out_matrix, const char *buf);
 void jit_str_op_packmatrix(t_jit_str_op *x, long dimcount, long *dim,  t_jit_matrix_info *info, char *bop, const char *buf);
 void jit_str_op_read_char(t_jit_str_op *x, long *dim, t_jit_matrix_info *info, char *bop, const char *buf);
-char *jit_str_op_tostring(t_jit_str_op *x, long dimcount, long *dim, long rowstride, char *bip, Boolean *slice);
+char *jit_str_op_tostring(t_jit_str_op *x, long dimcount, long *dim, long rowstride, char *bip, t_bool *slice);
 void jit_str_op_start_set(t_jit_str_op *x, void *attr, long ac, t_atom *av);
 void jit_str_op_end_set(t_jit_str_op *x, void *attr, long ac, t_atom *av);
 

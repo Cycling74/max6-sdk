@@ -22,7 +22,7 @@ void max_jit_gl_gridshape_free(t_max_jit_gl_gridshape *x);
 t_class *max_jit_gl_gridshape_class;
 		 	
 
-void main(void)
+void C74_EXPORT main(void)
 {	
 	void *classex, *jitclass;
 	

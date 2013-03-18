@@ -1,10 +1,8 @@
 // sysmidi.h
-#ifndef _SYSMIDI_H_
-#define _SYSMIDI_H_
+#ifndef _EXT_SYSMIDI_H_
+#define _EXT_SYSMIDI_H_
 
-#ifdef __cplusplus
-extern "C" {
-#endif
+BEGIN_USING_C_LINKAGE
 
 #if C74_PRAGMA_STRUCT_PACKPUSH
     #pragma pack(push, 2)
@@ -20,33 +18,19 @@ enum {
 
 typedef struct midistate
 {
-	long arg1;      /* the second byte of a three-byte message */
 	long midicmd;   /* top nibble of the most recent status byte */
 	long chan;      /* midi channel (if not sysex) */
 	long sysex;     /* true if we are getting a sysex message */
 	long argc;      /* # of bytes received in msg excluding status byte */
-	long miditime;  /* time the most recent byte was received */
-	long gotbyte;   /* received but unparsed byte (-1 if none) */
-	Byte *data;
+	t_uint8 *data;
 } t_midistate;
 
-typedef struct _iq {
-	long q_head;
-	long q_tail;
-	long q_nitems;
-	long q_size;
-	long q_busy;
-	long q_busy2;
-	Byte *q_data;
-	Byte q_psysex;
-	Byte q_gsysex;
-} t_iq;
 
 typedef struct _midiportinfo {
 	t_symbol *p_name;
 	struct _sysmididriver *p_driver;
 	long p_refnum;
-	short p_id;
+	long p_id;
 	short p_abbrev;
 	short p_chanoffset;
 	char p_enabled;
@@ -69,36 +53,18 @@ typedef struct _sysmididriver {
 	// driver-specific info follows
 } t_sysmididriver;
 
-typedef struct _sysmidi {
-	t_object s_ob;
-	short s_inchans;
-	short s_outchans;
-	long s_qsize;
-	t_iq s_q;
-	void *s_drivers;
-	void *s_inports;
-	void *s_outports;
-	t_patcher *s_dialog;
-	Point s_topleft;		// saved location of dialog
-	t_box *s_ibp;
-	t_box *s_obp;
-	void *s_qelem;
-	short s_portsopened;
-	long s_loaddelay;
-	short s_dstpath;
-} t_sysmidi;
 
-short sysmidi_numinports(void);
-short sysmidi_numoutports(void);
-t_symbol *sysmidi_indextoname(long index, short io);
-void sysmidi_iterate(method meth, void *arg, short io);
-void sysmidi_enqbigpacket(t_midiportinfo *port, Byte *data, double ts, long len, short contFlags);
-t_midiportinfo *sysmidi_createport(long id, long refnum, t_symbol *name, t_sysmididriver *dx, short io, long flags);
-void sysmidi_deletemarked(short io);
-t_midiportinfo *sysmidi_idtoport(long id, short io);
+void sysmidi_enqbigpacket(t_midiportinfo *port, t_uint8 *data, double ts, long len, long contFlags);
+long sysmidi_numinports(void);
+long sysmidi_numoutports(void);
+t_symbol *sysmidi_indextoname(long index, long io);
+void sysmidi_iterate(method meth, void *arg, long io);
+t_midiportinfo *sysmidi_createport(long id, long refnum, t_symbol *name, t_sysmididriver *dx, long io, long flags);
+void sysmidi_deletemarked(long io);
+t_midiportinfo *sysmidi_idtoport(long id, long io);
 long sysmidi_uniqueid(void);
-t_midiportinfo *sysmidi_data1toport(void *data, short io);
-
+t_midiportinfo *sysmidi_data1toport(void *data, long io);
+t_midiportinfo *sysmidi_nametoport(t_symbol *name, long io);
 
 #if C74_PRAGMA_STRUCT_PACKPUSH
     #pragma pack(pop)
@@ -106,8 +72,6 @@ t_midiportinfo *sysmidi_data1toport(void *data, short io);
     #pragma pack()
 #endif
 
-#ifdef __cplusplus
-}
-#endif
+END_USING_C_LINKAGE
 
-#endif // _SYSMIDI_H_
+#endif // _EXT_SYSMIDI_H_

@@ -1,12 +1,10 @@
+#include "max_types.h"  // safety check to insure C74_X64 is defined appropriately
+
 #ifndef _EXT_PREFIX_H_
 #define _EXT_PREFIX_H_
 
 ////////////////////////////////////////////////////////////////////////////////
 // macros
-
-#ifndef WIN_VERSION
-#define MAC_VERSION 1 // we'll assume that if we aren't requesting the windows version, that we build the mac version(s) of the product
-#endif  // WIN_VERSION
 
 #ifdef __cplusplus
 /**
@@ -43,6 +41,43 @@
 */
 #define END_USING_C_LINKAGE
 #endif // __cplusplus
+
+#ifdef C74_X64
+// anything we want to define only for x64 builds here? 
+#else
+// not x64? let's enable quicktime, if it was asked for 
+// but note that only on windows do we explicitly ask for it
+#if defined(USE_QTML) || defined(INCLUDE_APPLE_HEADERS) || defined(MAC_VERSION)
+#define C74_USING_QUICKTIME 1
+#endif
+
+#endif
+
+#ifdef calcoffset
+	// The ifdefs for this macro have been set up like this so that Doxygen can document this macro on a Mac [TAP]
+#else
+	/** 
+		Find byte offset of a named member of a struct, relative to the beginning of that struct.
+		@ingroup misc
+		@param	x	The name of the struct
+		@param	y	The name of the member
+		@return		A pointer-sized integer representing the number of bytes into the struct where the member begins.
+	*/
+	#define calcoffset(x,y) ((t_ptr_int)(&(((x *)0L)->y)))
+#endif
+
+#ifdef structmembersize
+	// The ifdefs for this macro have been set up like this so that Doxygen can document this macro on a Mac [TAP]
+#else
+	/** 
+		Find size of a named member of a struct.
+		@ingroup misc
+		@param	structname	The name of the struct
+		@param	membername	The name of the member
+		@return		The size of the member of the struct.
+	*/
+	#define structmembersize(structname, membername) (sizeof(((structname*)0)->membername))
+#endif
 
 #ifdef WIN_VERSION
 
@@ -126,6 +161,8 @@
 #define FPTR_ELLIPSES		1
 #endif
 
+#ifndef C74_X64
+
 // the C74_PRAGMA_STRUCT_PACK* macros are used to ensure that 
 // Win32 builds of Max externals use a 2 byte struct packing 
 // for all Max structs in projects that have a default struct 
@@ -149,6 +186,16 @@
 #define C74_PRAGMA_STRUCT_PACK		1
 #define C74_STRUCT_PACK_SIZE		2
 
+#else  // #if !C74_X64
+#define C74_PRAGMA_STRUCT_PACKPUSH	0		// don't specify packing for x64 target, use default
+#define C74_PRAGMA_STRUCT_PACKPUSH	0
+#endif
+
+// promote this warning to an error because 
+// it helps catch using long* when we really need t_atom_long* for x64
+#pragma warning ( error : 4133 ) // incompatible types 
+
+#if defined(DISABLE_A_BUNCH_OF_WINDOWS_WARNINGS)
 #pragma warning( disable : 4005 ) // macro redefinition
 #pragma warning( disable : 4101 ) // unreferenced local
 #pragma warning( disable : 4800 ) // forcing value to bool 'true' or 'false'
@@ -158,10 +205,18 @@
 #pragma warning( disable : 4244 ) // implicit larger to smaller type conversion (int + float)
 #pragma warning( disable : 4245 ) // implicit unsigned/signed type conversion
 #pragma warning( disable : 4305 ) // truncation from 'type1' to 'type2' (e.g. double->float)
+#endif 
 
+#ifndef _CRT_SECURE_NO_WARNINGS
 #define _CRT_SECURE_NO_WARNINGS
+#endif 
+
+#ifndef _SCL_SECURE_NO_WARNINGS
+#define _SCL_SECURE_NO_WARNINGS
+#endif 
 
 // crtl
+#include <malloc.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdarg.h>
@@ -176,16 +231,27 @@
 #include <richedit.h>
 #include <commctrl.h>
 
-#ifdef C74_PRIVATE
-#include "ext_prefix_win.h"
-#endif
+#if (defined(USE_QTML) || defined(C74_USING_QUICKTIME) || defined(INCLUDE_APPLE_HEADERS))&& !defined(C74_X64)
 
-#ifdef USE_QTML
 #ifndef INCLUDE_APPLE_HEADERS
 #define INCLUDE_APPLE_HEADERS
 #endif	
+
 #include "qtml.h"
+
+#else
+
+#if ((defined(USE_QTML) || defined(C74_USING_QUICKTIME) || defined(INCLUDE_APPLE_HEADERS)) && C74_x64)
+#pragma message ("QuickTime is not supported for x64!")
 #endif
+
+#ifndef __cplusplus 
+#define bool int
+#define false ((int)0)
+#define true ((int)1)
+#endif
+
+#endif  // #ifdef USE_QTML
 
 #endif // WIN_VERSION
 
@@ -205,5 +271,45 @@
 #define C74_ASSERT(condition) 
 #endif
 
+// the following are convenient before casting to a smaller size 
+// so the debug build will let you know if you are truncating unexpectedly
+#define C74_ASSERT_FITS_CHAR(x)		 C74_ASSERT(((char)(x)) == (long long) (x))
+#define C74_ASSERT_FITS_UCHAR(x)	 C74_ASSERT(((unsigned char)(x)) == (unsigned long long) (x))
+#define C74_ASSERT_FITS_SHORT(x)	 C74_ASSERT(((short)(x)) == (long long) (x))
+#define C74_ASSERT_FITS_USHORT(x)	 C74_ASSERT(((unsigned short)(x)) == (unsigned long long) (x))
+#define C74_ASSERT_FITS_LONG(x)		 C74_ASSERT(((long)(x)) == (long long) (x))
+#define C74_ASSERT_FITS_ULONG(x)	 C74_ASSERT(((unsigned long)(x)) == (unsigned long long)(x))
+#define C74_ASSERT_FITS_INT32(x)	 C74_ASSERT(((t_int32)(x)) == (long long) (x))
+#define C74_ASSERT_FITS_UINT32(x)	 C74_ASSERT(((t_uint32)(x)) == (unsigned long long) (x))
+#define C74_ASSERT_FITS_PTR_INT(x)	 C74_ASSERT(((t_ptr_int)(x)) == (long long) (x))
+#define C74_ASSERT_FITS_PTR_UINT(x)	 C74_ASSERT(((t_ptr_uint)(x)) == (unsigned long long) (x))
+
+// C74_STATIC_ASSERT: generates a compile error if expression e is false 
+#ifdef _DEBUG
+#define ENABLE_STATIC_ASSERT
+#endif
+#ifdef ENABLE_STATIC_ASSERT
+#define C74_STATIC_ASSERT(e, m) typedef char __C74_STATIC_ASSERT__[(e)?1:-1]
+#else
+#define C74_STATIC_ASSERT(e, m)
+#endif
+
+#if defined(C74_X64) && defined(WIN_VERSION)
+// It used to be required to set two-byte packing of structures on windows. 
+// For x64 it is important to set packing to default. 
+typedef struct _testpackingstruct 
+{
+	t_uint8 firstmember;
+	t_int32 secondmember;  //
+} t_testpackingstruct;
+
+// if external is still configured for two byte alignment this will cause a compile error
+// in which case you should change the structure alignment to the compiler default
+C74_STATIC_ASSERT( (calcoffset(t_testpackingstruct, secondmember) - calcoffset(t_testpackingstruct, firstmember)) > 2, "struct alignment must be set to default!" ); 
+
+#endif
+
+#define C74_EXTERNAL_NOT_ON_X64(name) int main(void) { error("%s: not supported on x64", name); return 0; }
+#define C74_EXTERNAL_NOT_ON_X64_QUIET int main(void) { return 0; }
 
 #endif // _EXT_PREFIX_H_

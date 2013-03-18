@@ -48,14 +48,14 @@ t_jit_err jit_concat_init(void)
 	//add attributes	
 	attrflags = JIT_ATTR_GET_DEFER_LOW | JIT_ATTR_SET_USURP_LOW;
 	
-	CLASS_STICKY_ATTR(_jit_concat_class,"category",0,"Behavior");
+	CLASS_STICKY_CATEGORY(_jit_concat_class,0,"Behavior");
 	CLASS_STICKY_ATTR(_jit_concat_class,"basic",0,"1");	
 	
 	attr = jit_object_new(_jit_sym_jit_attr_offset,"mode",_jit_sym_char,attrflags, 
 		(method)0L,(method)0L,calcoffset(t_jit_concat,mode));
 	jit_class_addattr(_jit_concat_class,attr);
 	CLASS_ATTR_LABEL(_jit_concat_class,"mode",0,"Concatenation Order Mode");	
-	CLASS_ATTR_ENUMINDEX(_jit_concat_class, "mode", 0, "\"Append Right to Left\" \"Append Left to Right\"");
+	CLASS_ATTR_ENUMINDEX2(_jit_concat_class, "mode", 0, "Append Right to Left", "Append Left to Right");
 	
 	attr = jit_object_new(_jit_sym_jit_attr_offset,"concatdim",_jit_sym_char,attrflags, 
 		(method)0L,(method)0L,calcoffset(t_jit_concat,concatdim));
@@ -72,7 +72,7 @@ t_jit_err jit_concat_init(void)
 	jit_class_addattr(_jit_concat_class,attr);
 	CLASS_ATTR_STYLE_LABEL(_jit_concat_class,"truncate",0,"onoff","Truncate");	
 	
-	CLASS_STICKY_ATTR_CLEAR(_jit_concat_class, "category");
+	CLASS_STICKY_CATEGORY_CLEAR(_jit_concat_class);
 	CLASS_STICKY_ATTR_CLEAR(_jit_concat_class, "basic");
 	
 	jit_class_register(_jit_concat_class);
@@ -122,7 +122,7 @@ t_jit_err jit_concat_matrix_calc(t_jit_concat *x, void *inputs, void *outputs)
 			goto out;
 		}	
 				
-		setmem(&conv,sizeof(t_matrix_conv_info),0);
+		memset(&conv,0,sizeof(t_matrix_conv_info));
 		for (i=0;i<JIT_MATRIX_MAX_PLANECOUNT;i++) conv.planemap[i] = i;
 		conv.flags |= JIT_MATRIX_CONVERT_SRCDIM;
 		conv.flags |= JIT_MATRIX_CONVERT_DSTDIM;

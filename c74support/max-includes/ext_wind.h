@@ -4,10 +4,7 @@
 #ifndef _EXT_WIND_H_
 #define _EXT_WIND_H_
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
+BEGIN_USING_C_LINKAGE
 
 /** Returned values from wind_advise()
 	@ingroup misc
@@ -17,6 +14,20 @@ typedef enum {
 	aaNo,			///< No button was choosen
 	aaCancel		///< Cancel button was choosen
 } e_max_wind_advise_result;
+	
+
+// advise returns...
+	
+#define ADVISE_SAVE		1
+#define aaSave			ADVISE_SAVE
+#define ADVISE_DISCARD	2
+#define aaDiscard		ADVISE_DISCARD
+#define ADVISE_CANCEL	3
+#define aaCancel		ADVISE_CANCEL
+#define ADVISE_FIRST	ADVISE_SAVE
+#define ADVISE_SECOND	ADVISE_DISCARD
+#define ADVISE_THIRD	ADVISE_CANCEL
+
 
 
 /**	Throw a dialog which may have text and up to three buttons.  
@@ -29,6 +40,8 @@ typedef enum {
 */
 short wind_advise(t_object *w, char *s, ...);
 
+// internal use only
+short wind_advise_explain(t_object *w, char *note, char *explanation, char *b1, char *b2, char *b3);
 
 /**	Change the cursor.
 	@ingroup		misc
@@ -55,8 +68,6 @@ short wind_advise(t_object *w, char *s, ...);
 void wind_setcursor(short which);
 
 
-#ifdef __cplusplus
-}
-#endif
+END_USING_C_LINKAGE
 
 #endif // _EXT_WIND_H_

@@ -45,7 +45,7 @@ void *attrtester_class;
 //	CLASS_ATTR_SAVE(c, "min", 0, "0");
 //	CLASS_ATTR_ATTR_PARSE(c, "float", "undocumented", gensym("long"), 0, "1");
 
-int main(void)
+int C74_EXPORT main(void)
 {	
 	t_class *c;
 	
@@ -142,7 +142,7 @@ t_max_err attrtester_min_get(t_attrtester *x, void *attr, long *ac, t_atom **av)
 t_max_err attrtester_min_set(t_attrtester *x, void *attr, long ac, t_atom *av)
 {
 	if (ac && av) {
-		long min = atom_getlong(av);
+		t_atom_long min = atom_getlong(av);
 		// for instance...
 		if (min <= x->a_max)
 			x->a_min = min;

@@ -38,11 +38,10 @@ static t_class	*s_ww_class = NULL;
 /**********************************************************************/
 // Class Definition and Life Cycle
 
-int main(void)
+int C74_EXPORT main(void)
 {
 	t_class *c; 
 	
-	common_symbols_init();
 	c = class_new("windowwatcher", (method)ww_new, (method)ww_free, sizeof(t_ww), (method)NULL, A_GIMME, 0L);
 	
 	class_addmethod(c, (method)ww_notify,				"notify",				A_CANT, 0);
@@ -55,7 +54,7 @@ int main(void)
 	
 	// class_addmethod(c, (method)ww_boxscreenrectchanged,	"boxscreenrectchanged",	A_CANT, 0);
 	
-	class_register(_sym_box, c);
+	class_register(CLASS_BOX, c);
 	s_ww_class = c;
 	return 0;
 }
@@ -71,8 +70,8 @@ t_ww* ww_new(t_symbol *s, short argc, t_atom *argv)
 		x->w_outlet = outlet_new(x, 0L);
 		attr_args_process(x, argc, argv);
 
-		object_obex_lookup(x, _sym_pound_P, &x->w_patcher);
-		object_obex_lookup(x, _sym_pound_B, &box);
+		object_obex_lookup(x, gensym("#P"), &x->w_patcher);
+		object_obex_lookup(x, gensym("#B"), &box);
 		
 		// If/when instance methods are supported, we can use object_addmethod() to add the method
 		// (as opposed to a class method) to our box.
@@ -102,8 +101,8 @@ void ww_free(t_ww *x)
 
 void ww_attach(t_ww *x)
 {	
-	x->w_patcherview = object_attr_getobj(x->w_patcher, _sym_firstview);
-	object_attach_byptr_register(x, x->w_patcherview, _sym_nobox);
+	x->w_patcherview = object_attr_getobj(x->w_patcher, gensym("firstview"));
+	object_attach_byptr_register(x, x->w_patcherview, CLASS_NOBOX);
 }
 
 
@@ -113,30 +112,30 @@ t_max_err ww_notify(t_ww *x, t_symbol *s, t_symbol *msg, void *sender, void *dat
 	t_rect		r;
 	t_atom		a[4];
 	
-	if(sender == x->w_patcherview){
-		if(msg == _sym_attr_modified){
-			name = (t_symbol *)object_method((t_object *)data, _sym_getname);
+	if (sender == x->w_patcherview){
+		if (msg == gensym("attr_modified")){
+			name = (t_symbol*)object_method((t_object *)data, gensym("getname"));
 
 			// the patcherview is notified when its rect changes size
-			if(name == _sym_rect){
-				object_attr_get_rect(x->w_patcherview, _sym_rect, &r);
+			if (name == gensym("rect")) {
+				object_attr_get_rect(x->w_patcherview, gensym("rect"), &r);
 				atom_setfloat(a+0, r.x);
 				atom_setfloat(a+1, r.y);
 				atom_setfloat(a+2, r.width);
 				atom_setfloat(a+3, r.height);
-				outlet_anything(x->w_outlet, _sym_patcherview, 4, a);
+				outlet_anything(x->w_outlet, gensym("patcherview"), 4, a);
 			}
 			// the patcherview is notified when its visible rect has changed (i.e. scrollbars have been moved)
-			if(name == _sym_visiblecanvasrect){
-				object_attr_get_rect(x->w_patcherview, _sym_visiblecanvasrect, &r);
+			if (name == gensym("visiblecanvasrect")) {
+				object_attr_get_rect(x->w_patcherview,gensym("visiblecanvasrect"), &r);
 				atom_setfloat(a+0, r.x);
 				atom_setfloat(a+1, r.y);
 				atom_setfloat(a+2, r.width);
 				atom_setfloat(a+3, r.height);
-				outlet_anything(x->w_outlet, _sym_visiblecanvasrect, 4, a);
+				outlet_anything(x->w_outlet, gensym("visiblecanvasrect"), 4, a);
 			}
 		}
-		else if(msg == _sym_free){
+		else if (msg == gensym("free")) {
 			object_detach_byptr((t_object *)x, x->w_patcherview);
 			x->w_patcherview = NULL;
 		}
@@ -154,11 +153,11 @@ void ww_boxscreenrectchanged(t_jbox *box, t_object *patcherview)
 	// This method is an instance method of our box object (newobj)
 	// So ...
 	
-	object_attr_get_rect(x->w_patcherview, _sym_rect, &r);
+	object_attr_get_rect(x->w_patcherview, gensym("rect"), &r);
 	atom_setfloat(a+0, r.x);
 	atom_setfloat(a+1, r.y);
 	atom_setfloat(a+2, r.width);
 	atom_setfloat(a+3, r.height);
-	outlet_anything(x->w_outlet, _sym_boxscreenrectchanged, 4, a);
+	outlet_anything(x->w_outlet, gensym("boxscreenrectchanged"), 4, a);
 }
 

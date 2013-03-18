@@ -22,6 +22,10 @@
 #define FILEBYTE_WINDOWS_SPECIFIC
 #endif
 
+#ifdef WIN_VERSION
+typedef char Byte;
+#endif
+
 void *filebyte_class;
 
 typedef struct filebyte {
@@ -46,7 +50,7 @@ void filebyte_free(t_filebyte *x);
 void filebyte_assist(t_filebyte *x, void *b, long m, long a, char *s);
 void *filebyte_new(t_symbol *fn);
 
-int main(void)
+int C74_EXPORT main(void)
 {
 	t_class *c;
 	
@@ -120,12 +124,13 @@ void filebyte_close(t_filebyte *x)
 
 void filebyte_doopen(t_filebyte *x, t_symbol *s)
 {
-	short path;
-	char ps[MAX_PATH_CHARS];
+	short		path;
+	char		ps[MAX_PATH_CHARS];
 #ifdef FILEBYTE_WINDOWS_SPECIFIC
-	char ps2[MAX_PATH_CHARS];
+	char	 	ps2[MAX_PATH_CHARS];
 #endif
-	long type,err;
+	t_fourcc	type;
+	t_max_err	err;
 	
 	filebyte_close(x);
 	if (s==ps_nothing) {

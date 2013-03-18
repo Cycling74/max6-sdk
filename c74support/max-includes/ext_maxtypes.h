@@ -4,10 +4,7 @@
 #ifndef _EXT_MAXTYPES_H_
 #define _EXT_MAXTYPES_H_
 
-
-#ifdef __cplusplus
-extern "C" {
-#endif
+BEGIN_USING_C_LINKAGE
 
 #if C74_PRAGMA_STRUCT_PACKPUSH
     #pragma pack(push, 2)
@@ -48,18 +45,9 @@ typedef void* t_qelem;
 enum {
 	PI_DEEP = 1,						///< descend into subpatchers (not used by audio library)
 	PI_REQUIREFIRSTIN = 2,	///< if b->b_firstin is NULL, do not call function
-	PI_WANTBOX = 4					///< instead, of b->b_firstin, pass b to function, whether or not b->b_firstin is NULL
+	PI_WANTBOX = 4,					///< instead, of b->b_firstin, pass b to function, whether or not b->b_firstin is NULL
+	PI_SKIPGEN = 8
 };
-
-
-/** The atombuf struct provides a way to pass a collection of atoms.
-	@ingroup atombuf
-*/
-typedef struct atombuf {
-	long a_argc;			///< the number of atoms
-	t_atom a_argv[1];		///< the first of the array of atoms
-} t_atombuf;
-
 
 /** A simple doubly-linked list used by the #t_funbuff object.
 	@ingroup funbuff
@@ -100,8 +88,6 @@ typedef struct funbuff
     #pragma pack()
 #endif
 
-#ifdef __cplusplus
-}
-#endif
+END_USING_C_LINKAGE
 
 #endif // _EXT_MAXTYPES_H_

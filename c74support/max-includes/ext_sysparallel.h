@@ -1,5 +1,5 @@
-#ifndef __SYSPARALLEL_H__
-#define __SYSPARALLEL_H__
+#ifndef _EXT_SYSPARALLEL_H_
+#define _EXT_SYSPARALLEL_H_
 
 #if C74_PRAGMA_STRUCT_PACKPUSH
     #pragma pack(push, 2)
@@ -7,10 +7,7 @@
     #pragma pack(2)
 #endif
 
-#ifdef __cplusplus
-	extern "C" {
-#endif // __cplusplus
-
+BEGIN_USING_C_LINKAGE
 
 #define SYSPARALLEL_PRIORITY_DEFAULT		0x00
 #define SYSPARALLEL_PRIORITY_LOW			0x00
@@ -35,7 +32,7 @@ typedef struct _sysparallel_task
 	method 		workerproc;		// worker callback function 
 	long 		workercount;	// number of workers to use
 	struct _sysparallel_worker	**workers;	// worker array		
-	char		priority;		// thread priority 
+	unsigned char priority;		// thread priority 
 	char		benchmark;		// benchmark
 	long		iteration;		// for benchmarking 
 	double		begintime;		// for benchmarking
@@ -66,6 +63,7 @@ long sysparallel_processorcount(void);
 t_sysparallel_task *sysparallel_task_new(void *data, method workerproc, long maxworkercount);
 t_max_err sysparallel_task_workercount(t_sysparallel_task *x, long workercount);
 t_max_err sysparallel_task_execute(t_sysparallel_task *x);
+void sysparallel_task_signalworkers(t_sysparallel_task *x, long count); 
 t_max_err sysparallel_task_cancel(t_sysparallel_task *x);
 void sysparallel_task_free(t_sysparallel_task *x);
 void sysparallel_task_benchprint(t_sysparallel_task *x);
@@ -76,9 +74,7 @@ t_sysparallel_worker *sysparallel_worker_new(void *data, method workerproc, t_sy
 t_max_err sysparallel_worker_execute(t_sysparallel_worker *x);
 void sysparallel_worker_free(t_sysparallel_worker *x);
 
-#ifdef __cplusplus
-}
-#endif // __cplusplus
+END_USING_C_LINKAGE
 
 #if C74_PRAGMA_STRUCT_PACKPUSH
     #pragma pack(pop)
@@ -86,4 +82,4 @@ void sysparallel_worker_free(t_sysparallel_worker *x);
     #pragma pack()
 #endif
 
-#endif // __SYSPARALLEL_H__
+#endif // _EXT_SYSPARALLEL_H_

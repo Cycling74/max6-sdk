@@ -66,6 +66,8 @@ extern "C" {
 
 /****************************************************************************/
 
+t_jit_err jit_gl_procs_init();
+
 /* Structure of all OpenGL {1.2, 1.3, 1.4, 1.5}, GL extension procs.*/
 typedef struct {
   void (APIENTRY *BlendColor) (GLclampf red, GLclampf green, GLclampf blue, GLclampf alpha);
@@ -1040,6 +1042,12 @@ typedef struct {
   GLboolean (APIENTRY *IsFramebufferEXT) (GLuint framebuffer);
   GLboolean (APIENTRY *IsRenderbufferEXT) (GLuint renderbuffer);
   void (APIENTRY *RenderbufferStorageEXT) (GLenum target, GLenum internalformat, GLsizei width, GLsizei height);
+
+  void (APIENTRY *ProgramParameteriEXT) (GLuint program, GLenum pname, GLint value);
+  void (APIENTRY *FramebufferTextureEXT) (GLenum target, GLenum attachment, GLuint texture, GLint level);
+  void (APIENTRY *FramebufferTextureLayerEXT) (GLenum target, GLenum attachment, GLuint texture, GLint level, GLint layer);
+  void (APIENTRY *FramebufferTextureFaceEXT) (GLenum target, GLenum attachment, GLuint texture, GLint level, GLenum face);
+  void (APIENTRY *DrawBuffersARB) (GLsizei n, const GLenum *bufs);
   
 #ifdef MAC_VERSION
   void (APIENTRY *ElementPointerAPPLE) (GLenum type, const GLvoid *pointer);
@@ -1064,6 +1072,7 @@ typedef struct {
   void (APIENTRY *VertexArrayParameteriAPPLE) (GLenum pname, GLint param);
   void (APIENTRY *TextureRangeAPPLE) (GLenum target, GLsizei length, GLvoid *pointer);
   void (APIENTRY *GetTexParameterPointervAPPLE) (GLenum target, GLenum pname, GLvoid **params);
+#ifdef JIT_GL_AGL
   GLboolean (APIENTRY *CreatePBuffer) (GLint width, GLint height, GLenum target, GLenum internalFormat, long max_level, AGLPbuffer *pbuffer);
   GLboolean (APIENTRY *DescribePBuffer) (AGLPbuffer pbuffer, GLint *width, GLint *height, GLenum *target, GLenum *internalFormat, GLint *max_level );
   GLboolean (APIENTRY *DestroyPBuffer) ( AGLPbuffer pbuffer );
@@ -1071,6 +1080,7 @@ typedef struct {
   GLboolean (APIENTRY *SetPBuffer) (AGLContext ctx, AGLPbuffer pbuffer, GLint face, GLint level, GLint screen );
   GLboolean (APIENTRY *TexImagePBuffer) (AGLContext ctx, AGLPbuffer pbuffer, GLint source );
   GLboolean (APIENTRY *SurfaceTexture) (AGLContext context, GLenum target, GLenum internalformat, AGLContext surfacecontext );
+#endif  
 #endif
 #ifdef _WIN32
   HANDLE (WINAPI *CreateBufferRegionARB) (HDC hDC, int iLayerPlane, UINT uType);
@@ -2120,6 +2130,19 @@ typedef struct {
 #define glIsFramebufferEXT				 (_jit_gl_get_proctable()->IsFramebufferEXT)
 #define glIsRenderbufferEXT				 (_jit_gl_get_proctable()->IsRenderbufferEXT)
 #define glRenderbufferStorageEXT		 (_jit_gl_get_proctable()->RenderbufferStorageEXT)
+
+
+#define glProgramParameteriEXT				(_jit_gl_get_proctable()->ProgramParameteriEXT)
+#define glFramebufferTextureEXT				(_jit_gl_get_proctable()->FramebufferTextureEXT)
+#define glFramebufferTextureLayerEXT		(_jit_gl_get_proctable()->FramebufferTextureLayerEXT)
+#define glFramebufferTextureFaceEXT			(_jit_gl_get_proctable()->FramebufferTextureFaceEXT)
+
+#define glDrawBuffersARB					(_jit_gl_get_proctable()->DrawBuffersARB)
+
+
+
+
+
 #ifdef MAC_VERSION
 #define glElementPointerAPPLE            (_jit_gl_get_proctable()->ElementPointerAPPLE)
 #define glDrawElementArrayAPPLE          (_jit_gl_get_proctable()->DrawElementArrayAPPLE)

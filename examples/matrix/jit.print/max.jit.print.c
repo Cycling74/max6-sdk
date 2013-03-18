@@ -22,9 +22,9 @@ void max_jit_print_free(t_max_jit_print *x);
 
 t_jit_err jit_print_matrix_calc(void *x, void *in_matrix);
 
-void *max_jit_print_class;
+t_messlist *max_jit_print_class;
 		 	
-void main(void)
+void C74_EXPORT main(void)
 {	
 	void *p,*q;
 	
@@ -103,7 +103,7 @@ void *max_jit_print_new(t_symbol *s, long argc, t_atom *argv)
 		}
 		else {
 			jit_object_error((t_object *)x,"jit.print: could not allocate object");
-			freeobject(x);
+			freeobject((t_object *) x);
 			x=NULL;
 		}
 	}

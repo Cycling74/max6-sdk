@@ -27,8 +27,19 @@
 #undef FixedToFloat        
 #endif
 
+#ifndef __MACTYPES__
+typedef t_int32                         Fixed;
+typedef Fixed *							FixedPtr;
+typedef t_int32                         Fract;
+typedef Fract *                         FractPtr;
+typedef t_uint32                        UnsignedFixed;
+typedef UnsignedFixed *                 UnsignedFixedPtr;
+typedef short                           ShortFixed;
+typedef ShortFixed *                    ShortFixedPtr;
+#endif
 
 #define fixed1		(1<<16L) 
+#define fixedhalf	(1<<15L)
 #define IntToFixed(x) ((Fixed)((x)<<16L))                     
 #define FloatToFixed(x) ((Fixed)((x) * (float)fixed1))                    
 #define DoubleToFixed(x) ((Fixed)((x) * (double)fixed1))                  
@@ -50,5 +61,10 @@
 #define FixedFloor(x) ((x) & ~FixedOneMinusEps)
 #define FixedCeil(x) FixedFloor((x) + FixedOneMinusEps)
 #define FixedMod2(x) ((x) & (fixed1 | FixedOneMinusEps))
+
+#ifdef FixedRound
+#undef FixedRound
+#endif
+#define FixedRound(x) ((FixedFrac(x) < fixedhalf) ? FixedFloor(x) : FixedCeil(x))
 
 #endif //__JIT_FIXMATH_H__

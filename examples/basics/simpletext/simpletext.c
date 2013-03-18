@@ -31,7 +31,7 @@ void simpletext_edclose(t_simpletext *x, char **text, long size);
 void *simpletext_class;
 
 
-int main(void)
+int C74_EXPORT main(void)
 {	
 	t_class *c;
 	
@@ -81,7 +81,7 @@ void simpletext_doread(t_simpletext *x, t_symbol *s, long argc, t_atom *argv)
 {
 	char filename[MAX_PATH_CHARS];
 	short path;
-	long type = 'TEXT';
+	t_fourcc type = FOUR_CHAR_CODE('TEXT');
 	long err;
 	t_filehandle fh;
 	

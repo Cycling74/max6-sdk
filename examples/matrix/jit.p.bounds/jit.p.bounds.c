@@ -12,10 +12,6 @@ I didn't fully implement it, due to > 3 dimensional rotation issues. Will readdr
 at some point. */
 
 #define MAX_RANDOM 4294967294
-#define DEGTORAD(d)	((d * (float)M_PI) / 180.0f)
-#define RADTODEG(r)	((r * 180.0f) /(float)M_PI)
-#define M_PI        3.14159265358979323846
-#define HALF_PI	    1.57079632679489661923
 
 typedef struct _jit_p_bounds 
 {
@@ -30,7 +26,7 @@ typedef struct _jit_p_bounds
 	long					boundscount_lo;
 	long					squishcount;
 	long					squish_varcount;
-	long					random;
+	t_int32					random;
 	char					mode; // 0 = bounce, 1 = torus, 2 = kill
 } t_jit_p_bounds;
 
@@ -302,16 +298,16 @@ void jit_p_bounds_calculate_ndim(t_jit_p_bounds *x, long dimcount, long *dim, lo
 		break;
 	default:
 		for	(i=0;i<dim[dimcount-1];i++) {
-			ip = bip + i*in_minfo->dimstride[dimcount-1];
-			op = bop + i*out_minfo->dimstride[dimcount-1];
-			jit_p_bounds_calculate_ndim(x,dimcount-1,dim,planecount,in_minfo,ip,out_minfo,op);
+			ip = (uchar*)(bip + i*in_minfo->dimstride[dimcount-1]);
+			op = (uchar*)(bop + i*out_minfo->dimstride[dimcount-1]);
+			jit_p_bounds_calculate_ndim(x,dimcount-1,dim,planecount,in_minfo,(char*)ip,out_minfo,(char*)op);
 		}
 	}
 }
 
 float jit_p_bounds_random_num(t_jit_p_bounds *x)
 {
-	long rn = x->random;
+	t_int32 rn = x->random;
 	
 	rn = 1664525L * rn + 1013904223L;
 	x->random = rn;

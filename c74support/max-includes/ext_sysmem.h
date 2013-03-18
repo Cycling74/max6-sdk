@@ -1,11 +1,8 @@
 
-#ifndef _SYSMEM_H_
-#define _SYSMEM_H_
+#ifndef _EXT_SYSMEM_H_
+#define _EXT_SYSMEM_H_
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
+BEGIN_USING_C_LINKAGE
 
 /**
 	Allocate memory.
@@ -194,9 +191,7 @@ extern long sysmem_ptrbeforehand(void *p, t_handle h, unsigned long size);
 extern long sysmem_nullterminatehandle(t_handle h);
 
 
-#ifdef __cplusplus
-}
-#endif
+END_USING_C_LINKAGE
 
-#endif // _SYSMEM_H_
+#endif // _EXT_SYSMEM_H_
 

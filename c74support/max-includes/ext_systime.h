@@ -1,10 +1,8 @@
 
-#ifndef _SYSTIME_H_
-#define _SYSTIME_H_
+#ifndef _EXT_SYSTIME_H_
+#define _EXT_SYSTIME_H_
 
-#ifdef __cplusplus
-extern "C" {
-#endif
+BEGIN_USING_C_LINKAGE
 
 #if C74_PRAGMA_STRUCT_PACKPUSH
     #pragma pack(push, 2)
@@ -17,16 +15,18 @@ extern "C" {
 	The Systime data structure.
 	@ingroup systime	
 */
+	
 typedef struct _datetime {
-	unsigned long	year;			///< year
-	unsigned long	month;			///< month
-	unsigned long	day;			///< day
-	unsigned long	hour;			///< hour
-	unsigned long	minute;			///< minute
-	unsigned long	second;			///< second
-	unsigned long	millisecond;	///< (reserved for future use)
+	t_uint32	year;			///< year
+	t_uint32	month;			///< month
+	t_uint32	day;			///< day
+	t_uint32	hour;			///< hour
+	t_uint32	minute;			///< minute
+	t_uint32	second;			///< second
+	t_uint32	millisecond;	///< (reserved for future use)
 } t_datetime;
 
+#ifndef _SYSTIME_H_INTERNAL_
 
 /**	Flags for the sysdateformat_formatdatetime() function.
 	@ingroup systime
@@ -37,13 +37,14 @@ typedef enum {
 	SYSDATEFORMAT_FLAGS_LONG = 3	///< long
 } e_max_dateflags;
 
-
+#endif // _SYSTIME_H_INTERNAL_
+	
 /**
 	Find out the operating system’s time in ticks. 
 	@ingroup systime
 	@return	the system time in ticks.
 */
-extern unsigned long systime_ticks(void);
+t_uint32 systime_ticks(void);
 
 
 /**
@@ -51,7 +52,7 @@ extern unsigned long systime_ticks(void);
 	@ingroup systime
 	@return	the system time in milliseconds.
 */
-extern unsigned long systime_ms(void);
+t_uint32 systime_ms(void);
 
 
 /**
@@ -59,7 +60,7 @@ extern unsigned long systime_ms(void);
 	@ingroup systime
 	@param	d	Returns the system’s date and time in a #t_datetime data structure.
 */
-extern void systime_datetime(t_datetime *d);
+void systime_datetime(t_datetime *d);
 
 
 /**
@@ -67,7 +68,7 @@ extern void systime_datetime(t_datetime *d);
 	@ingroup systime
 	@return	the system time in seconds.
 */
-extern unsigned long systime_seconds(void);
+t_ptr_uint systime_seconds(void);
 
 
 /**
@@ -76,7 +77,7 @@ extern unsigned long systime_seconds(void);
 	@param secs	A number of seconds to be represented as a #t_datetime.
 	@param d	The address of a #t_datetime that will be filled with the converted value.
 */
-extern void systime_secondstodate(unsigned long secs, t_datetime *d);
+void systime_secondstodate(t_ptr_uint secs, t_datetime *d);
 
 
 /**
@@ -85,10 +86,11 @@ extern void systime_secondstodate(unsigned long secs, t_datetime *d);
 	@param d	The address of a #t_datetime that contains a valid period of time.
 	@return 	The number of seconds represented by d.
 */
-extern unsigned long systime_datetoseconds(t_datetime *d);
+t_ptr_uint systime_datetoseconds(t_datetime *d);
 
 
-
+#ifndef _SYSTIME_H_INTERNAL_
+	
 /**
 	Fill a #t_datetime struct with a datetime formatted string.
 	For example, the string "2007-12-24 12:21:00".
@@ -111,8 +113,9 @@ void sysdateformat_strftimetodatetime(char *strf, t_datetime *d);
 */
 void sysdateformat_formatdatetime(t_datetime *d, long dateflags, long timeflags, char *s, long buflen);
 
-
 #define SYSDATEFORMAT_RELATIVE 16
+	
+#endif // _SYSTIME_H_INTERNAL_
 
 #if C74_PRAGMA_STRUCT_PACKPUSH
     #pragma pack(pop)
@@ -120,9 +123,7 @@ void sysdateformat_formatdatetime(t_datetime *d, long dateflags, long timeflags,
     #pragma pack()
 #endif
 
-#ifdef __cplusplus
-}
-#endif
+END_USING_C_LINKAGE
 
-#endif // _SYSTIME_H_
+#endif // _EXT_SYSTIME_H_
 

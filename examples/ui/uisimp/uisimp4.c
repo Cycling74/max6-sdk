@@ -43,7 +43,7 @@ void uisimp_mousedragdelta(t_uisimp *x, t_object *patcherview, t_pt pt, long mod
 void uisimp_mousedown(t_uisimp *x, t_object *patcherview, t_pt pt, long modifiers);
 void uisimp_mouseup(t_uisimp *x, t_object *patcherview, t_pt pt, long modifiers);
 
-int main(void)
+int C74_EXPORT main(void)
 {
 	t_class *c;
 	
@@ -122,7 +122,6 @@ t_uisimp* uisimp_new(t_symbol *s, long argc, t_atom *argv)
 	//		| JBOX_BACKGROUND
 	//		| JBOX_TEXTFIELD
 			| JBOX_DRAWBACKGROUND
-			| JBOX_DEFAULTNAMES
 			| JBOX_MOUSEDRAGDELTA
 			;
 

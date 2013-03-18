@@ -31,7 +31,7 @@ void iterate2_bang(t_iterate2 *x); // incoming bang message
 //////////////////////// global class pointer variable
 void *iterate2_class;
 
-int main(void)
+int C74_EXPORT main(void)
 {	
 	t_class *c;
 		

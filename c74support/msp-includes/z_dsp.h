@@ -8,9 +8,7 @@
 #include "z_sampletype.h"
 #include "ext_systhread.h"
 #include "ext_linklist.h"
-
-/**	An integer.	@ingroup msp	*/
-typedef int t_int;
+#include "ext_atomic.h"
 
 #if C74_PRAGMA_STRUCT_PACKPUSH
     #pragma pack(push, 2)
@@ -35,8 +33,8 @@ enum {
 #define Z_IGNORE_DISABLE 8	///< ignore the disable field when executing the chain, e.g. to process the pass~ object in a muted patcher.
 #define Z_DONT_ADD 16		///< if this flag is set the object will be ignored and its dsp method won't be called.
 
-#define SIXTEENIZE(p) ((((unsigned long)(p)) + 16) & ~0xFL)
-#define THIRTYTWOIZE(p) ((((unsigned long)(p)) + 32) & ~0x1FL)
+#define SIXTEENIZE(p) ((((t_ptr_uint)(p)) + 16) & (~(t_ptr_uint)0xF))
+#define THIRTYTWOIZE(p) ((((t_ptr_uint)(p)) + 32) & (~(t_ptr_uint)0x1F))
 
 typedef void *t_proxy;
 
@@ -110,8 +108,8 @@ typedef struct _dspchain
 	volatile long c_broken;			// object being freed, don't run it
 	long c_intype;					// using old signal linklist (0) or array
 	long c_outtype;					// using old signal linklist (0) or array
-	volatile long c_dontbreak;		// temporarily prevent chain from being broken
-	volatile long c_wantsbreak;		// so main thread can tell audio thread it wants to become broken
+	t_int32_atomic c_dontbreak;		// temporarily prevent chain from being broken
+	t_int32_atomic c_wantsbreak;		// so main thread can tell audio thread it wants to become broken
 	void *c_patchers;				// used to keep track of all patchers in chain
 	void *c_posttickobjects;		// list of objects to be ticked after process (called from same thread as dspchain is ticked from)
 	void *c_mixerlisteners;			// list of objects listening to various mixer notifications
@@ -222,7 +220,7 @@ void dspchain_tick(t_dspchain *c);
 void canvas_start_onedsp(t_patcher *p, t_dspchain **c, long bs, long sr); 
 void canvas_stop_onedsp(t_dspchain *c);
 void dspchain_setbroken(t_dspchain *c);
-void dspchain_lock(t_dspchain *c); 
+t_max_err dspchain_lock(t_dspchain *c); 
 void dspchain_unlock(t_dspchain *c); 
 t_dspchain *dspchain_fromobject(t_object *o); 
 void dspchain_addmixerlistener(t_dspchain *chain, t_object *listener, long notifications); 
@@ -256,7 +254,7 @@ t_int *plus2_perform64(t_int *w);
 	@param	...	The arguments that will be passed to the perform routine.	
 	@see		@ref chapter_msp_anatomy_dsp
 	@see		@ref chapter_msp_advanced_connections	*/
-void dsp_add(t_perfroutine f, int n, ...);
+C74_DEPRECATED( void dsp_add(t_perfroutine f, int n, ...) );
 
 /**	Call this function in your MSP object's dsp method.
 	Use dsp_addv() to add your object's perform routine to the DSP call 
@@ -269,7 +267,7 @@ void dsp_add(t_perfroutine f, int n, ...);
 	@param	vector 	The arguments that will be passed to the perform routine.
 	@see			@ref chapter_msp_anatomy_dsp
 	@see			@ref chapter_msp_advanced_connections	*/
-void dsp_addv(t_perfroutine f, int n, void **vector);
+C74_DEPRECATED( void dsp_addv(t_perfroutine f, int n, void **vector) );
 
 void dsp_add64(t_object *chain, t_object *x, t_perfroutine64 f, long flags, void *userparam); 
 
@@ -314,7 +312,7 @@ void z_dsp_free(t_pxobject *x);
 #define dsp_free z_dsp_free
 
 
-void z_add_signalmethod(void);						// called in initialization routine
+C74_DEPRECATED ( void z_add_signalmethod(void) );						// called in initialization routine
 #define dsp_initclass z_add_signalmethod
 
 void z_sysinit(void);

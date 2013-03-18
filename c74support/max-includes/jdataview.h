@@ -4,6 +4,10 @@
 #ifndef _JDATAVIEW_H_
 #define _JDATAVIEW_H_
 
+#include "indexmap.h"
+#include "jpatcher_api.h"
+#include "jgraphics.h"
+
 // symbols used 
 
 BEGIN_USING_C_LINKAGE
@@ -358,7 +362,9 @@ void jdataview_setusecharheightfont(t_object *dv, long way);
 // standard containersizechange method for objects to use
 // i.e., class_addmethod(c, jdataview_containersizechange, "containersizechange", A_CANT, 0);
 
-long jdataview_containersizechange(t_object *x, double cw, double ch, double *width, double *height, int asr, int asb);
+typedef long (*t_containersizechange_fun)(t_object *x, double cw, double ch, double *width, double *height, int asr, int asb); 
+
+t_atom_long jdataview_containersizechange(t_object *x, double cw, double ch, double *width, double *height, int asr, int asb);
 
 t_max_err jdataview_gethorizscrollvalues(t_object *x, double *min, double *max, double *start, double *size);
 void jdataview_sethorizscrollvalues(t_object *x, double start, double size);
@@ -564,7 +570,7 @@ void jdataview_cellcopy(t_object *dv);
 void jdataview_cellpaste(t_object *dv);
 
 int jdataview_getcellcomponent(t_object *dv, t_symbol *colname, t_rowref rr, long *options);
-int jdataview_getcellfiletypes(t_object *dv, t_symbol *colname, t_rowref rr, long *count, long **types, char *alloc);
+int jdataview_getcellfiletypes(t_object *dv, t_symbol *colname, t_rowref rr, long *count, t_fourcc **types, char *alloc);
 t_symbol *jdataview_getcellfilterval(t_object *dv, t_symbol *colname, t_rowref rr);
 void jdataview_redrawcell(t_object *dv, t_symbol *colname, t_rowref rr);
 void jdataview_begincellchange(t_object *dv, t_symbol *colname, t_rowref rr);
@@ -583,7 +589,7 @@ double jdataview_getcellindent(t_object *dv, t_symbol *colname, t_rowref rr);
 void jdataview_cellenter(t_object *dv, t_symbol *colname, t_rowref rr);
 void jdataview_cellexit(t_object *dv, t_symbol *colname, t_rowref rr);
 
-int jdataview_getcelleditable(t_object *dv, t_symbol *colname, t_rowref rr);
+t_atom_long jdataview_getcelleditable(t_object *dv, t_symbol *colname, t_rowref rr);
 
 long jdataview_getbordercolor(t_object *dv, t_jrgba *c);	// returns non-zero if border color set
 void jdataview_setbordercolor(t_object *dv, t_jrgba *c);

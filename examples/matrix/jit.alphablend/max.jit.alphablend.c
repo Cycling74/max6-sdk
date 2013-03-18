@@ -18,7 +18,7 @@ void *max_jit_alphablend_new(t_symbol *s, long argc, t_atom *argv);
 void max_jit_alphablend_free(t_max_jit_alphablend *x);
 void *max_jit_alphablend_class;
 		 	
-void main(void)
+void C74_EXPORT main(void)
 {	
 	void *p,*q;
 	

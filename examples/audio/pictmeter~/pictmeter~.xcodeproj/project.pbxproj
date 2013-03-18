@@ -9,7 +9,6 @@
 /* Begin PBXBuildFile section */
 		22CF11FA0EE9A9FA0054F513 /* pictmeter~.c in Sources */ = {isa = PBXBuildFile; fileRef = 22CF11F90EE9A9FA0054F513 /* pictmeter~.c */; };
 		22CF11FD0EE9AA080054F513 /* MaxAudioAPI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 22CF11FC0EE9AA080054F513 /* MaxAudioAPI.framework */; };
-		2FBBEADE08F335360078DB84 /* MaxAPI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 54266BCE05E6E9780000000C /* MaxAPI.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -17,7 +16,6 @@
 		22CF11F90EE9A9FA0054F513 /* pictmeter~.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = "pictmeter~.c"; sourceTree = "<group>"; };
 		22CF11FC0EE9AA080054F513 /* MaxAudioAPI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MaxAudioAPI.framework; path = "../../../c74support/msp-includes/MaxAudioAPI.framework"; sourceTree = SOURCE_ROOT; };
 		2FBBEAE508F335360078DB84 /* pictmeter~.mxo */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "pictmeter~.mxo"; sourceTree = BUILT_PRODUCTS_DIR; };
-		54266BCE05E6E9780000000C /* MaxAPI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MaxAPI.framework; path = "../../../c74support/max-includes/MaxAPI.framework"; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -25,7 +23,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				2FBBEADE08F335360078DB84 /* MaxAPI.framework in Frameworks */,
 				22CF11FD0EE9AA080054F513 /* MaxAudioAPI.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -47,7 +44,6 @@
 		089C1671FE841209C02AAC07 /* External Frameworks and Libraries */ = {
 			isa = PBXGroup;
 			children = (
-				54266BCE05E6E9780000000C /* MaxAPI.framework */,
 				22CF11FC0EE9AA080054F513 /* MaxAudioAPI.framework */,
 			);
 			name = "External Frameworks and Libraries";
@@ -179,6 +175,7 @@
 					"\"$(SRCROOT)/../../../c74support/msp-includes\"",
 				);
 				GCC_OPTIMIZATION_LEVEL = 0;
+				OTHER_LDFLAGS = "$(C74_SYM_LINKER_FLAGS)";
 			};
 			name = Development;
 		};
@@ -191,6 +188,7 @@
 					"$(inherited)",
 					"\"$(SRCROOT)/../../../c74support/msp-includes\"",
 				);
+				OTHER_LDFLAGS = "$(C74_SYM_LINKER_FLAGS)";
 			};
 			name = Deployment;
 		};

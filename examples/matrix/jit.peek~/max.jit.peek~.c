@@ -42,7 +42,7 @@ void *max_jit_peek_class;
 		 	
 t_symbol *ps_done;
 
-int main(void)
+int C74_EXPORT main(void)
 {	
 	long attrflags;
 	void *p,*attr;
@@ -183,7 +183,7 @@ t_int *max_jit_peek_perform(t_int *w)
 					if (outofbounds) {
 						*out_val++ = 0.;
 					} else {
-						*out_val++ = (float)(*((long *)p));
+						*out_val++ = (float)(*((t_int32 *)p));
 					}
 				}
 			} else if (x->minfo.type==_jit_sym_float32) {
@@ -339,7 +339,7 @@ void max_jit_peek_perform64(t_max_jit_peek *x, t_object *dsp64, double **ins, lo
 					if (outofbounds) {
 						*out_val++ = 0.;
 					} else {
-						*out_val++ = (float)(*((long *)p));
+						*out_val++ = (float)(*((t_int32 *)p));
 					}
 				}
 			} else if (x->minfo.type==_jit_sym_float32) {
@@ -399,7 +399,7 @@ float recursive_interp(char *bp, long dimcount, t_jit_matrix_info *minfo, long *
 	long i;
 	char *bp0,*bp1; 
 	
-	CLIP(dimcount,1,JIT_MATRIX_MAX_DIMCOUNT);
+	CLIP_ASSIGN(dimcount,1,JIT_MATRIX_MAX_DIMCOUNT);
 	i = dimcount-1;
 
 	bp0 = bp + dim_int[i]*minfo->dimstride[i];
@@ -410,8 +410,8 @@ float recursive_interp(char *bp, long dimcount, t_jit_matrix_info *minfo, long *
 			x0 = (float)(*((uchar *)bp0))*(1./255.);
 			x1 = (float)(*((uchar *)bp1))*(1./255.);
 		} else if (minfo->type==_jit_sym_long) {
-			x0 = *((long *)bp0);
-			x1 = *((long *)bp1);
+			x0 = *((t_int32 *)bp0);
+			x1 = *((t_int32 *)bp1);
 		} else if (minfo->type==_jit_sym_float32) {
 			x0 = *((float *)bp0);
 			x1 = *((float *)bp1);
@@ -596,15 +596,22 @@ void *max_jit_peek_new(t_symbol *s, long argc, t_atom *argv)
 
 		attrstart = max_jit_attr_args_offset(argc,argv);
 		if (attrstart&&argv) {
+			t_atom_long al; 
 			jit_atom_arg_getsym(&x->matrix_name, 0, attrstart, argv);
-			jit_atom_arg_getlong(&x->dimcount, 1, attrstart, argv);
-			jit_atom_arg_getlong(&x->plane, 2, attrstart, argv);
+			if (!jit_atom_arg_getlong(&al, 1, attrstart, argv)) {
+				C74_ASSERT_FITS_LONG(al); 
+				x->dimcount = (long) al;
+			}
+			if (!jit_atom_arg_getlong(&al, 2, attrstart, argv)) {
+				C74_ASSERT_FITS_LONG(al); 
+				x->plane = (long) al;
+			}
 			jit_atom_setsym(&a,x->matrix_name);
 			max_jit_peek_matrix_name(x,NULL,1,&a);
 		}	
 		
-		CLIP(x->dimcount,0,JIT_MATRIX_MAX_DIMCOUNT);
-		CLIP(x->dimcount,0,32); //maximum signal inputs
+		CLIP_ASSIGN(x->dimcount,0,JIT_MATRIX_MAX_DIMCOUNT);
+		CLIP_ASSIGN(x->dimcount,0,32); //maximum signal inputs
 		
 		max_jit_attr_args(x,argc,argv); //handle attribute args
 		

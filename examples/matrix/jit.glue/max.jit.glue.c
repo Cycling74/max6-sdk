@@ -20,11 +20,11 @@ void max_jit_glue_free(t_max_jit_glue *x);
 void max_jit_glue_assist(t_max_jit_glue *x, void *b, long m, long a, char *s);
 t_jit_err max_jit_glue_jit_matrix(t_max_jit_glue *x, t_symbol *s, long argc, t_atom *argv);
 
-void     *max_jit_glue_class;
+t_messlist     *max_jit_glue_class;
 
 t_symbol *ps_input,*ps_rows,*ps_columns;
 
-void main(void)
+void C74_EXPORT main(void)
 {	
 	void *p,*q,*attr;
 	long attrflags;
@@ -165,7 +165,7 @@ void *max_jit_glue_new(t_symbol *s, long argc, t_atom *argv)
 
 		} else {
 			jit_object_error((t_object *)x,"jit.glue: could not allocate object");
-			freeobject(x);
+			freeobject((t_object *) x);
 			x = NULL;
 		}
 	}

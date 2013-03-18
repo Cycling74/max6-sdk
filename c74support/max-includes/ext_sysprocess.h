@@ -16,7 +16,7 @@ long sysprocess_activate(long id);
 long sysprocess_getid(const char *utf8path);  // find the process id for a given app
 
 // returns the id of the currently running process
-long sysprocess_getcurrentid(); 
+long sysprocess_getcurrentid(void); 
 
 // given process ID returns path as utf8 string
 // note: you must free the returned memory with sysmem_freeptr()
@@ -26,6 +26,9 @@ long sysprocess_getpath(long id, char **utf8path);
 // note: method is called on a separate thread so you can possibly free a stalled main thread.
 // If you are done then free the sysprocesswatcher with object_free() and the monitoring thread will be killed.  
 t_object* sysprocesswatcher_new(long id, method m, void *arg);
+
+// determines if the architecture of the named process (x64 or i386) fits the current one
+long sysprocess_fitsarch(long id);
 
 END_USING_C_LINKAGE
 

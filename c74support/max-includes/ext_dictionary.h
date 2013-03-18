@@ -1,17 +1,10 @@
-/*
- *  obdictionary.h
- *
- *  Copyright 2006 Cycling '74. All rights reserved.
- *
- */
+// ext_dictionary.h -- copyright 2012 Cycling '74 -- All rights reserved
 
-#ifndef __OBDICTIONARY_H__
-#define __OBDICTIONARY_H__
+#ifndef __EXT_DICTIONARY_H__
+#define __EXT_DICTIONARY_H__
 
 
-#ifdef __cplusplus
-	extern "C" {
-#endif // __cplusplus
+BEGIN_USING_C_LINKAGE
 
 #if C74_PRAGMA_STRUCT_PACKPUSH
     #pragma pack(push, 2)
@@ -30,6 +23,7 @@ typedef struct _dictionary_entry {
 	t_object		e_obj;
 	t_symbol		*e_key;			// redundant with hashtab, but allows getting key during linklist traversal
 	t_atom			e_value; 
+	long			e_flags;
 } t_dictionary_entry; 
 
 
@@ -63,7 +57,7 @@ typedef struct _dictionary
 	
 	@see				object_free()
 */
-t_dictionary* dictionary_new();
+t_dictionary* dictionary_new(void);
 
 
 // private
@@ -81,7 +75,7 @@ t_dictionary* dictionary_prototypefromclass(t_class *c);
 	@param	value	The new value to append to the dictionary.
 	@return			A Max error code.
 */
-t_max_err dictionary_appendlong(t_dictionary *d, t_symbol *key, long value);
+t_max_err dictionary_appendlong(t_dictionary *d, t_symbol *key, t_atom_long value);
 
 
 /**
@@ -231,7 +225,7 @@ t_max_err dictionary_appendbinbuf(t_dictionary *d, t_symbol *key, void *value);
 	@param	value	The address of variable to hold the value associated with the key.
 	@return			A Max error code.
 */
-t_max_err dictionary_getlong(C74_CONST t_dictionary *d, t_symbol *key, long *value);
+t_max_err dictionary_getlong(C74_CONST t_dictionary *d, t_symbol *key, t_atom_long *value);
 
 
 /**
@@ -271,7 +265,7 @@ t_max_err dictionary_getatom(C74_CONST t_dictionary *d, t_symbol *key, t_atom *v
 
 
 // private
-t_max_err dictionary_getattribute(t_dictionary *d, t_symbol *key, t_symbol *attrname, t_object *obj);	
+t_max_err dictionary_getattribute(const t_dictionary *d, t_symbol *key, t_symbol *attrname, t_object *obj);	
 
 
 /**
@@ -345,6 +339,22 @@ t_max_err dictionary_getatomarray(C74_CONST t_dictionary *d, t_symbol *key, t_ob
 */
 t_max_err dictionary_getdictionary(C74_CONST t_dictionary *d, t_symbol *key, t_object **value); 
 
+/**
+	Retrieve the address of a #t_atom array of in the dictionary within nested dictionaries.
+	The address can index into nested dictionaries using the '::' operator.  For example, 
+	the key "field::subfield" will look for the value at key "field" and then look for the 
+	value "subfield" in the value found at "field".
+	
+	@ingroup		dictionary
+	@param	d		The dictionary instance.
+	@param	key		The key associated with the value to lookup.  
+	@param	ac		The number of return values
+	@param	av		The return values
+	@param	errstr	An error message if an error code was returned.
+	@return			A Max error code.
+*/
+t_max_err dictionary_get_ex(t_dictionary *d, t_symbol *key, long *ac, t_atom **av, char *errstr);
+
 
 /**
 	Retrieve a #t_object pointer from the dictionary.
@@ -409,7 +419,7 @@ long dictionary_hasentry(C74_CONST t_dictionary *d, t_symbol *key);
 	@param	d		The dictionary instance.
 	@return			The number of keys in the dictionary.
 */
-long dictionary_getentrycount(C74_CONST t_dictionary *d);
+t_atom_long dictionary_getentrycount(C74_CONST t_dictionary *d);
 
 
 /**
@@ -612,7 +622,7 @@ t_max_err dictionary_copyunique(t_dictionary *d, t_dictionary *copyfrom);
 	
 	@see			dictionary_getlong()
 */
-t_max_err dictionary_getdeflong(t_dictionary *d, t_symbol *key, long *value, long def);
+t_max_err dictionary_getdeflong(t_dictionary *d, t_symbol *key, t_atom_long *value, t_atom_long def);
 
 
 /**
@@ -870,8 +880,6 @@ t_object *newobject_sprintf(t_object *patcher, C74_CONST char *fmt, ...);
 t_object *newobject_fromdictionary(t_object *patcher, t_dictionary *d);
 
 
-#ifdef __cplusplus
-}
-#endif // __cplusplus
+END_USING_C_LINKAGE
 
-#endif //__OBDICTIONARY_H__
+#endif //__EXT_DICTIONARY_H__

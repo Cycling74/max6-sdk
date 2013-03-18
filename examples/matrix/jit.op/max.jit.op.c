@@ -32,9 +32,9 @@ void max_jit_op_val(t_max_jit_op *x, void *attr, short argc, t_atom *argv);
 void max_jit_op_jit_matrix(t_max_jit_op *x, t_symbol *s, short argc, t_atom *argv);
 void max_jit_op_mproc(t_max_jit_op *x, void *mop);
 
-void *max_jit_op_class;
+t_messlist *max_jit_op_class;
 
-void main(void)
+void C74_EXPORT main(void)
 {	
 	void *p,*q,*attr;
 	long attrflags;
@@ -66,7 +66,7 @@ void max_jit_op_int(t_max_jit_op *x, long c)
 	t_atom a;
 
 	jit_atom_setlong(&a,c);
-	typedmess(x,_jit_sym_val,1,&a);
+	typedmess((t_object *) x,_jit_sym_val,1,&a);
 }
 
 void max_jit_op_float(t_max_jit_op *x, double f)
@@ -74,12 +74,12 @@ void max_jit_op_float(t_max_jit_op *x, double f)
 	t_atom a;
 
 	jit_atom_setfloat(&a,f);
-	typedmess(x,_jit_sym_val,1,&a);
+	typedmess((t_object *) x,_jit_sym_val,1,&a);
 }
 
 void max_jit_op_list(t_max_jit_op *x, t_symbol *s, short argc, t_atom *argv)
 {
-	typedmess(x,_jit_sym_val,argc,argv);
+	typedmess((t_object *) x,_jit_sym_val,argc,argv);
 }
 
 void max_jit_op_val(t_max_jit_op *x, void *attr, short argc, t_atom *argv)
@@ -186,7 +186,7 @@ void *max_jit_op_new(t_symbol *s, long argc, t_atom *argv)
 			}
 		} else {
 			jit_object_error((t_object *)x,"jit.op: could not allocate object");
-			freeobject(x);
+			freeobject((t_object *) x);
 			x = NULL;
 		}
 	}

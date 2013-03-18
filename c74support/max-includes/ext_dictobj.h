@@ -4,18 +4,8 @@
 	Timothy Place, tim@cycling74.com	
 */
 
-#ifndef _EXT_DICTOBJ_H_
-#define _EXT_DICTOBJ_H_
-
-#include "ext.h"
-#include "ext_obex.h"
-
-#ifdef WIN_VERSION
-#ifndef snprintf
-#define snprintf _snprintf
-#endif
-#endif
-
+#ifndef __EXT_DICTOBJ_H__
+#define __EXT_DICTOBJ_H__
 
 BEGIN_USING_C_LINKAGE
 
@@ -205,7 +195,25 @@ t_max_err dictobj_dictionaryfromatoms(t_dictionary **d, const long argc, const t
 t_max_err dictobj_dictionarytoatoms(const t_dictionary *d, long *argc, t_atom **argv);
 
 
+/**	Given a complex key (one that includes potential heirarchy or array-member access), 
+	return the actual key and the dictionary in which the key should be referenced.
+ 
+	@ingroup	dictobj
+	@param		x			Your calling object.  If there is an error this will be used by the internal call to object_error().
+	@param		d			The dictionary you are querying.
+	@param		akey		The complex key specifying the query.
+	@param		create		If true, create the intermediate dictionaries in the hierarchy specified in akey.
+	@param		targetdict	Returns the t_dictionary that for the (sub)dictionary specified by akey.
+	@param		targetkey	Returns the name of the key in targetdict that to which akey is referencing.
+	@param		index		Returns the index requested if array-member access is specified.  Pass NULL if you are not interested in this.
+
+	@return		A Max error code.
+ */
+t_max_err dictobj_key_parse(t_object *x, t_dictionary *d, t_atom *akey, t_bool create, t_dictionary **targetdict, t_symbol **targetkey, t_int32 *index);
+
+
+
 END_USING_C_LINKAGE
 
 
-#endif // _EXT_DICTOBJ_H_
+#endif // __EXT_DICTOBJ_H__

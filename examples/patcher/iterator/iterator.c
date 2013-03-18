@@ -32,7 +32,7 @@ void iterator_attach(t_iterator *x);
 //////////////////////// global class pointer variable
 void *iterator_class;
 
-int main(void)
+int C74_EXPORT main(void)
 {	
 	t_class *c;
 		

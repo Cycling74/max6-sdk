@@ -17,10 +17,10 @@ t_jit_err jit_unpack_init(void);
 
 void *max_jit_unpack_new(t_symbol *s, long argc, t_atom *argv);
 void max_jit_unpack_free(t_max_jit_unpack *x);
-void *max_jit_unpack_class;
+t_messlist *max_jit_unpack_class;
 void max_jit_unpack_jit_matrix(t_max_jit_unpack *x, t_symbol *s, long argc, t_atom *argv);
 		 	
-void main(void)
+void C74_EXPORT main(void)
 {	
 	void *p,*q,*attr;
 	long attrflags;
@@ -55,7 +55,7 @@ void main(void)
 void max_jit_unpack_jit_matrix(t_max_jit_unpack *x, t_symbol *s, long argc, t_atom *argv)
 {
 	long i;
-	long jump[JIT_MATRIX_MAX_PLANECOUNT];
+	t_atom_long jump[JIT_MATRIX_MAX_PLANECOUNT];
 	void *o, *p;
 
 	o = max_jit_obex_jitob_get(x);
@@ -92,7 +92,7 @@ void *max_jit_unpack_new(t_symbol *s, long argc, t_atom *argv)
 			max_jit_mop_inputs(x);
 			
 			if (argc&&(i=jit_atom_getlong(argv))) {
-				CLIP(i,1,JIT_MATRIX_MAX_PLANECOUNT);
+				CLIP_ASSIGN(i,1,JIT_MATRIX_MAX_PLANECOUNT);
 			} else {
 				i=4;
 			}
@@ -119,7 +119,7 @@ void *max_jit_unpack_new(t_symbol *s, long argc, t_atom *argv)
 			max_jit_attr_args(x,argc,argv);
 		} else {
 			jit_object_error((t_object *)x,"jit.unpack: could not allocate object");
-			freeobject(x);
+			freeobject((t_object *) x);
 			x = NULL;
 		}
 	}

@@ -28,7 +28,7 @@ void dspstress_int(t_dspstress *x, long n);
 void dspstress_dsp64(t_dspstress *x, t_object *dsp64, short *count, double samplerate, long maxvectorsize, long flags);
 void dspstress_assist(t_dspstress *x, void *b, long m, long a, char *s);
 
-int main(void)
+int C74_EXPORT main(void)
 {
     t_class *c;
 
@@ -77,7 +77,7 @@ void dspstress_int(t_dspstress *x, long n)
 
 void dspstress_perform64(t_dspstress *x, t_object *dsp64, double **ins, long numins, double **outs, long numouts, long sampleframes, long flags, void *userparam)
 {
-	float spintime;
+	double spintime;
 	double intime; 
 	double outtime; 
 	unsigned long spincounter = 0;

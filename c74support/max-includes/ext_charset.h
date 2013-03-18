@@ -6,12 +6,10 @@
  *
  */
 
-#ifndef __CHARSET_H__
-#define __CHARSET_H__
+#ifndef _EXT_CHARSET_H_
+#define _EXT_CHARSET_H_
 
-#ifdef __cplusplus
-extern "C" {
-#endif
+BEGIN_USING_C_LINKAGE
 
 #if C74_PRAGMA_STRUCT_PACKPUSH
     #pragma pack(push, 2)
@@ -32,10 +30,6 @@ typedef struct _charset_converter
 	void					*src_encoding;
 	void					*dst_encoding;
 } t_charset_converter;
-
-
-// private
-t_max_err charset_init(void);
 
 
 /**	A convenience function that simplifies usage by wrapping the other charset functions.
@@ -103,8 +97,6 @@ char *charset_utf8_offset(char *utf8, long charoffset, long *byteoffset);
     #pragma pack()
 #endif
 
-#ifdef __cplusplus
-}
-#endif
+END_USING_C_LINKAGE
 
-#endif // __CHARSET_H__
+#endif // _EXT_CHARSET_H_

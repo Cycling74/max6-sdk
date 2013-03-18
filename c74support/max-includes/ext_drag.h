@@ -7,6 +7,10 @@
 
 BEGIN_USING_C_LINKAGE
 
+enum {
+	JDRAG_MATCHFLAGS_ANY = 1		// any item with this role is OK, default is that all must match
+};
+
 typedef struct _jdrag_inquiry
 {
 	t_symbol *i_role;			// kind of file that works (one inquiry per file kind)
@@ -16,7 +20,7 @@ typedef struct _jdrag_inquiry
 char *jdrag_getitemstring(t_object *dg, long index, long quote, long backslash);
 t_object *jdrag_getobject(t_object *dg, long index);
 void jdrag_getlocation(t_object *dg, long index, double *xpos, double *ypos);
-t_object *jdrag_createobject(t_object *dg, t_object *pv, void *d);
+t_object *jdrag_createobject(t_object *dg, t_object *pv, void *d, long dragobjectindex);
 t_object *jdrag_createnewobj(t_object *dg, t_object *pv, char *classname, char *str);
 t_object *jdrag_createmessage(t_object *dg, t_object *pv, t_symbol *msg, long ac, t_atom *av);
 

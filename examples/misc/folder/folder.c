@@ -25,7 +25,7 @@ typedef struct _folder {
 	t_object f_ob;
 	short f_path;
 	t_symbol *f_input;
-	OSType f_types[MAXTYPES];
+	t_fourcc f_types[MAXTYPES];
 	long f_numtypes;
 	void *f_countout;
 	long f_outcount;
@@ -43,7 +43,7 @@ void folder_action(t_folder *x);
 t_symbol *ps_clear,*ps_append;
 long debug;
 
-int main()	
+int C74_EXPORT main()	
 {
 	t_class *c;
 
@@ -124,7 +124,7 @@ void folder_anything(t_folder *x, t_symbol *s, short ac, t_atom *av)
 
 void folder_types(t_folder *x, t_symbol *s, short ac, t_atom *av)
 {
-	Byte type[4];
+	t_uint8 type[4];
 	long len=0,i;
 
 	x->f_numtypes = 0;
@@ -134,7 +134,7 @@ void folder_types(t_folder *x, t_symbol *s, short ac, t_atom *av)
 			for (i=0;i<4;i++) {
 				type[i] = (i>=len) ? ' ' : atom_getsym(av)->s_name[i];
 			}
-			STR_TO_FOURCC(*((long *)type));
+			STR_TO_FOURCC(*((t_fourcc *)type));
 			sysmem_copyptr(type,&x->f_types[x->f_numtypes++],4L);
 		}
 		av++;
@@ -165,7 +165,7 @@ void *folder_new(t_symbol *s, short ac, t_atom *av)
 	if (!x->f_numtypes) {
 		short numtypes;
 		
-		typelist_make((long *)x->f_types, TYPELIST_MAXFILES, &numtypes);
+		typelist_make(x->f_types, TYPELIST_MAXFILES, &numtypes);
 		x->f_numtypes = numtypes;
 	}
 	if (x->f_input)
@@ -176,11 +176,11 @@ void *folder_new(t_symbol *s, short ac, t_atom *av)
 void folder_enumerate(t_folder *x)
 {
 	void *fold;
-	Boolean cleared = false, match;
+	t_bool cleared = false, match;
 	t_atom a;
-	long type,i;
+	t_fourcc type;
+	long i;
 	char name[256];
-	short savelock;
 	t_fileinfo info;
 	
 	if (!x->f_path)
@@ -195,7 +195,7 @@ void folder_enumerate(t_folder *x)
 		else {
 			match = false;
 			if (!type) {
-				if (!path_extendedfileinfo(name,x->f_path,&info,(long *)x->f_types,x->f_numtypes,true))
+				if (!path_extendedfileinfo(name,x->f_path,&info,x->f_types,x->f_numtypes,true))
 					type = info.type;
 			}
 			for (i = 0; i < x->f_numtypes; i++) {
@@ -207,15 +207,11 @@ void folder_enumerate(t_folder *x)
 		}
 		if (match) {
 			if (!cleared) {
-				savelock = lockout_set(true);
 				outlet_anything(x->f_ob.o_outlet,ps_clear,0,0);
-				lockout_set(savelock);
 				cleared = true;
 			}
 			atom_setsym(&a, gensym(name));
-			savelock = lockout_set(true);
 			outlet_anything(x->f_ob.o_outlet,ps_append,1,&a);
-			lockout_set(savelock);
 			x->f_outcount++;
 		}
 	}

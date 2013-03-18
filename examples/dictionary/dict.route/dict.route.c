@@ -27,7 +27,7 @@ static t_class	*s_dict_route_class;
 
 
 /************************************************************************************/
-int main(void)
+int C74_EXPORT main(void)
 {
 	t_class	*c;
 	
@@ -58,8 +58,12 @@ void *dict_route_new(t_symbol *s, long argc, t_atom *argv)
 		if (attrstart)
 			dictobj_dictionaryfromatoms(&d, attrstart, argv);
 		if (!d) {
-			char errorstring[256];
-			dictobj_dictionaryfromstring(&d, "schema : *", true, errorstring);
+			char		errorstring[256];
+			t_max_err	err;
+			
+			err = dictobj_dictionaryfromstring(&d, "{ \"schema\" : \"*\" }", true, errorstring);
+			if (err)
+				error("dict.route: %s", errorstring);
 		}
 		x->schema_dict = dictobj_register(d, &x->schema_name);
 		

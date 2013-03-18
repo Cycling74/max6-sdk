@@ -25,7 +25,7 @@ void simplemax_assist(t_simplemax *x, void *b, long m, long a, char *s);
 void *simplemax_class;
 
 
-int main(void)
+int C74_EXPORT main(void)
 {	
 	// object initialization, OLD STYLE
 	// setup((t_messlist **)&simplemax_class, (method)simplemax_new, (method)simplemax_free, (short)sizeof(t_simplemax), 

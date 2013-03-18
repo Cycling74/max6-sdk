@@ -20,11 +20,11 @@ void max_jit_la_diagproduct_free(t_max_jit_la_diagproduct *x);
 void max_jit_la_diagproduct_assist(t_max_jit_la_diagproduct *x, void *b, long m, long a, char *s);
 void max_jit_la_diagproduct_bang(t_max_jit_la_diagproduct *x);
 void max_jit_la_diagproduct_mproc(t_max_jit_la_diagproduct *x, void *mop);
-void *max_jit_la_diagproduct_class;
+t_messlist *max_jit_la_diagproduct_class;
 
 t_symbol *ps_getresult;
 		 	
-void main(void)
+void C74_EXPORT main(void)
 {	
 	void *p,*q;
 	
@@ -106,7 +106,7 @@ void *max_jit_la_diagproduct_new(t_symbol *s, long argc, t_atom *argv)
 			max_jit_attr_args(x,argc,argv);
 		} else {
 			jit_object_error((t_object *)x,"jit.la.diagproduct: could not allocate object");
-			freeobject(x);
+			freeobject((t_object *) x);
 			x = NULL;
 		}
 	}

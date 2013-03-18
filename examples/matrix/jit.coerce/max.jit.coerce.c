@@ -18,9 +18,9 @@ void *max_jit_coerce_new(t_symbol *s, long argc, t_atom *argv);
 void max_jit_coerce_free(t_max_jit_coerce *x);
 void max_jit_coerce_mproc(t_max_jit_coerce *x, void *mop);
 
-void *max_jit_coerce_class;
+t_messlist *max_jit_coerce_class;
 		 	
-void main(void)
+void C74_EXPORT main(void)
 {	
 	void *p,*q;
 	
@@ -66,7 +66,8 @@ void *max_jit_coerce_new(t_symbol *s, long argc, t_atom *argv)
 	t_max_jit_coerce *x;
 	void *o,*m,*mop,*p;
 	t_jit_matrix_info info;
-	long attrstart,planecount=4;
+	long attrstart;
+	t_atom_long planecount=4;
 	t_symbol *type=_jit_sym_char;
 
 	if (x=(t_max_jit_coerce *)max_jit_obex_new(max_jit_coerce_class,gensym("jit_coerce"))) {
@@ -99,7 +100,7 @@ void *max_jit_coerce_new(t_symbol *s, long argc, t_atom *argv)
 			max_jit_attr_args(x,argc,argv);
 		} else {
 			jit_object_error((t_object *)x,"jit.coerce: could not allocate object");
-			freeobject(x);
+			freeobject((t_object *) x);
 			x = NULL;
 		}
 	}

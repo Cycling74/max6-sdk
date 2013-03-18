@@ -1,10 +1,7 @@
 #ifndef _EXT_STRINGS_H_
 #define _EXT_STRINGS_H_
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
+BEGIN_USING_C_LINKAGE
 
 /**	Copy the contents of one string to another, in a manner safer than the standard strcpy() or strncpy().
  	This is the prefered function to use for this operation in Max.
@@ -44,17 +41,15 @@ int snprintf_zero(char *buffer, size_t count, const char *format, ...);
 #define PtoCstr(x) CopyPascalStringToC((ConstStr255Param)(x),(char *)(x))
 #endif // TARGET_API_MAC_CARBON
 
+#define SPRINTF_MAXLEN 4096
 
 // Legacy
 
 void ctopcpy(unsigned char *p1, char *p2);
 void ptoccpy(char *p1, unsigned char *p2);
-void setmem(void *s, long n, short b);
 void pstrcpy(unsigned char *p2, unsigned char *p1);
 
 
-#ifdef __cplusplus
-}
-#endif
+END_USING_C_LINKAGE
 
 #endif // _EXT_STRINGS_H_

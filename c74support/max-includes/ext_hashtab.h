@@ -1,5 +1,7 @@
-#ifndef __HASHTAB_H__
-#define __HASHTAB_H__
+#ifndef _EXT_HASHTAB_H_
+#define _EXT_HASHTAB_H_
+
+#include "ext_linklist.h"
 
 #if C74_PRAGMA_STRUCT_PACKPUSH
     #pragma pack(push, 2)
@@ -14,7 +16,7 @@
 
 	@ingroup hashtab
 */
-#define HASH_DEFSLOTS	57 // 
+#define HASH_DEFSLOTS	59 // 
 
 
 /** A hashtab entry. This struct is provided for debugging convenience, 
@@ -28,6 +30,8 @@ typedef struct _hashtab_entry
 	t_object				ob;
 	t_symbol				*key;
 	t_object				*value;
+	long					flags;
+	struct _hashtab			*parent;
 } t_hashtab_entry;
 
 
@@ -44,6 +48,7 @@ typedef struct _hashtab
 	t_linklist				**slots;
 	long					readonly;
 	long					flags;
+	void					*reserved;
 } t_hashtab;
 
 
@@ -54,14 +59,7 @@ typedef struct _hashtab
 #endif
 
 
-#ifdef __cplusplus
-	extern "C" {
-#endif // __cplusplus
-
-
-// private
-void hashtab_init(void);
-
+BEGIN_USING_C_LINKAGE
 
 /**
 	Create a new hashtab object.
@@ -90,9 +88,37 @@ t_hashtab *hashtab_new(long slotcount);
 	@param	val		The value to store.
 	
 	@return			A Max error code.
-	@see			hashtab_lookup()
+	@see			hashtab_lookup(), hashtab_storesafe(), hashtab_storelong(), hashtab_storesym()
 */
 t_max_err hashtab_store(t_hashtab *x, t_symbol *key, t_object *val);
+
+/**
+	Store a t_atom_long value in a hashtab with an associated key.
+	
+	@ingroup hashtab
+	
+	@param	x		The hashtab instance.
+	@param	key		The key in the hashtab with which to associate the value.
+	@param	val		The t_atom_long value to store.
+	
+	@return			A Max error code.
+	@see			hashtab_lookuplong(), hashtab_store(), hashtab_storesafe(), hashtab_storesym()
+*/
+t_max_err hashtab_storelong(t_hashtab *x, t_symbol *key, t_atom_long val);
+
+/**
+	Store a t_symbol value in a hashtab with an associated key.
+	
+	@ingroup hashtab
+	
+	@param	x		The hashtab instance.
+	@param	key		The key in the hashtab with which to associate the value.
+	@param	val		The t_symbol pointer to store.
+	
+	@return			A Max error code.
+	@see			hashtab_lookupsym(), hashtab_store(), hashtab_storesafe(), hashtab_storelong()
+*/
+t_max_err hashtab_storesym(t_hashtab *x, t_symbol *key, t_symbol *val);
 
 
 /**	Store an item in a hashtab with an associated key.
@@ -134,10 +160,37 @@ t_max_err hashtab_storeflags(t_hashtab *x, t_symbol *key, t_object *val, long fl
 	@param	val		The address of a pointer to which the fetched value will be assigned.
 	
 	@return			A Max error code.
-	@see			hashtab_store()
+	@see			hashtab_store(), hashtab_lookuplong(), hashtab_lookupsym()
 */
 t_max_err hashtab_lookup(t_hashtab *x, t_symbol *key, t_object **val);
 
+/**
+	Return a t_atom_long value stored in a hashtab with the specified key.
+	
+	@ingroup hashtab
+	
+	@param	x		The hashtab instance.
+	@param	key		The key in the hashtab to fetch.
+	@param	val		A pointer to a t_atom_long to which the fetched value will be assigned.
+	
+	@return			A Max error code.
+	@see			hashtab_storelong(), hashtab_lookup(), hashtab_lookupsym()
+*/
+t_max_err hashtab_lookuplong(t_hashtab *x, t_symbol *key, t_atom_long *val); 
+
+/**
+	Return a t_symbol value stored in a hashtab with the specified key.
+	
+	@ingroup hashtab
+	
+	@param	x		The hashtab instance.
+	@param	key		The key in the hashtab to fetch.
+	@param	val		A pointer to the address of a t_symbol to which the fetched value will be assigned.
+	
+	@return			A Max error code.
+	@see			hashtab_storesym(), hashtab_lookup(), hashtab_lookuplong()
+*/
+t_max_err hashtab_lookupsym(t_hashtab *x, t_symbol *key, t_symbol **val); 
 
 // private
 t_max_err hashtab_lookupentry(t_hashtab *x, t_symbol *key, t_hashtab_entry **entry);
@@ -271,6 +324,12 @@ t_max_err hashtab_findfirst(t_hashtab *x, void **o, long cmpfn(void *, void *), 
 */
 t_max_err hashtab_methodall(t_hashtab *x, t_symbol *s, ...);
 
+#ifdef C74_X64
+#define hashtab_methodall(...) C74_VARFUN(hashtab_methodall_imp, __VA_ARGS__)
+#endif
+        
+t_max_err hashtab_methodall_imp(void *x, void *sym, void *p1, void *p2, void *p3, void *p4, void *p5, void *p6, void *p7, void *p8);
+
 
 /**
 	Call the specified function for every item in the hashtab.  
@@ -307,7 +366,7 @@ t_max_err hashtab_objfunall(t_hashtab *x, method fun, void *arg);
 	@param	x	The hashtab instance.
 	@return		The number of items in the hash table.
 */
-long hashtab_getsize(t_hashtab *x);
+t_atom_long hashtab_getsize(t_hashtab *x);
 
 
 /**
@@ -353,7 +412,7 @@ void hashtab_flags(t_hashtab *x, long flags);
 	@param	x	The hashtab instance.
 	@return		The current state of the hashtab flags as enumerated in #e_max_datastore_flags.
 */
-long hashtab_getflags(t_hashtab *x);
+t_atom_long hashtab_getflags(t_hashtab *x);
 
 
 /**	Change the flags for an item stored in the hashtab with a given key.
@@ -374,7 +433,7 @@ t_max_err hashtab_keyflags(t_hashtab *x, t_symbol *key, long flags);
 	@return			The flags for the given key.
 	@see			hashtab_store_flags()
 */
-long hashtab_getkeyflags(t_hashtab *x, t_symbol *key);
+t_atom_long hashtab_getkeyflags(t_hashtab *x, t_symbol *key);
 
 
 /**
@@ -418,9 +477,7 @@ void hashtab_entry_free(t_hashtab_entry *x);
 
 
 
-#ifdef __cplusplus
-}
-#endif // __cplusplus
+END_USING_C_LINKAGE
 
-#endif // __HASHTAB_H__
+#endif // _EXT_HASHTAB_H_
 

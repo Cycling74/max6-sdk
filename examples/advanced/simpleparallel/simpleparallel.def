@@ -1,0 +1,4 @@
+LIBRARY simpleparallel.mxe
+
+EXPORTS
+	main

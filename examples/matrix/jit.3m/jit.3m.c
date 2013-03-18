@@ -86,7 +86,7 @@ t_jit_err jit_3m_init(void)
 	//add attributes	
 	attrflags = JIT_ATTR_SET_OPAQUE_USER | JIT_ATTR_GET_DEFER_LOW;
 
-	CLASS_STICKY_ATTR(_jit_3m_class,"category",0,"Value");
+	CLASS_STICKY_CATEGORY(_jit_3m_class,0,"Value");
 
 	attr = jit_object_new(_jit_sym_jit_attr_offset_array,"min",_jit_sym_atom,JIT_MATRIX_MAX_PLANECOUNT,attrflags,
 		(method)0L,(method)0L,calcoffset(t_jit_3m,planecount),calcoffset(t_jit_3m,min));
@@ -106,7 +106,7 @@ t_jit_err jit_3m_init(void)
 	CLASS_ATTR_BASIC(_jit_3m_class,"max",0);
 	CLASS_ATTR_LABEL(_jit_3m_class,"max",0,"Maximum");
 	
-	CLASS_STICKY_ATTR_CLEAR(_jit_3m_class, "category");
+	CLASS_STICKY_CATEGORY_CLEAR(_jit_3m_class);
 	
 	jit_class_register(_jit_3m_class);
 
@@ -168,8 +168,8 @@ void jit_3m_precalc(t_jit_3m_vecdata *vecdata, t_jit_matrix_info *in1_minfo, cha
 		}
 	} else if (in1_minfo->type==_jit_sym_long) {
 		for (i=0;i<in1_minfo->planecount;i++) {
-			vecdata->v_long.min[i]  = ((long *)bip1)[i];
-			vecdata->v_long.max[i]  = ((long *)bip1)[i];
+			vecdata->v_long.min[i]  = ((t_int32 *)bip1)[i];
+			vecdata->v_long.max[i]  = ((t_int32 *)bip1)[i];
 			vecdata->v_long.mean[i] = 0;
 		}
 	} else if (in1_minfo->type==_jit_sym_float32) {
@@ -371,10 +371,10 @@ void jit_3m_vector_char(long n, t_jit_op_info *in1, long *min, long *mean, long 
 
 void jit_3m_vector_long(long n, t_jit_op_info *in1, long *min, double *mean, long *max) 
 {
-	long *ip1,tmp;
+	t_int32 *ip1,tmp;
 	long is1;
 		
-	ip1 = ((long *)in1->p);
+	ip1 = ((t_int32 *)in1->p);
 	is1 = in1->stride; 
 	
 	++n;

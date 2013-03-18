@@ -1,12 +1,11 @@
-#ifndef _LINKLIST_H_
-#define _LINKLIST_H_
+#ifndef _EXT_LINKLIST_H_
+#define _EXT_LINKLIST_H_
 
 #if C74_PRAGMA_STRUCT_PACKPUSH
     #pragma pack(push, 2)
 #elif C74_PRAGMA_STRUCT_PACK
     #pragma pack(2)
 #endif
-
 
 /** A linklist element. This struct is provided for debugging convenience, 
 	but should be considered opaque and is subject to change without notice. 
@@ -19,6 +18,7 @@ typedef struct _llelem
 	t_object 		*thing;
 	struct _llelem	*next;
 	struct _llelem	*prev;
+	long flags;
 } t_llelem;		
 
 
@@ -38,6 +38,7 @@ typedef struct _linklist
 	void 		*lock;
 	t_llelem	*cache;			
 	long		flags;
+	t_llelem	*pending;		// used to help prevent accessing deleted elements during complex list traversal (methodall, etc) 
 } t_linklist;			
 
 #if C74_PRAGMA_STRUCT_PACKPUSH
@@ -62,18 +63,7 @@ typedef struct _linklist
 */
 typedef long (*t_cmpfn)(void *, void *);
 
-#ifdef __cplusplus
-	extern "C" {
-#endif // __cplusplus
-
-
-// documented elsewhere
-void *object_method(void *x, t_symbol *s, ...);
-
-
-// private
-void c_linklist(void);
-
+BEGIN_USING_C_LINKAGE
 
 /**
 	Create a new linklist object.
@@ -118,7 +108,7 @@ void linklist_chuck(t_linklist *x);
 	@param	x	The linklist instance.
 	@return		The number of items in the linklist object.
 */
-long linklist_getsize(t_linklist *x);
+t_atom_long linklist_getsize(t_linklist *x);
 
 
 /**
@@ -152,7 +142,7 @@ long linklist_ptr2index(t_linklist *x, t_llelem *p);
 	@return			The index of the item given in the linklist.  
 					If the item is not in the linklist #MAX_ERR_GENERIC is returned.
 */
-long linklist_objptr2index(t_linklist *x, void *p);
+t_atom_long linklist_objptr2index(t_linklist *x, void *p);
 
 
 /**
@@ -164,7 +154,7 @@ long linklist_objptr2index(t_linklist *x, void *p);
 	@param	o		The item pointer to append to the linked-list.
 	@return			The updated size of the linklist after appending the new item, or -1 if the append failed.
 */
-long linklist_append(t_linklist *x, void *o);
+t_atom_long linklist_append(t_linklist *x, void *o);
 
 
 /**	Insert an item into the list at the specified index.
@@ -174,7 +164,7 @@ long linklist_append(t_linklist *x, void *o);
 	@param	index	The index at which to insert.  Index 0 is the head of the list.
 	@return			The index of the item in the linklist, or -1 if the insert failed.
 */
-long linklist_insertindex(t_linklist *x,  void *o, long index);
+t_atom_long linklist_insertindex(t_linklist *x,  void *o, long index);
 
 
 /**	Insert an item into the list, keeping the list sorted according to a specified comparison function.
@@ -269,7 +259,7 @@ t_llelem *linklist_insertptr(t_linklist *x,  void *o, t_llelem *p); //inserts be
 	@see			linklist_chuckindex
 	@see			linklist_chuckobject
 */
-long linklist_deleteindex(t_linklist *x, long index); 
+t_atom_long linklist_deleteindex(t_linklist *x, long index); 
 
 
 /**
@@ -305,7 +295,7 @@ long linklist_chuckindex(t_linklist *x, long index);
 	@see			linklist_chuckindex
 	@see			linklist_deleteobject
 */
-void linklist_chuckobject(t_linklist *x, void *o);
+long linklist_chuckobject(t_linklist *x, void *o);
 
 
 /**
@@ -323,7 +313,7 @@ void linklist_chuckobject(t_linklist *x, void *o);
 	@see			linklist_chuckindex
 	@see			linklist_chuckobject
 */
-void linklist_deleteobject(t_linklist *x, void *o);
+long linklist_deleteobject(t_linklist *x, void *o);
 
 // private
 long linklist_deleteptr(t_linklist *x, t_llelem *p);
@@ -356,7 +346,7 @@ t_llelem *linklist_insertnodeptr(t_linklist *x, t_llelem *p1, t_llelem *p2);
 long linklist_appendnode(t_linklist *x, t_llelem *p);
 
 // private
-t_llelem *linklistelem_new(t_linklist *x);
+t_llelem *linklistelem_new(void);
 
 // private
 void linklistelem_free(t_linklist *x, t_llelem *elem);
@@ -372,7 +362,7 @@ void linklistelem_free(t_linklist *x, t_llelem *elem);
 	@param	max		The number of pointers in the array.
 	@return			The number of items from the list actually returned in the array.
 */
-long linklist_makearray(t_linklist *x, void **a, long max);
+t_atom_long linklist_makearray(t_linklist *x, void **a, long max);
 
 
 /**
@@ -442,7 +432,7 @@ void linklist_swap(t_linklist *x, long a, long b);
 	@see t_cmpfn
 	@see linklist_findall
 */
-long linklist_findfirst(t_linklist *x, void **o, long cmpfn(void *, void *), void *cmpdata);
+t_atom_long linklist_findfirst(t_linklist *x, void **o, long cmpfn(void *, void *), void *cmpdata);
 
 
 /**
@@ -495,6 +485,12 @@ void linklist_findall(t_linklist *x, t_linklist **out, long cmpfn(void *, void *
 */
 void linklist_methodall(t_linklist *x, t_symbol *s, ...);
 
+#ifdef C74_X64
+#define linklist_methodall(...) C74_VARFUN(linklist_methodall_imp, __VA_ARGS__)
+#endif
+        
+void linklist_methodall_imp(void *x, void *sym, void *p1, void *p2, void *p3, void *p4, void *p5, void *p6, void *p7, void *p8);
+
 
 /**
 	Call the named message on an object specified by index.  
@@ -511,7 +507,13 @@ void linklist_methodall(t_linklist *x, t_symbol *s, ...);
 				messages sent methods with #A_GIMME definitions will need to be given a symbol 
 				argument prior to the argc and argv array information.
 */
-void *linklist_methodindex(t_linklist *x, long i, t_symbol *s, ...);
+void *linklist_methodindex(t_linklist *x, t_atom_long i, t_symbol *s, ...);
+
+#ifdef C74_X64
+#define linklist_methodindex(...) C74_VARFUN(linklist_methodindex_imp, __VA_ARGS__)
+#endif
+
+void *linklist_methodindex_imp(void *x, void *i, void *s, void *p1, void *p2, void *p3, void *p4, void *p5, void *p6, void *p7); // 10 arg varfun, so we lose an arg
 
 
 /**
@@ -596,7 +598,7 @@ void linklist_funall(t_linklist *x, method fun, void *arg);
 	}
 	@endcode
 */
-long linklist_funall_break(t_linklist *x, method fun, void *arg);
+t_atom_long linklist_funall_break(t_linklist *x, method fun, void *arg);
 
 
 /**
@@ -703,7 +705,7 @@ void linklist_flags(t_linklist *x, long flags);
 	@param	x	The linklist instance.
 	@return		The current state of the linklist flags as enumerated in #e_max_datastore_flags.
 */
-long linklist_getflags(t_linklist *x);
+t_atom_long linklist_getflags(t_linklist *x);
 
 
 /**
@@ -720,9 +722,7 @@ long linklist_getflags(t_linklist *x);
 long linklist_match(void *a, void *b);
 
 
-#ifdef __cplusplus
-}
-#endif // __cplusplus
+END_USING_C_LINKAGE
 
-#endif // _LINKLIST_H_
+#endif // _EXT_LINKLIST_H_
 

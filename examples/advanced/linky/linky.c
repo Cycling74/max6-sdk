@@ -35,11 +35,10 @@ static t_class	*s_linky_class = NULL;
 /**********************************************************************/
 // Class Definition and Life Cycle
 
-int main(void)
+int C74_EXPORT main(void)
 {
 	t_class *c; 
 	
-	common_symbols_init();
 	c = class_new("linky", (method)linky_new, (method)linky_free, sizeof(t_linky), (method)NULL, A_GIMME, 0L);
 	
 	class_addmethod(c, (method)linky_append,		"append", A_GIMME, 0);
@@ -47,7 +46,7 @@ int main(void)
 	class_addmethod(c, (method)linky_post,			"post", 0);
 	class_addmethod(c, (method)linky_reverse,		"reverse", 0);
 	
-	class_register(_sym_box, c);
+	class_register(CLASS_BOX, c);
 	s_linky_class = c;
 	return 0;
 }

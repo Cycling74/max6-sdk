@@ -53,7 +53,7 @@ t_jit_err jit_clip_init(void)
 	//add attributes	
 	attrflags = JIT_ATTR_GET_DEFER_LOW | JIT_ATTR_SET_USURP_LOW;
 
-	CLASS_STICKY_ATTR(_jit_clip_class,"category",0,"Behavior");
+	CLASS_STICKY_CATEGORY(_jit_clip_class,0,"Behavior");
 	CLASS_STICKY_ATTR(_jit_clip_class,"basic",0,"1");
 	
 	attr = jit_object_new(_jit_sym_jit_attr_offset,"min",_jit_sym_float64,attrflags,
@@ -66,7 +66,7 @@ t_jit_err jit_clip_init(void)
 	jit_class_addattr(_jit_clip_class,attr);
 	CLASS_ATTR_LABEL(_jit_clip_class,"max",0,"Maximum");	
 	
-	CLASS_STICKY_ATTR_CLEAR(_jit_clip_class, "category");
+	CLASS_STICKY_CATEGORY_CLEAR(_jit_clip_class);
 	CLASS_STICKY_ATTR_CLEAR(_jit_clip_class, "basic");
 
 	jit_class_register(_jit_clip_class);
@@ -83,8 +83,8 @@ t_jit_err jit_clip_getvecdata(t_jit_clip *x, t_jit_clip_vecdata *vd)
 		vd->lmax 		= x->max;
 		vd->cmin 		= x->min*255.;
 		vd->cmax 		= x->max*255.;
-		CLIP(vd->cmin,0,255);
-		CLIP(vd->cmax,0,255);
+		CLIP_ASSIGN(vd->cmin,0,255);
+		CLIP_ASSIGN(vd->cmax,0,255);
 		return JIT_ERR_NONE;
 	} else {
 		return JIT_ERR_INVALID_PTR;
@@ -252,12 +252,12 @@ void jit_clip_vector_long(long n, t_jit_clip_vecdata *vecdata, t_jit_op_info *in
 {
 	long min=vecdata->lmin;
 	long max=vecdata->lmax;
-	long *ip,*op;
+	t_int32 *ip,*op;
 	long is,os;
 	long tmp;
 		
-	ip = ((long *)in->p);
-	op = ((long *)out->p);
+	ip = ((t_int32 *)in->p);
+	op = ((t_int32 *)out->p);
 	is = in->stride; 
 	os = out->stride; 
 	

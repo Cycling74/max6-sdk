@@ -21,11 +21,11 @@ extern "C" {
     #pragma pack(2)
 #endif
 
-typedef long(*(t_jit_functor_fixed_sig))(void *, long, long *);
-typedef float(*(t_jit_functor_float32_sig))(void *, long, float *);
-typedef double(*(t_jit_functor_float64_sig))(void *, long, double *);
+typedef t_int32(*(t_jit_functor_fixed_sig))(void *, t_int32, t_int32 *);
+typedef float(*(t_jit_functor_float32_sig))(void *, t_int32, float *);
+typedef double(*(t_jit_functor_float64_sig))(void *, t_int32, double *);
 
-typedef long(*(t_jit_functor_fixed_scalar_sig))(void *, long);
+typedef t_int32(*(t_jit_functor_fixed_scalar_sig))(void *, t_int32);
 typedef float(*(t_jit_functor_float32_scalar_sig))(void *, float);
 typedef double(*(t_jit_functor_float64_scalar_sig))(void *, double);
 
@@ -58,7 +58,7 @@ typedef struct _jit_functor_wrapper
 // combined scalar value
 typedef struct _jit_functor_combined_value
 {
-	long fixed;
+	t_int32 fixed;
 	float float32;
 	double float64;
 
@@ -72,10 +72,10 @@ typedef struct _jit_functor_combined_value
 // combined dimensional value
 typedef struct _jit_functor_combined_dimvalue
 {
-	long fixed[JIT_MATRIX_MAX_DIMCOUNT];
+	t_int32 fixed[JIT_MATRIX_MAX_DIMCOUNT];
 	float float32[JIT_MATRIX_MAX_DIMCOUNT];
 	double float64[JIT_MATRIX_MAX_DIMCOUNT];
-	long dimcount;
+	t_int32 dimcount;
 
 } t_jit_functor_combined_dimvalue;
 
@@ -87,10 +87,10 @@ typedef struct _jit_functor_combined_dimvalue
 // combined dynamic array
 typedef struct _jit_functor_combined_dynarray
 {
-	long *fixed;
+	t_int32 *fixed;
 	float *float32;
 	double *float64;
-	long count;
+	t_int32 count;
 
 } t_jit_functor_combined_dynarray;
 
@@ -103,30 +103,30 @@ t_class *jit_functor_lookup_relaxed(t_symbol *categoryname, t_symbol *classname)
 t_class *jit_functor_lookup(t_symbol *categoryname, t_symbol *classname);
 t_jit_err jit_functor_new_object_with_interface(t_jit_object **ob, t_jit_functor_interface **fi, t_symbol *category, t_symbol *name);
 t_jit_err jit_functor_wrapper_init(t_jit_functor_wrapper *e, t_symbol *category, t_symbol *name);
-t_jit_err jit_functor_setattr(t_jit_object *x, t_symbol *s, long ac, t_atom *av);
+t_jit_err jit_functor_setattr(t_jit_object *x, t_symbol *s, t_int32 ac, t_atom *av);
 
 // utility functions
-long jit_functor_eval_fixed_with_float32(t_jit_object *x, long dimcount, long *vals, t_jit_functor_float32_sig fp);
-long jit_functor_eval_fixed_with_float64(t_jit_object *x, long dimcount, long *vals, t_jit_functor_float64_sig fp);
-float jit_functor_eval_float32_with_fixed(t_jit_object *x, long dimcount, float *vals, t_jit_functor_fixed_sig fp);
-float jit_functor_eval_float32_with_float64(t_jit_object *x, long dimcount, float *vals, t_jit_functor_float64_sig fp);
-double jit_functor_eval_float64_with_fixed(t_jit_object *x, long dimcount, double *vals, t_jit_functor_fixed_sig fp);
-double jit_functor_eval_float64_with_float32(t_jit_object *x, long dimcount, double *vals, t_jit_functor_float32_sig fp);
+t_int32 jit_functor_eval_fixed_with_float32(t_jit_object *x, t_int32 dimcount, t_int32 *vals, t_jit_functor_float32_sig fp);
+t_int32 jit_functor_eval_fixed_with_float64(t_jit_object *x, t_int32 dimcount, t_int32 *vals, t_jit_functor_float64_sig fp);
+float jit_functor_eval_float32_with_fixed(t_jit_object *x, t_int32 dimcount, float *vals, t_jit_functor_fixed_sig fp);
+float jit_functor_eval_float32_with_float64(t_jit_object *x, t_int32 dimcount, float *vals, t_jit_functor_float64_sig fp);
+double jit_functor_eval_float64_with_fixed(t_jit_object *x, t_int32 dimcount, double *vals, t_jit_functor_fixed_sig fp);
+double jit_functor_eval_float64_with_float32(t_jit_object *x, t_int32 dimcount, double *vals, t_jit_functor_float32_sig fp);
 
-long jit_functor_eval_fixed_with_scalar_product(t_jit_object *x, long dimcount, long *vals, t_jit_functor_fixed_scalar_sig fp);
-float jit_functor_eval_float32_with_scalar_product(t_jit_object *x, long dimcount, float *vals, t_jit_functor_float32_scalar_sig fp);
-double jit_functor_eval_float64_with_scalar_product(t_jit_object *x, long dimcount, double *vals, t_jit_functor_float64_scalar_sig fp);
-long jit_functor_eval_fixed_with_scalar_sum(t_jit_object *x, long dimcount, long *vals, t_jit_functor_fixed_scalar_sig fp);
-float jit_functor_eval_float32_with_scalar_sum(t_jit_object *x, long dimcount, float *vals, t_jit_functor_float32_scalar_sig fp);
-double jit_functor_eval_float64_with_scalar_sum(t_jit_object *x, long dimcount, double *vals, t_jit_functor_float64_scalar_sig fp);
+t_int32 jit_functor_eval_fixed_with_scalar_product(t_jit_object *x, t_int32 dimcount, t_int32 *vals, t_jit_functor_fixed_scalar_sig fp);
+float jit_functor_eval_float32_with_scalar_product(t_jit_object *x, t_int32 dimcount, float *vals, t_jit_functor_float32_scalar_sig fp);
+double jit_functor_eval_float64_with_scalar_product(t_jit_object *x, t_int32 dimcount, double *vals, t_jit_functor_float64_scalar_sig fp);
+t_int32 jit_functor_eval_fixed_with_scalar_sum(t_jit_object *x, t_int32 dimcount, t_int32 *vals, t_jit_functor_fixed_scalar_sig fp);
+float jit_functor_eval_float32_with_scalar_sum(t_jit_object *x, t_int32 dimcount, float *vals, t_jit_functor_float32_scalar_sig fp);
+double jit_functor_eval_float64_with_scalar_sum(t_jit_object *x, t_int32 dimcount, double *vals, t_jit_functor_float64_scalar_sig fp);
 
-long jit_functor_eval_fixed_with_lut_wrap_product(t_jit_object *x, long dimcount, long *vals, long *fixlut);
-long jit_functor_eval_fixed_with_lut_wrap_sum(t_jit_object *x, long dimcount, long *vals, long *fixlut);
-long jit_functor_eval_fixed_with_lut_clip_product(t_jit_object *x, long dimcount, long *vals, long *fixlut);
-long jit_functor_eval_fixed_with_lut_clip_sum(t_jit_object *x, long dimcount, long *vals, long *fixlut);
+t_int32 jit_functor_eval_fixed_with_lut_wrap_product(t_jit_object *x, t_int32 dimcount, t_int32 *vals, t_int32 *fixlut);
+t_int32 jit_functor_eval_fixed_with_lut_wrap_sum(t_jit_object *x, t_int32 dimcount, t_int32 *vals, t_int32 *fixlut);
+t_int32 jit_functor_eval_fixed_with_lut_clip_product(t_jit_object *x, t_int32 dimcount, t_int32 *vals, t_int32 *fixlut);
+t_int32 jit_functor_eval_fixed_with_lut_clip_sum(t_jit_object *x, t_int32 dimcount, t_int32 *vals, t_int32 *fixlut);
 
 // dynamic array utility functions
-t_jit_err jit_functor_combined_dynarray_init(t_jit_functor_combined_dynarray *x, long count);
+t_jit_err jit_functor_combined_dynarray_init(t_jit_functor_combined_dynarray *x, t_int32 count);
 t_jit_err jit_functor_combined_dynarray_destroy(t_jit_functor_combined_dynarray *x);
 
 #if C74_PRAGMA_STRUCT_PACKPUSH

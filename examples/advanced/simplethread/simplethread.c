@@ -27,7 +27,7 @@ void *simplethread_new(void);
 
 t_class *simplethread_class;
 
-int main(void) 
+int C74_EXPORT main(void) 
 {    
 	t_class *c;
 	

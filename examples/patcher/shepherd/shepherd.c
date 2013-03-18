@@ -34,7 +34,7 @@ void shepherd_boo(t_shepherd *x);
 void *shepherd_class;
 
 
-int main(void)
+int C74_EXPORT main(void)
 {	
 	t_class *c;
 	
@@ -164,7 +164,7 @@ void *shepherd_new(t_symbol *s, long argc, t_atom *argv)
 	t_shepherd *x = NULL;
 
 	// object instantiation, NEW STYLE
-	if (x = (t_shepherd *)object_alloc(shepherd_class)) {
+	if ((x = (t_shepherd *)object_alloc(shepherd_class))) {
 		shepherd_attach(x); // attach to every object in the hashtab + the hashtab
 	}
 	return (x);

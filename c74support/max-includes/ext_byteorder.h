@@ -37,7 +37,9 @@
 	@param	x	A short integer.
 	@return		A short integer with the byte-ordering swapped.
 */
-#define BYTEORDER_SWAPW16(x) ((short)(((((unsigned short)(x))>>8)&0x00ff)+((((unsigned short)(x))<<8)&0xff00)))
+#define BYTEORDER_SWAPW16(x) ((t_int16)(((((t_uint16)(x))>>8)&0x00ff)+ \
+										((((t_uint16)(x))<<8)&0xff00)))
+
 
 /**
 	Switch the byte ordering of an integer.
@@ -45,8 +47,28 @@
 	@param	x	An integer.
 	@return		An integer with the byte-ordering swapped.
 */
-#define BYTEORDER_SWAPW32(x) ((long)(((((unsigned long)(x))>>24L)&0x000000ff)+((((unsigned long)(x))>>8L)&0x0000ff00)+ \
-									((((unsigned long)(x))<<24L)&0xff000000)+((((unsigned long)(x))<<8L)&0x00ff0000)))
+#define BYTEORDER_SWAPW32(x) ((t_int32)(((((t_uint32)(x))>>24L)&0x000000ff)+ \
+										((((t_uint32)(x))>> 8L)&0x0000ff00)+ \
+										((((t_uint32)(x))<< 8L)&0x00ff0000)+ \
+										((((t_uint32)(x))<<24L)&0xff000000)))
+
+
+/**
+	 Switch the byte ordering of an integer.
+	 @ingroup	byteorder
+	 @param	x	An integer.
+	 @return	An integer with the byte-ordering swapped.
+*/
+#define BYTEORDER_SWAPW64(x) ((t_int64)(((((t_uint64)(x))>>56L)&0x00000000000000ff)+ \
+										((((t_uint64)(x))>>40L)&0x000000000000ff00)+ \
+										((((t_uint64)(x))>>24L)&0x0000000000ff0000)+ \
+										((((t_uint64)(x))>> 8L)&0x00000000ff000000)+ \
+										((((t_uint64)(x))<< 8L)&0x000000ff00000000)+ \
+										((((t_uint64)(x))<<24L)&0x0000ff0000000000)+ \
+										((((t_uint64)(x))<<40L)&0x00ff000000000000)+ \
+										((((t_uint64)(x))<<56L)&0xff00000000000000)))
+
+
 /**
 	Switch the byte ordering of a float.
 	@ingroup	byteorder
@@ -72,6 +94,8 @@
 #define BYTEORDER_SWAPF64_FROM_PTR(x) 		byteorder_swap_pointer_64_to_float64((unsigned char*)(x))
 
 
+BEGIN_USING_C_LINKAGE
+
 // Undocumented, use the above macros.
 // OBSOLETE. don't use. not safe to pass byteswapped floats in registers
 float swapf32(float f);
@@ -89,6 +113,8 @@ void byteorder_swap_pointer_64_copy(unsigned char *src, unsigned char *dst);
 float byteorder_swap_pointer_32_to_float32(unsigned char *p);
 double byteorder_swap_pointer_64_to_float64(unsigned char *p);
 
+END_USING_C_LINKAGE
+
 
 #if C74_BIG_ENDIAN
 #define BYTEORDER_LSBW16(x) 				BYTEORDER_SWAPW16(x)
@@ -103,6 +129,7 @@ double byteorder_swap_pointer_64_to_float64(unsigned char *p);
 #define BYTEORDER_LSBF64_PTR_TO_PTR(x,y) 	BYTEORDER_SWAPF64_PTR_TO_PTR((unsigned char *)(x),(unsigned char *)(y))
 #define BYTEORDER_MSBW16(x) 				(x)
 #define BYTEORDER_MSBW32(x) 				(x)
+#define BYTEORDER_MSBW64(x)					(x)
 #define BYTEORDER_MSBF32(x)					(x)
 #define BYTEORDER_MSBF64(x) 				(x)
 #define BYTEORDER_MSBF32_PTR(x) 		
@@ -131,6 +158,16 @@ double byteorder_swap_pointer_64_to_float64(unsigned char *p);
 	@return		An integer with the byte-ordering swapped if neccessary.
 */
 #define BYTEORDER_LSBW32(x) 		(x)
+
+/**
+	Switch the byte ordering of an integer from the native swapping to Little-endian (Least Significant Byte).
+	If the current environment is already Little-endian, then the returned value is not byteswapped.
+ 
+	@ingroup	byteorder
+	@param	x	An integer.
+	@return		An integer with the byte-ordering swapped if neccessary.
+*/
+#define BYTEORDER_LSBW64(x) 		(x)
 
 /**
 	Switch the byte ordering of a float from the native swapping to Little-endian (Least Significant Byte).
@@ -173,6 +210,16 @@ double byteorder_swap_pointer_64_to_float64(unsigned char *p);
 #define BYTEORDER_MSBW32(x) 		BYTEORDER_SWAPW32(x)
 
 /**
+	Switch the byte ordering of an integer from the native swapping to Big-endian (Most Significant Byte).
+	If the current environment is already Big-endian, then the returned value is not byteswapped.
+ 
+	@ingroup	byteorder
+	@param	x	An integer.
+	@return		An integer with the byte-ordering swapped if neccessary.
+*/
+#define BYTEORDER_MSBW64(x) 		BYTEORDER_SWAPW64(x)
+
+/**
 	Switch the byte ordering of a float from the native swapping to Big-endian (Most Significant Byte).
 	If the current environment is already Big-endian, then the returned value is not byteswapped.
 	
@@ -211,13 +258,23 @@ double byteorder_swap_pointer_64_to_float64(unsigned char *p);
 
 
 #if C74_LITTLE_ENDIAN
+
+#define C74_FOUR_CHAR_CODE(x)		(x)
+
+
 #define STR_TO_FOURCC(x)	((x) = \
-							(((unsigned long) ((x) & 0x000000FF)) << 24) | \
-							(((unsigned long) ((x) & 0x0000FF00)) << 8)  | \
-							(((unsigned long) ((x) & 0x00FF0000)) >> 8)  | \
-							(((unsigned long) ((x) & 0xFF000000)) >> 24))\
+							(((t_uint32) ((x) & 0x000000FF)) << 24) | \
+							(((t_uint32) ((x) & 0x0000FF00)) << 8)  | \
+							(((t_uint32) ((x) & 0x00FF0000)) >> 8)  | \
+							(((t_uint32) ((x) & 0xFF000000)) >> 24))\
 							
 #else
+
+#define C74_FOUR_CHAR_CODE(x)   (((t_uint32) ((x) & 0x000000FF)) << 24) \
+								| (((t_uint32) ((x) & 0x0000FF00)) << 8) \
+								| (((t_uint32) ((x) & 0x00FF0000)) >> 8) \
+								| (((t_uint32) ((x) & 0xFF000000)) >> 24)
+
 /*
 	Swap the byte ordering, if neccessary, for a Four Character Code.
 	The bytes are swapped in-place, thus there is no return value.
@@ -229,5 +286,8 @@ double byteorder_swap_pointer_64_to_float64(unsigned char *p);
 #define STR_TO_FOURCC(x)	(x)
 #endif // C74_LITTLE_ENDIAN
 
+#ifndef FOUR_CHAR_CODE
+#define FOUR_CHAR_CODE(x)		C74_FOUR_CHAR_CODE(x)
+#endif
 
 #endif // _BYTEORDER_H

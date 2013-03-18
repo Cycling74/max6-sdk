@@ -62,13 +62,14 @@ void jit_ob3d_free(void *x);
 t_jit_err jit_ob3d_set_context(void *x);
 t_jit_err jit_ob3d_draw_chunk(void *ob3d, t_jit_glchunk * chunk);
 
-void max_ob3d_setup(void);
+void max_ob3d_setup(void);					// legacy api
+void max_jit_class_ob3d_wrap(t_class *c);	// newer api
 
 // attach jit object bearing an ob3d to a max object and its outlet.
 void max_jit_ob3d_attach(void *x, t_jit_object *jit_ob, void *outlet);
 void max_jit_ob3d_detach(void *x);
 t_jit_err max_jit_ob3d_assist(void *x, void *b, long m, long a, char *s);
-long max_jit_ob3d_acceptsdrag(void *x, t_object *drag, t_object *view);
+t_atom_long max_jit_ob3d_acceptsdrag(void *x, t_object *drag, t_object *view);
 
 void * ob3d_jitob_get(void *v);
 void * ob3d_patcher_get(void *v);

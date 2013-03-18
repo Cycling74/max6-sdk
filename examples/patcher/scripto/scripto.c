@@ -8,7 +8,6 @@
 
 #include "ext.h"							// standard Max include, always required
 #include "ext_obex.h"						// required for new style Max object
-#include "ext_common.h"						// includes definition of the CLIP macro
 #include "jpatcher_api.h"
 #include "jgraphics.h"
 
@@ -67,7 +66,7 @@ static t_class	*s_scripto_class;
 static t_class	*s_scripto_ui_class;
 
 
-int main(void)
+int C74_EXPORT main(void)
 {	
 	scripto_classinit();		// register our object class
 	scripto_ui_classinit();		// now we'll register a secret UI object class	
@@ -261,7 +260,6 @@ void *scripto_ui_new(t_symbol *s, long argc, t_atom *argv)
 	//		| JBOX_BACKGROUND
 	//		| JBOX_TEXTFIELD
 			| JBOX_DRAWBACKGROUND
-			| JBOX_DEFAULTNAMES
 			;
 
 	err = jbox_new(&x->u_box, flags, argc, argv); 
@@ -309,8 +307,8 @@ void scripto_ui_makerect(t_scripto_ui *x, long row, long col, t_rect *r)
 
 void scripto_ui_pt2rc(t_scripto_ui *x, t_pt pt, long *row, long *col)
 {
-	*row = CLIP(pt.y / 10, 0, SCRIPTO_UI_ROWS-1);
-	*col = CLIP(pt.x / 10, 0, SCRIPTO_UI_COLS-1);
+	*row = CLAMP(pt.y / 10, 0, SCRIPTO_UI_ROWS-1);
+	*col = CLAMP(pt.x / 10, 0, SCRIPTO_UI_COLS-1);
 }
 
 void scripto_ui_mousedown(t_scripto_ui *x, t_object *patcherview, t_pt pt, long modifiers)

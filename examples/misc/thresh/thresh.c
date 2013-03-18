@@ -39,7 +39,7 @@ void thresh_assist(t_thresh *x, void *b, long m, long a, char *s);
 void thresh_inletinfo(t_thresh *x, void *b, long a, char *t);
 void *thresh_new(long interval);
 
-int main()
+int C74_EXPORT main()
 {
 	t_class *c;
 

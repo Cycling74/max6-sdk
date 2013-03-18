@@ -9,13 +9,13 @@ BEGIN_USING_C_LINKAGE
 	@param	argv1	The address to the first of an array of atoms that is the source for the copy.
 	@param	argv2	The address to the first of an array of atoms that is the destination for the copy.
 					Note that this array must already by allocated using sysmem_newptr() or atom_alloc(). */
-void atom_copy(short argc1, t_atom *argv1, t_atom *argv2);
+void atom_copy(long argc1, t_atom *argv1, t_atom *argv2);
 
 /**	Print the contents of an array of atoms to the Max window.
 	@ingroup		atom
 	@param	argc	The count of atoms in argv.
 	@param	argv	The address to the first of an array of atoms.	*/
-void postargs(short argc, t_atom *argv);
+void postargs(long argc, t_atom *argv);
 
 /**	Print the contents of a dictionary to the Max window.
 	@ingroup		dictionary

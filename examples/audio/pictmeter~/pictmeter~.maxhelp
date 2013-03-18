@@ -52,7 +52,7 @@
 , 			{
 				"box" : 				{
 					"maxclass" : "message",
-					"text" : "read fpic_house.pict",
+					"text" : "read fpic_house.png",
 					"outlettype" : [ "" ],
 					"patching_rect" : [ 100.0, 105.0, 112.0, 17.0 ],
 					"id" : "obj-2",

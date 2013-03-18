@@ -9,7 +9,6 @@
 #include "ext_obex.h"
 #include "max.jit.mop.h"
 #include "ext_path.h"
-#include "edit.h"
 
 #define MAC_CR '\r'
 #define UNIX_CR '\n'
@@ -66,7 +65,7 @@ t_jit_err jit_textfile_tomatrix_line(void *x, void *inputs, void *outputs);
 
 void *max_jit_textfile_class;
 
-int main(void)
+int C74_EXPORT main(void)
 {	
 	long attrflags;
 	void *p,*q,*attr;
@@ -327,7 +326,7 @@ void max_jit_textfile_opentextfile_write(t_max_jit_textfile *x, t_symbol *s, lon
 	char filename[MAX_PATH_CHARS] = "matrixtextfile.txt";
 	char tempname[MAX_PATH_CHARS];
 	short path=0, err;
-	long type = 'TEXT';
+	t_fourcc type = FOUR_CHAR_CODE('TEXT');
 	t_filehandle fh_write;
 	t_symbol *name;
 	
@@ -357,7 +356,7 @@ void max_jit_textfile_opentextfile_write(t_max_jit_textfile *x, t_symbol *s, lon
 void max_jit_textfile_frombuffer(t_max_jit_textfile *x)
 {
 	long err;
-	long size;
+	t_ptr_size size;
 	
 	if (x && x->fh_write) {
 
@@ -381,7 +380,7 @@ void max_jit_textfile_frombuffer(t_max_jit_textfile *x)
 t_jit_err max_jit_textfile_closetextfile_write(t_max_jit_textfile *x)
 {
 	long err = 0;
-	long position;
+	t_ptr_size position;
 	t_atom a[2];
 	
 	sysfile_getpos(x->fh_write, &position);
@@ -404,7 +403,7 @@ void max_jit_textfile_defaultdir_set(t_max_jit_textfile *x, t_symbol *s, long ac
 	char 		filename[256] = "press save to choose directory";
 	short 		path;
 	t_symbol 	*temp;
-	long		tmptype = 0L;
+	t_fourcc	tmptype = 0L;
 	
 	if (ac && av) {
 		temp = jit_atom_getsym(av);
@@ -453,7 +452,7 @@ void max_jit_textfile_opentextfile_read(t_max_jit_textfile *x, t_symbol *s, long
 	char 				inputstring[MAX_PATH_CHARS] = "";
 	char 				filename[MAX_PATH_CHARS] = "matrixtextfile.txt";
 	short 				path, err;
-	long 				type = 'TEXT', outtype;
+	t_fourcc 			type = FOUR_CHAR_CODE('TEXT'), outtype;
 	t_filehandle 		fh_read;
 	t_symbol			*insym;
 	t_atom				a[2];
@@ -518,8 +517,9 @@ t_jit_err max_jit_textfile_read(t_max_jit_textfile *x)
 
 t_jit_err max_jit_textfile_tobuffer(t_max_jit_textfile *x)
 {
-	long count, err;
-	long eof;
+	t_ptr_size count;
+	long err;
+	t_ptr_size eof;
 	
 	if (x && x->fh_read) {
 		sysfile_geteof(x->fh_read, &eof);
@@ -534,7 +534,7 @@ t_jit_err max_jit_textfile_tobuffer(t_max_jit_textfile *x)
 			if (err)
 				jit_object_error((t_object *)x,"jit.textfile: error reading from file: %d", err);
 		} else {
-			sysfile_geteof(x->fh_read, &eof);		
+			sysfile_geteof(x->fh_read, &eof);
 			count = eof;
 			sysmem_lockhandle(x->text, 1);
 			err = sysfile_read(x->fh_read, &count, *(x->text));

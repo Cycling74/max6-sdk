@@ -9,22 +9,24 @@
 #ifndef __JIT_QT_H__
 #define __JIT_QT_H__
 
-#if TARGET_RT_MAC_MACHO || TARGET_MACHO
-#include <QuickTime/Movies.h>
-#include <QuickTime/QuickTimeComponents.h>
-#else
-#include <Movies.h>
-#include <QuicktimeComponents.h>
+#if C74_PRAGMA_STRUCT_PACKPUSH
+    #pragma pack(push, 2)
+#elif C74_PRAGMA_STRUCT_PACK
+    #pragma pack(2)
 #endif
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-#if C74_PRAGMA_STRUCT_PACKPUSH
-    #pragma pack(push, 2)
-#elif C74_PRAGMA_STRUCT_PACK
-    #pragma pack(2)
+#ifdef C74_USING_QUICKTIME
+
+#if TARGET_RT_MAC_MACHO || TARGET_MACHO
+#include <QuickTime/Movies.h>
+#include <QuickTime/QuickTimeComponents.h>
+#else
+#include <Movies.h>
+#include <QuicktimeComponents.h>
 #endif
 
 #include "ext_qtstubs.h"
@@ -45,8 +47,6 @@ Track jit_qt_utils_trackmedia_add(Movie movie, long type, Rect *trackframe, long
 Media jit_qt_utils_trackmedia_get(Track track);
 long jit_qt_utils_trackmedia_close(Track track, long trackstart, long mediastart);
 long jit_qt_utils_trackmedia_dispose(Track track);
-void jit_qt_utils_type2str(unsigned long type, char *typestr);
-OSType jit_qt_utils_str2type(char *typestr);
 void jit_qt_utils_trackname_set(Track track, t_symbol *s);
 t_symbol *jit_qt_utils_trackname_get(Track track);
 t_symbol *jit_qt_utils_tracktype_get(Track track);
@@ -63,16 +63,21 @@ double jit_qt_utils_double_NtoB(double d);
 
 void jit_qt_utils_iter_atom(QTAtomContainer parent, QTAtom child);
 
+#endif // #ifdef C74_USING_QUICKTIME
+
 JIT_EX_DATA long _jit_qt_optimize;
+
+void jit_qt_utils_type2str(t_fourcc type, char *typestr);
+t_fourcc jit_qt_utils_str2type(char *typestr);
+
+#ifdef __cplusplus
+}
+#endif
 
 #if C74_PRAGMA_STRUCT_PACKPUSH
     #pragma pack(pop)
 #elif C74_PRAGMA_STRUCT_PACK
     #pragma pack()
-#endif
-
-#ifdef __cplusplus
-}
 #endif
 
 #endif

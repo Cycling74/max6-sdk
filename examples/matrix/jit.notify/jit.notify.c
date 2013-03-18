@@ -76,8 +76,8 @@ t_jit_err jit_notify_getvecdata(t_jit_notify *x, t_jit_notify_vecdata *vd)
 		vd->lmax 		= x->max;
 		vd->cmin 		= x->min*255.;
 		vd->cmax 		= x->max*255.;
-		CLIP(vd->cmin,0,255);
-		CLIP(vd->cmax,0,255);
+		CLIP_ASSIGN(vd->cmin,0,255);
+		CLIP_ASSIGN(vd->cmax,0,255);
 		return JIT_ERR_NONE;
 	} else {
 		return JIT_ERR_INVALID_PTR;
@@ -87,7 +87,7 @@ t_jit_err jit_notify_getvecdata(t_jit_notify *x, t_jit_notify_vecdata *vd)
 t_jit_err jit_notify_matrix_calc(t_jit_notify *x, void *inputs, void *outputs)
 {
 	t_jit_err err=JIT_ERR_NONE;
-	long in_savelock,in2_savelock,out_savelock;
+	long in_savelock,out_savelock;
 	t_jit_matrix_info in_minfo,out_minfo;
 	char *in_bp,*out_bp;
 	long i,dimcount,planecount,dim[JIT_MATRIX_MAX_DIMCOUNT];
@@ -335,7 +335,7 @@ t_jit_notify *jit_notify_new(void)
 {
 	t_jit_notify *x;
 		
-	if (x=(t_jit_notify *)jit_object_alloc(_jit_notify_class)) {
+	if ((x=(t_jit_notify *)jit_object_alloc(_jit_notify_class))) {
 		x->min = 0.;
 		x->max = 1.;
 	} else {

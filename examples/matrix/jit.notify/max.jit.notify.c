@@ -20,26 +20,25 @@ void *max_jit_notify_new(t_symbol *s, long argc, t_atom *argv);
 void max_jit_notify_free(t_max_jit_notify *x);
 void *max_jit_notify_class;
 		 	
-void main(void)
+int C74_EXPORT main(void)
 {	
-	void *p,*q;
+	t_class *p,*q;
 	
 	jit_notify_init();	
-	setup(&max_jit_notify_class, max_jit_notify_new, (method)max_jit_notify_free, (short)sizeof(t_max_jit_notify), 
-		0L, A_GIMME, 0);
-
-	p = max_jit_classex_setup(calcoffset(t_max_jit_notify,obex));
+	p = class_new("jit.notify", (method)max_jit_notify_new, (method)max_jit_notify_free, sizeof(t_max_jit_notify), NULL, A_GIMME, 0);
+	max_jit_class_obex_setup(p, calcoffset(t_max_jit_notify,obex));
 	q = jit_class_findbyname(gensym("jit_notify"));    
 	
 	//NOTIFY EXAMPLE: WE NEED TO OVERRIDE THE DEFAULT MOP NOTIFY METHOD
-    max_jit_classex_mop_wrap(p,q,MAX_JIT_MOP_FLAGS_OWN_NOTIFY); 		//name/type/dim/planecount/bang/outputmatrix/etc
+    max_jit_class_mop_wrap(p, q, MAX_JIT_MOP_FLAGS_OWN_NOTIFY);			//name/type/dim/planecount/bang/outputmatrix/etc
     
-    max_jit_classex_standard_wrap(p,q,0); 	//getattributes/dumpout/maxjitclassaddmethods/etc
-    addmess((method)max_jit_mop_assist, "assist", A_CANT,0);  //standard mop assist fn
+	max_jit_class_wrap_standard(p, q, 0);	//getattributes/dumpout/maxjitclassaddmethods/etc
+    class_addmethod(p, (method)max_jit_mop_assist, "assist", A_CANT,0);  //standard mop assist fn
 
 	//NOTIFY EXAMPLE: HERE'S WHERE WE DECLARE OUR OWN NOTIFY METHOD
-    addmess((method)max_jit_notify_notify, "notify", A_CANT,0);  
+    class_addmethod(p, (method)max_jit_notify_notify, "notify", A_CANT,0);  
 
+	return 0;
 }
 
 //NOTIFY EXAMPLE: HERE'S WHERE WE GET INFO FROM SERVERS WE ARE ATTACHED TO 
@@ -77,7 +76,7 @@ void max_jit_notify_free(t_max_jit_notify *x)
 
 	max_jit_mop_free(x);
 	jit_object_free(max_jit_obex_jitob_get(x));
-	max_jit_obex_free(x);
+	max_jit_object_free(x);
 }
 
 void *max_jit_notify_new(t_symbol *s, long argc, t_atom *argv)
@@ -85,8 +84,8 @@ void *max_jit_notify_new(t_symbol *s, long argc, t_atom *argv)
 	t_max_jit_notify *x;
 	void *o;
 
-	if (x=(t_max_jit_notify *)max_jit_obex_new(max_jit_notify_class,gensym("jit_notify"))) {
-		if (o=jit_object_new(gensym("jit_notify"))) {
+	if ((x=(t_max_jit_notify *)max_jit_object_alloc(max_jit_notify_class,gensym("jit_notify")))) {
+		if ((o=jit_object_new(gensym("jit_notify")))) {
 			max_jit_mop_setup_simple(x,o,argc,argv);			
 			max_jit_attr_args(x,argc,argv);
 			
@@ -96,7 +95,7 @@ void *max_jit_notify_new(t_symbol *s, long argc, t_atom *argv)
 			jit_object_attach(x->servername,x);	//this attaches max object(client) with jit object(server)
 		} else {
 			error("jit.notify: could not allocate object");
-			freeobject(x);
+			object_free((t_object*)x);
 		}
 	}
 	return (x);

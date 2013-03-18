@@ -116,6 +116,9 @@ typedef struct _jboxdrawparams {
 #define JBOX_SPOOL_CONTENTS		1
 #define JBOX_SPOOL_WHOLEBOX		2
 
+#define JBOX_RELINE_DEFER
+#define JBOX_FLAG_READY			0x01
+#define JBOX_FLAG_FIRST_PAINT	0x02
 
 /** The t_jbox struct provides the header for a Max user-interface object. 
 	This struct should be considered opaque and is subject to change without notice.
@@ -168,8 +171,8 @@ typedef struct _jbox
 	char		b_editactive;			// editing via inspector 
 	t_symbol	*b_prototypename;
 	char		b_commasupport;
-	char		b_reserved1;
-	char		b_reserved2;
+	char		b_reserved1;            // this is actually used and should be renamed!
+	char		b_textjustification;
 	char		b_reserved3;
 	void		*b_ptemp;
 } t_jbox;
@@ -186,7 +189,6 @@ typedef struct _pvselinfo
 	long ncanrespondtoclick;// how many of the selected items could accept the respond to click command
 	long nbg;				// how many of the selected items are in the background
 	long nboxcolorable;		// how many respond to the color message
-	long colorindex;		// index if one object is selected
 	long nselboxbg;			// how many of the selected boxes are in the background
 	long nboxinfo;			// how many of the selected boxes respond to the info message
 	long nboxfixwidth;		// how many of the selected boxes respond to the fixwidth message
@@ -1161,7 +1163,7 @@ t_max_err jbox_set_presentation(t_object *b, char c);
 t_object *jbox_get_autocompletion(t_object *b);
 t_symbol *jbox_get_prototypename(t_object *b);
 void jbox_set_prototypename(t_object *b, t_symbol *name);
-long jclipboard_datatypes();
+long jclipboard_datatypes(void);
 void jbox_validaterects(t_jbox *b);
 
 
@@ -1319,6 +1321,15 @@ t_max_err patcherview_get_rect(t_object *pv, t_rect *pr);
 	@return		An error code.		*/
 t_max_err patcherview_set_rect(t_object *pv, t_rect *pr);
 
+/** Convert the point cx, cy in canvas coordinates to screen coordinates.
+    @ingroup	jpatcherview
+	@param	pv  The patcherview instance the canvas coords are relative to.
+	@param	cx	The x dimension of the canvas coordinate relative to the patcherview.
+	@param	cy  The y dimension of the canvas coordinate relative to the patcherview.
+	@param	sx	A pointer to a long to receive the screen coordinate x dimension.
+	@param	sy	A pointer to a long to receive the screen coordinate y dimension.   
+*/
+void patcherview_canvas_to_screen(t_object *pv, double cx, double cy, long *sx, long *sy); 
 
 /**	Find out if a patcherview is locked.
 	@ingroup	jpatcherview
@@ -1632,45 +1643,48 @@ t_symbol *textfield_get_emptytext(t_object *tf);
 // flags passed to box_new
 
 // The following flags affect how the boxes are drawn 
-#define JBOX_DRAWFIRSTIN		(1<<0)			///< draw first inlet												@ingroup jbox
-#define JBOX_NODRAWBOX			(1<<1)			///< don't draw the frame  											@ingroup jbox
-#define JBOX_DRAWINLAST			(1<<2)			///< draw inlets after update method 								@ingroup jbox
+#define JBOX_DRAWFIRSTIN            (1<<0)			///< draw first inlet												@ingroup jbox
+#define JBOX_NODRAWBOX              (1<<1)			///< don't draw the frame  											@ingroup jbox
+#define JBOX_DRAWINLAST             (1<<2)			///< draw inlets after update method 								@ingroup jbox
 
 // JBOX_TRANSPARENT is unused -- box is always transparent by default
-#define JBOX_TRANSPARENT		(1<<3)			///< don't make transparent unless you need it (for efficiency)		@ingroup jbox
+#define JBOX_TRANSPARENT            (1<<3)			///< don't make transparent unless you need it (for efficiency)		@ingroup jbox
 
 // Box growing: nogrow is clear -- box is not sizable. 
 // Default (none of following three flags) means box width is only sizable.
 // JBOX_GROWY means that X and Y are sizable and the aspect ratio is fixed (or maybe it has to be square, like dial?).  
 // JBOX_GROWBOTH means that X and Y are independently sizable.  
-#define JBOX_NOGROW				(1<<4)			///< don't even draw grow thingie 				@ingroup jbox
-#define JBOX_GROWY				(1<<5)			///< can grow in y direction by dragging		@ingroup jbox
-#define JBOX_GROWBOTH			(1<<6)			///< can grow independently in both x and y 	@ingroup jbox
+#define JBOX_NOGROW                 (1<<4)			///< don't even draw grow thingie 				@ingroup jbox
+#define JBOX_GROWY                  (1<<5)			///< can grow in y direction by dragging		@ingroup jbox
+#define JBOX_GROWBOTH               (1<<6)			///< can grow independently in both x and y 	@ingroup jbox
 
 // Box interaction
-#define JBOX_IGNORELOCKCLICK	(1<<7)			///< box should ignore a click if patcher is locked 	@ingroup jbox
-#define JBOX_HILITE				(1<<8)			///< flag passed to jbox_new() to tell max that the UI object can receive the focus when clicked on -- may be replaced by JBOX_FOCUS in the future 		@ingroup jbox
-#define JBOX_BACKGROUND			(1<<9)			///< immediately set box into the background			@ingroup jbox
-#define JBOX_NOFLOATINSPECTOR	(1<<10)			///< no floating inspector window						@ingroup jbox
+#define JBOX_IGNORELOCKCLICK        (1<<7)			///< box should ignore a click if patcher is locked 	@ingroup jbox
+#define JBOX_HILITE                 (1<<8)			///< flag passed to jbox_new() to tell max that the UI object can receive the focus when clicked on -- may be replaced by JBOX_FOCUS in the future 		@ingroup jbox
+#define JBOX_BACKGROUND             (1<<9)			///< immediately set box into the background			@ingroup jbox
+#define JBOX_NOFLOATINSPECTOR       (1<<10)			///< no floating inspector window						@ingroup jbox
 
 // textfield: give this flag for automatic textfield support
-#define JBOX_TEXTFIELD			(1<<11)			///< save/load text from textfield, unless JBOX_BINBUF flag is set				@ingroup jbox
-#define JBOX_FIXWIDTH			(1<<19)			///< give the box a textfield based fix-width (bfixwidth) method				@ingroup jbox
-#define JBOX_FONTATTR			(1<<18)			///< if you want font related attribute you must add this to jbox_initclass()	@ingroup jbox
-#define JBOX_BINBUF				(1<<14)			///< save/load text from b_binbuf												@ingroup jbox
+#define JBOX_TEXTFIELD              (1<<11)			///< save/load text from textfield, unless JBOX_BINBUF flag is set				@ingroup jbox
+#define JBOX_FIXWIDTH               (1<<19)			///< give the box a textfield based fix-width (bfixwidth) method				@ingroup jbox
+#define JBOX_FONTATTR               (1<<18)			///< if you want font related attribute you must add this to jbox_initclass()	@ingroup jbox
+#define JBOX_TEXTJUSTIFICATIONATTR  (1<<21)         ///< give your object a textjustification attr to control textfield             @ingroup jbox
+#define JBOX_BINBUF                 (1<<14)			///< save/load text from b_binbuf												@ingroup jbox
 
-#define JBOX_MOUSEDRAGDELTA		(1<<12)			///< hides mouse cursor in drag and sends mousedragdelta instead of mousedrag (for infinite scrolling like number)	@ingroup jbox
+#define JBOX_MOUSEDRAGDELTA         (1<<12)			///< hides mouse cursor in drag and sends mousedragdelta instead of mousedrag (for infinite scrolling like number)	@ingroup jbox
 
-#define JBOX_COLOR				(1<<13)			///< support the "color" method for color customization												@ingroup jbox
-#define JBOX_DRAWIOLOCKED		(1<<15)			///< draw inlets and outlets when locked (default is not to draw them)								@ingroup jbox
-#define JBOX_DRAWBACKGROUND		(1<<16)			///< set to have box bg filled in for you based on getdrawparams method or brgba attribute			@ingroup jbox
-#define JBOX_NOINSPECTFIRSTIN	(1<<17)			///< flag for objects such as bpatcher that have a different b_firstin,
-												///< but the attrs of the b_firstin should not be shown in the inspector							@ingroup jbox
+#define JBOX_COLOR                  (1<<13)			///< support the "color" method for color customization												@ingroup jbox
+#define JBOX_DRAWIOLOCKED           (1<<15)			///< draw inlets and outlets when locked (default is not to draw them)								@ingroup jbox
+#define JBOX_DRAWBACKGROUND         (1<<16)			///< set to have box bg filled in for you based on getdrawparams method or brgba attribute			@ingroup jbox
+#define JBOX_NOINSPECTFIRSTIN       (1<<17)			///< flag for objects such as bpatcher that have a different b_firstin,
+                                                    ///< but the attrs of the b_firstin should not be shown in the inspector							@ingroup jbox
 
 // JBOX_DEFAULTNAMES is unused -- box is attached automatically if needed
-#define JBOX_DEFAULTNAMES		(1<<18)			///< flag instructing jbox_new to attach object to the defaults object for live defaults updating	@ingroup jbox
+// Since JBOX_DEFAULTNAMES was unused and used a conflicting flag bit with JBOX_FONTATTR it is being removed.
+// Just remove from your code if you have a compile error about JBOX_DEFAULTNAMES missing.
+//#define JBOX_DEFAULTNAMES			(1<<18)			///< flag instructing jbox_new to attach object to the defaults object for live defaults updating	@ingroup jbox
 
-#define JBOX_FOCUS				(1<<20)			///< more advanced focus support (passed to jbox_initclass() to add "nextfocus" and "prevfocus" attributes to the UI object).  Not implemented as of 2009-05-11   @ingroup jbox
+#define JBOX_FOCUS					(1<<20)			///< more advanced focus support (passed to jbox_initclass() to add "nextfocus" and "prevfocus" attributes to the UI object).  Not implemented as of 2009-05-11   @ingroup jbox
 
 
 /** actual numerical values of the b_fontface attribute; use jbox_fontface() to weight 
@@ -1781,32 +1795,20 @@ void jbox_show_caption(t_jbox *b);
 void jbox_hide_caption(t_jbox *b);
 
 
-
-
 // dictionary stuff
 #define DICT_JRGBA 1	// convert RGB to jrgba when storing/retrieving from dictionary
-t_max_err dictionary_appendrgbcolor(t_dictionary *d, t_symbol *key, RGBColor *rgb, long flags);
 t_max_err dictionary_appendjrgba(t_dictionary *d, t_symbol *key, t_jrgba *jc);
 
 t_max_err dictionary_getdefjrgba(t_dictionary *d, t_symbol *key, t_jrgba *jc, t_jrgba *def);
-t_max_err dictionary_getdefrgbcolor(t_dictionary *d, t_symbol *key, RGBColor *c, RGBColor *def, long flags);
 
 t_max_err dictionary_gettrect(t_dictionary *d, t_symbol *key, t_rect *rect);
 t_max_err dictionary_appendtrect(t_dictionary *d, t_symbol *key, t_rect *rect);
 
-t_max_err dictionary_getqdrect(t_dictionary *d, t_symbol *key, Rect *rect);
-t_max_err dictionary_appendqdrect(t_dictionary *d, t_symbol *key, Rect *rect);
-
 t_max_err dictionary_gettpt(t_dictionary *d, t_symbol *key, t_pt *pt);
 t_max_err dictionary_appendtpt(t_dictionary *d, t_symbol *key, t_pt *pt);
 
-void atomstorgb(long argc, t_atom *argv, RGBColor *dest, long flags);
 void atomstojrgba(long argc, t_atom *argv, t_jrgba *dest);
 void jrgbatoatoms(t_jrgba *src, t_atom *argv);
-void rgbtoatoms(RGBColor *src, t_atom *argv, long flags);
-
-
-// convenience for object-making
 
 /**	Read the specified JSON file and return a #t_dictionary object.
 	You are responsible for freeing the dictionary with object_free(),
@@ -1827,6 +1829,30 @@ t_max_err dictionary_read(char *filename, short path, t_dictionary **d);
 	@return				A Max error code.
 */
 t_max_err dictionary_write(t_dictionary *d, char *filename, short path);
+
+/**	Read the specified YAML file and return a #t_dictionary object.
+	You are responsible for freeing the dictionary with object_free(),
+	subject to the caveats explained in @ref when_to_free_a_dictionary.
+	@ingroup			dictionary
+	@param	filename	The name of the file.
+	@param	path		The path of the file.
+	@param	d			The address of a #t_dictionary pointer that will be set to the newly created dictionary.
+	@return				A Max error code
+ */
+
+t_max_err dictionary_read_yaml(const char *filename, const short path, t_dictionary **d);
+
+/**	Serialize the specified #t_dictionary object to a YAML file.
+	@ingroup			dictionary
+	@param	d			The dictionary to serialize into YAML format and write to disk.
+	@param	filename	The name of the file to write.
+	@param	path		The path to which the file should be written.
+	@return				A Max error code.
+ */
+t_max_err dictionary_write_yaml(const t_dictionary *d, const char *filename, const short path);
+
+
+// convenience for object-making
 
 #define newobject_fromdictionary_delete(p,d) newobject_fromdictionary(p,d), freeobject((t_object *)d)
 
@@ -2073,4 +2099,3 @@ t_object *jbox_get_dragtarget(t_jbox *b, char locked);
 END_USING_C_LINKAGE
 
 #endif // #ifndef _JPATCHER_API_H_
-

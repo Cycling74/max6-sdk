@@ -3,7 +3,7 @@
 
 BEGIN_USING_C_LINKAGE
 
-void jpatcher_syms_init();
+void jpatcher_syms_init(void);
 
 extern t_symbol *ps_patcher; 
 extern t_symbol *ps_jpatchline; 
@@ -75,6 +75,7 @@ extern t_symbol *ps_bghidden;
 extern t_symbol *ps_fghidden;
 extern t_symbol *ps_font;
 extern t_symbol *ps_bgcolor; 
+extern t_symbol *ps_editing_bgcolor;
 extern t_symbol *ps_gridsize; 
 extern t_symbol *ps_controller;
 extern t_symbol *ps_parentpatcher;
@@ -183,6 +184,7 @@ extern t_symbol *ps_zoomfactor;
 extern t_symbol *ps_nextview;
 extern t_symbol *ps_jgraphics;
 extern t_symbol *ps_patcher;
+extern t_symbol *ps_topview;
 
 // methods of the jpatchline
 extern t_symbol *ps_insertsegment;
@@ -231,6 +233,7 @@ extern t_symbol *ps_wantstab;
 extern t_symbol *ps_underline;
 extern t_symbol *ps_autofixwidth;
 extern t_symbol *ps_emptytext;
+extern t_symbol *ps_justification;
 
 // jcolor attributes
 extern t_symbol *ps_red;

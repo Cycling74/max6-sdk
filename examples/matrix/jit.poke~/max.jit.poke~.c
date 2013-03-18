@@ -38,7 +38,7 @@ void *max_jit_poke_class;
 		 	
 t_symbol *ps_done;
 
-int main(void)
+int C74_EXPORT main(void)
 {	
 	long attrflags;
 	void *p,*attr;
@@ -147,7 +147,7 @@ t_int *max_jit_poke_perform(t_int *w)
 				if (outofbounds) {
 					in_val++;
 				} else {
-					*((long *)p) = (long)(*in_val++); 
+					*((t_int32 *)p) = (t_int32)(*in_val++); 
 				}
 			}
 		} else if (x->minfo.type==_jit_sym_float32) {
@@ -269,7 +269,7 @@ void max_jit_poke_perform64(t_max_jit_poke *x, t_object *dsp64, double **ins, lo
 				if (outofbounds) {
 					in_val++;
 				} else {
-					*((long *)p) = (long)(*in_val++); 
+					*((t_int32 *)p) = (t_int32)(*in_val++); 
 				}
 			}
 		} else if (x->minfo.type==_jit_sym_float32) {
@@ -478,15 +478,22 @@ void *max_jit_poke_new(t_symbol *s, long argc, t_atom *argv)
 
 		attrstart = max_jit_attr_args_offset(argc,argv);
 		if (attrstart&&argv) {
+			t_atom_long al; 
 			jit_atom_arg_getsym(&x->matrix_name, 0, attrstart, argv);
-			jit_atom_arg_getlong(&x->dimcount, 1, attrstart, argv);
-			jit_atom_arg_getlong(&x->plane, 2, attrstart, argv);
+			if (!jit_atom_arg_getlong(&al, 1, attrstart, argv)) {
+				C74_ASSERT_FITS_LONG(al); 
+				x->dimcount = (long) al;
+			}
+			if (!jit_atom_arg_getlong(&al, 2, attrstart, argv)) {
+				C74_ASSERT_FITS_LONG(al); 
+				x->plane = (long) al;
+			}
 			jit_atom_setsym(&a,x->matrix_name);
 			max_jit_poke_matrix_name(x,NULL,1,&a);
 		}	
 		
-		CLIP(x->dimcount,0,JIT_MATRIX_MAX_DIMCOUNT);
-		CLIP(x->dimcount,0,31); //maximum signal inputs - 1
+		CLIP_ASSIGN(x->dimcount,0,JIT_MATRIX_MAX_DIMCOUNT);
+		CLIP_ASSIGN(x->dimcount,0,31); //maximum signal inputs - 1
 		
 		max_jit_attr_args(x,argc,argv); //handle attribute args
 		

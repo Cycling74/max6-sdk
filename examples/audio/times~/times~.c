@@ -36,7 +36,7 @@ void scale_perform64_method(t_times *x, t_object *dsp64, double **ins, long numi
 void times_perform64_method(t_times *x, t_object *dsp64, double **ins, long numins, double **outs, long numouts, long sampleframes, long flags, void *userparam);
 
 
-int main(void)
+int C74_EXPORT main(void)
 {
 	t_class *c;
 

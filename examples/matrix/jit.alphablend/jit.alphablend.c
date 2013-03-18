@@ -55,7 +55,7 @@ t_jit_err jit_alphablend_init(void)
 	jit_class_addattr(_jit_alphablend_class,attr);
 	CLASS_ATTR_BASIC(_jit_alphablend_class,"mode",0);
 	CLASS_ATTR_LABEL(_jit_alphablend_class,"mode",0,"Crossfade Mode");
-	CLASS_ATTR_ENUMINDEX(_jit_alphablend_class, "mode", 0, "Left-to-Right Right-to-Left");
+	CLASS_ATTR_ENUMINDEX2(_jit_alphablend_class, "mode", 0, "Left-to-Right", "Right-to-Left");
 	CLASS_ATTR_CATEGORY(_jit_alphablend_class, "mode", 0, "Mode");	
 	
 	jit_class_register(_jit_alphablend_class);
@@ -237,7 +237,7 @@ void jit_alphablend_calculate_ndim(t_jit_alphablend *x, long dimcount, long *dim
 					case 1:	//inverse
 						for (j=0;j<width;j++) {
 							falpha_inv 	= *fip1++;
-							CLIP(falpha_inv,0.,1.);
+							CLIP_ASSIGN(falpha_inv,0.,1.);
 							falpha		= 1. - falpha_inv;
 							*fop++		= default_alpha;
 							fip2++; //ignore other alpha channels
@@ -249,7 +249,7 @@ void jit_alphablend_calculate_ndim(t_jit_alphablend *x, long dimcount, long *dim
 					default:	
 						for (j=0;j<width;j++) {
 							falpha 		= *fip1++;
-							CLIP(falpha,0.,1.);
+							CLIP_ASSIGN(falpha,0.,1.);
 							falpha_inv	= 1. - falpha;
 							*fop++		= default_alpha;
 							fip2++; //ignore other alpha channels
@@ -271,7 +271,7 @@ void jit_alphablend_calculate_ndim(t_jit_alphablend *x, long dimcount, long *dim
 					case 1:	//inverse
 						for (j=0;j<width;j++) {
 							falpha_inv 	= *fip1;
-							CLIP(falpha_inv,0.,1.);
+							CLIP_ASSIGN(falpha_inv,0.,1.);
 							falpha		= 1. - falpha_inv;
 							fop[0]		= default_alpha;
 							for (k = 1; k < planecount; k++) {
@@ -285,7 +285,7 @@ void jit_alphablend_calculate_ndim(t_jit_alphablend *x, long dimcount, long *dim
 					default:	
 						for (j=0;j<width;j++) {
 							falpha 		= *fip1;
-							CLIP(falpha,0.,1.);
+							CLIP_ASSIGN(falpha,0.,1.);
 							falpha_inv	= 1. - falpha;
 							fop[0]		= default_alpha;
 							for (k = 1; k < planecount; k++) {
@@ -312,7 +312,7 @@ void jit_alphablend_calculate_ndim(t_jit_alphablend *x, long dimcount, long *dim
 					case 1:	//inverse
 						for (j=0;j<width;j++) {
 							dalpha_inv 	= *dip1++;
-							CLIP(dalpha_inv,0.,1.);
+							CLIP_ASSIGN(dalpha_inv,0.,1.);
 							dalpha		= 1. - dalpha_inv;
 							*dop++		= default_alpha;
 							dip2++; //ignore other alpha channels
@@ -324,7 +324,7 @@ void jit_alphablend_calculate_ndim(t_jit_alphablend *x, long dimcount, long *dim
 					default:	
 						for (j=0;j<width;j++) {
 							dalpha 		= *dip1++;
-							CLIP(dalpha,0.,1.);
+							CLIP_ASSIGN(dalpha,0.,1.);
 							dalpha_inv	= 1. - dalpha;
 							*dop++		= default_alpha;
 							dip2++; //ignore other alpha channels
@@ -346,7 +346,7 @@ void jit_alphablend_calculate_ndim(t_jit_alphablend *x, long dimcount, long *dim
 					case 1:	//inverse
 						for (j=0;j<width;j++) {
 							dalpha_inv 	= *dip1;
-							CLIP(dalpha_inv,0.,1.);
+							CLIP_ASSIGN(dalpha_inv,0.,1.);
 							dalpha		= 1. - dalpha_inv;
 							dop[0] 		= default_alpha;
 							for (k = 1; k < planecount; k++) {
@@ -360,7 +360,7 @@ void jit_alphablend_calculate_ndim(t_jit_alphablend *x, long dimcount, long *dim
 					default:	
 						for (j=0;j<width;j++) {
 							dalpha 		= *dip1;
-							CLIP(dalpha,0.,1.);
+							CLIP_ASSIGN(dalpha,0.,1.);
 							dalpha_inv	= 1. - dalpha;
 							dop[0] 		= default_alpha;
 							for (k = 1; k < planecount; k++) {

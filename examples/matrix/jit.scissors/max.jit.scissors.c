@@ -20,11 +20,11 @@ void max_jit_scissors_free(t_max_jit_scissors *x);
 void max_jit_scissors_assist(t_max_jit_scissors *x, void *b, long m, long a, char *s);
 void max_jit_scissors_mproc(t_max_jit_scissors *x, void *mop);
 
-void *max_jit_scissors_class;
+t_messlist *max_jit_scissors_class;
 		 	
 t_symbol *ps_output, *ps_rows, *ps_columns;		 	
 		 	
-void main(void)
+void C74_EXPORT main(void)
 {	
 	void *p, *q;
 	
@@ -98,7 +98,7 @@ void *max_jit_scissors_new(t_symbol *s, long argc, t_atom *argv)
 			max_jit_mop_matrix_args(x, argc, argv); // now set matrix info
 		} else {
 			jit_object_error((t_object *)x,"jit.scissors: could not allocate object");
-			freeobject(x);
+			freeobject((t_object *) x);
 			x = NULL;
 		}
 	}

@@ -23,11 +23,20 @@ extern "C" {
 /****************************************************************************/
 
 #ifdef MAC_VERSION
+#ifdef JIT_GL_AGL
 typedef WindowRef					t_jit_gl_native_window;
 typedef AGLDevice					t_jit_gl_native_device;			// Defines a reference to a list of graphics devices.
 typedef AGLDrawable					t_jit_gl_native_drawable;		// Defines an opaque data type that represents a Carbon window.
 typedef AGLContext					t_jit_gl_native_context;		// Represents a pointer to an opaque AGL context object
 typedef AGLPixelFormat				t_jit_gl_native_pixelformat;	// Represents a pointer to an opaque pixel format object.
+#endif
+#ifdef JIT_GL_NSGL
+typedef void*						t_jit_gl_native_window;			// NWWindow *
+typedef CGDirectDisplayID			t_jit_gl_native_device;			// Defines a reference to a list of graphics devices.
+typedef void*						t_jit_gl_native_drawable;		// NSView *
+typedef void*						t_jit_gl_native_context;		// NSOpenGLContext *
+typedef void*						t_jit_gl_native_pixelformat;	// NSOpenGLPixelFormat *
+#endif
 #endif
 
 #ifdef WIN_VERSION

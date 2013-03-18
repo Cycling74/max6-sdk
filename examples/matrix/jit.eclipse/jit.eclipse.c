@@ -60,7 +60,7 @@ t_jit_err jit_eclipse_init(void)
 	//add attributes	
 	attrflags = JIT_ATTR_GET_DEFER_LOW | JIT_ATTR_SET_USURP_LOW;
 
-	CLASS_STICKY_ATTR(_jit_eclipse_class,"category",0,"Behavior");
+	CLASS_STICKY_CATEGORY(_jit_eclipse_class,0,"Behavior");
 	CLASS_STICKY_ATTR(_jit_eclipse_class,"basic",0,"1");
 
 	// mode -- switches eclipsing states
@@ -68,7 +68,7 @@ t_jit_err jit_eclipse_init(void)
 		(method)0L,(method)0L,calcoffset(t_jit_eclipse,mode));
 	jit_class_addattr(_jit_eclipse_class,attr);
 	CLASS_ATTR_LABEL(_jit_eclipse_class,"mode",0,"Eclipse Mode");	
-	CLASS_ATTR_ENUMINDEX(_jit_eclipse_class, "mode", 0, "\"Color Tint Color Frames\" \"Color Tint Monochrome Frames\" \"Monochrome Tint Color Frames\" \"Monochrome Tint Monochrome Frames\"");
+	CLASS_ATTR_ENUMINDEX4(_jit_eclipse_class, "mode", 0, "Color Tint Color Frames", "Color Tint Monochrome Frames", "Monochrome Tint Color Frames", "Monochrome Tint Monochrome Frames");
 	
 	// rows, columns -- changes eclipse resolution
 	attr = jit_object_new(_jit_sym_jit_attr_offset,"rows",_jit_sym_long,attrflags,
@@ -118,9 +118,9 @@ t_jit_err jit_eclipse_init(void)
 		(method)0L,(method)0L,calcoffset(t_jit_eclipse,oper));
 	jit_class_addattr(_jit_eclipse_class,attr);
 	CLASS_ATTR_LABEL(_jit_eclipse_class,"op",0,"Operator");	
-	CLASS_ATTR_ENUMINDEX(_jit_eclipse_class, "op", 0, "Add Multiply");
+	CLASS_ATTR_ENUMINDEX2(_jit_eclipse_class, "op", 0, "Add", "Multiply");
 	
-	CLASS_STICKY_ATTR_CLEAR(_jit_eclipse_class, "category");
+	CLASS_STICKY_CATEGORY_CLEAR(_jit_eclipse_class);
 	CLASS_STICKY_ATTR_CLEAR(_jit_eclipse_class, "basic");
 
 	jit_class_register(_jit_eclipse_class);
@@ -378,9 +378,9 @@ void jit_eclipse_calculate_ndim(t_jit_eclipse *x, long dimcount, long *dim, long
 	 		               }
   		               }
 						*dst = *ip;
-						*++dst = CLIP(redpix,0,255);
-						*++dst = CLIP(greenpix,0,255);
-						*++dst = CLIP(bluepix,0,255);
+						*++dst = CLAMP(redpix,0,255);
+						*++dst = CLAMP(greenpix,0,255);
+						*++dst = CLAMP(bluepix,0,255);
 
             		}
 				}

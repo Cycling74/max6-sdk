@@ -1,6 +1,10 @@
 #ifndef __XQT_STUBS_H__
 #define __XQT_STUBS_H__
 
+#include "ext.h"
+
+#ifdef C74_USING_QUICKTIME
+
 #ifdef MAC_VERSION
 
 #include <CoreFoundation/CFString.h>
@@ -601,6 +605,8 @@ if (!((*(err)) = QTGetDataReferenceFullPathCFString(ref,reftype,XQT_PathStyle,&c
 	CFRelease(cfs); \
 } \
 }
+
+#endif // #ifdef C74_USING_QUICKTIME
 
 #endif // #ifndef __XQT_STUBS_H__
 

@@ -53,7 +53,7 @@ t_jit_err jit_fluoride_init(void)
 	//add attributes	
 	attrflags = JIT_ATTR_GET_DEFER_LOW | JIT_ATTR_SET_USURP_LOW;
 
-	CLASS_STICKY_ATTR(_jit_fluoride_class,"category",0,"Behavior");
+	CLASS_STICKY_CATEGORY(_jit_fluoride_class,0,"Behavior");
 	CLASS_STICKY_ATTR(_jit_fluoride_class,"basic",0,"1");
 
 	// glow -- sets color for neon effect
@@ -82,7 +82,7 @@ t_jit_err jit_fluoride_init(void)
 	CLASS_ATTR_LABEL(_jit_fluoride_class,"mode",0,"Color Mode");	
 	CLASS_ATTR_ENUMINDEX(_jit_fluoride_class, "mode", 0, "\"Black and White\" Color");
 
-	CLASS_STICKY_ATTR_CLEAR(_jit_fluoride_class, "category");
+	CLASS_STICKY_CATEGORY_CLEAR(_jit_fluoride_class);
 	CLASS_STICKY_ATTR_CLEAR(_jit_fluoride_class, "basic");
 
 	jit_class_register(_jit_fluoride_class);
@@ -171,7 +171,7 @@ void jit_fluoride_calculate_ndim(t_jit_fluoride *x, long dimcount, long *dim, lo
 	tol = x->tol*255.;
 	bw = MAX(1,lum-tol);
 	tmax = MIN(255,(lum+tol));
-	mode = CLIP(x->mode,0,1);
+	mode = CLIP_ASSIGN(x->mode,0,1);
 
 	if (dimcount<1) return; //safety
 	
@@ -202,24 +202,23 @@ void jit_fluoride_calculate_ndim(t_jit_fluoride *x, long dimcount, long *dim, lo
 						*op++ = *ip;
 						outpix = (float)(*(ip+1))*(indperc);
 						temp = ((float)(glow[0])*(1.-indperc))+outpix;
-						*op++ = CLIP(temp,0,255);
+						*op++ = CLAMP(temp,0,255);
 						outpix = (float)(*(ip+2))*(indperc);
 						temp = ((float)(glow[1])*(1.-indperc))+outpix;
-						*op++ = CLIP(temp,0,255);
+						*op++ = CLAMP(temp,0,255);
 						outpix = (float)(*(ip+3))*(indperc);
 						temp = ((float)(glow[2])*(1.-indperc))+outpix;
-						*op++ = CLIP(temp,0,255);
+						*op++ = CLAMP(temp,0,255);
 					}
 					else {
 						indperc=((float)(255-index)*(1./(tmax-lum)));
 						*op++ = *ip;
 						temp = ((float)(glow[0])*indperc);
-						*op++ = CLIP(temp,0,255);
+						*op++ = CLAMP(temp,0,255);
 						temp = ((float)(glow[1])*indperc);
-						*op++ = CLIP(temp,0,255);
+						*op++ = CLAMP(temp,0,255);
 						temp = ((float)(glow[2])*indperc);
-						*op++ = CLIP(temp,0,255);
-						
+						*op++ = CLAMP(temp,0,255);
 					}
 					
 					ick1:
@@ -249,21 +248,21 @@ void jit_fluoride_calculate_ndim(t_jit_fluoride *x, long dimcount, long *dim, lo
 						outpix = (float)(index)*(indperc);
 						*op++ = *ip;
 						temp = ((float)(glow[0])*(1.-indperc))+outpix;
-						*op++ = CLIP(temp,0,255);
+						*op++ = CLAMP(temp,0,255);
 						temp = ((float)(glow[1])*(1.-indperc))+outpix;
-						*op++ = CLIP(temp,0,255);
+						*op++ = CLAMP(temp,0,255);
 						temp = ((float)(glow[2])*(1.-indperc))+outpix;
-						*op++ = CLIP(temp,0,255);
+						*op++ = CLAMP(temp,0,255);
 					}
 					else {
 						indperc=((float)(255-index)*(1./(tmax-lum)));
 						*op++ = *ip;
 						temp = ((float)(glow[0])*indperc);
-						*op++ = CLIP(temp,0,255);
+						*op++ = CLAMP(temp,0,255);
 						temp = ((float)(glow[1])*indperc);
-						*op++ = CLIP(temp,0,255);
+						*op++ = CLAMP(temp,0,255);
 						temp = ((float)(glow[2])*indperc);
-						*op++ = CLIP(temp,0,255);
+						*op++ = CLAMP(temp,0,255);
 						
 					}
 					

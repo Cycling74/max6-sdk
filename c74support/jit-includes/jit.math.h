@@ -152,7 +152,7 @@ float jit_math_fast_atan(float x);		// absolute error of 1.43-08 for [-1, 1]
 #define JIT_RAND_F64_UNIFORM_LCG(seed) ((seed + 0.5) * (1.0 / 4294967296.0))
 
 // float32 bit extraction
-#define JIT_MATH_F32_BITS(x) (*(long *)&(x))
+#define JIT_MATH_F32_BITS(x) (*(t_int32 *)&(x))
 #define JIT_MATH_F32_ABS_BITS(x) (JIT_MATH_F32_BITS(x)&0x7FFFFFFF)
 #define JIT_MATH_F32_SIGN_BIT(x) (JIT_MATH_F32_BITS(x)&0x80000000)
 #define JIT_MATH_F32_ONE_BITS 0x3F800000

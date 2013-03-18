@@ -31,7 +31,7 @@ void sheep_shepherd_moved(t_sheep *x);
 void *sheep_class;
 
 
-int main(void)
+int C74_EXPORT main(void)
 {	
 	t_class *c;
 	

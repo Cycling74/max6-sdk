@@ -6,9 +6,7 @@
 #ifndef __COMMON_SYMBOLS_H__
 #define __COMMON_SYMBOLS_H__
 
-#ifdef __cplusplus
-	extern "C" {
-#endif // __cplusplus
+BEGIN_USING_C_LINKAGE
 
 #define COMMON_SYMBOLS_VERSION_5_0_0	500 // Max 5
 #define COMMON_SYMBOLS_VERSION			COMMON_SYMBOLS_VERSION_5_0_0
@@ -1469,6 +1467,7 @@ typedef struct _common_symbols_table
 	t_symbol *s_zoomfactor;
 	t_symbol *s_zorder;
 	t_symbol *s_zzz;
+	t_symbol *s_Sans_Serif;
 
 } t_common_symbols_table;
 
@@ -2925,15 +2924,13 @@ typedef struct _common_symbols_table
 #define _sym_zoomfactor (_common_symbols->s_zoomfactor)
 #define _sym_zorder (_common_symbols->s_zorder)
 #define _sym_zzz (_common_symbols->s_zzz)
+#define _sym_Sans_Serif (_common_symbols->s_Sans_Serif)
 
 extern t_common_symbols_table *_common_symbols;
 
 void common_symbols_init(void);
 t_common_symbols_table *common_symbols_gettable(void);
 
-#ifdef __cplusplus
-}
-#endif // __cplusplus
-
+END_USING_C_LINKAGE
 
 #endif // __COMMON_SYMBOLS_H__

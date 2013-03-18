@@ -3,7 +3,7 @@
 	#error this file is not editable by Microsoft Visual C++
 #endif //APSTUDIO_INVOKED
 
-#include "max_version.h"
+#include "max_winversion.h"
 #include "winver.h"
 
 /////////////////////////////////////////////////////////////////////////////

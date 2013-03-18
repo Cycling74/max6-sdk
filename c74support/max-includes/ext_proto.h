@@ -3,23 +3,11 @@
 #ifndef _EXT_PROTO_H_
 #define _EXT_PROTO_H_
 
-#include "ext_types.h"
-#include "ext_maxtypes.h"	// contains box, patcher, wind, atombuf
-#include "ext_sysmem.h"
-#include "ext_sysfile.h"
-#include "ext_systime.h"
-#include "ext_expr.h"
-#include "ext_path.h"
-#include "ext_qtimage.h"
-#include "ext_wind.h"
 #ifdef WIN_VERSION
 #include "ext_proto_win.h"
 #endif
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
+BEGIN_USING_C_LINKAGE
 
 // object/class functions
 
@@ -42,7 +30,7 @@ extern "C" {
 						The final argument of the type list should be a 0.
 	@see @ref chapter_anatomy
 */
-void setup(t_messlist **ident, method makefun, method freefun, short size, method menufun, short type, ...);
+C74_DEPRECATED ( void setup(t_messlist **ident, method makefun, method freefun, t_getbytes_size size, method menufun, short type, ...) )	;
 
 
 /**	Use addmess() to bind a function to a message other than the standard ones 
@@ -55,7 +43,7 @@ void setup(t_messlist **ident, method makefun, method freefun, short size, metho
 	@param	...		Any additional types from #e_max_atomtypes for additonal arguments.
 	@see @ref chapter_anatomy
 */
-void addmess(method f, char *s, short type, ...);
+C74_DEPRECATED ( void addmess(method f, char *s, short type, ...) ); 
 
 
 /**
@@ -64,7 +52,7 @@ void addmess(method f, char *s, short type, ...);
 	@ingroup class_old
 	@param	f	Function to be the bang method. 
 */
-void addbang(method f);
+C74_DEPRECATED ( void addbang(method f) );
 
 
 /**
@@ -72,7 +60,7 @@ void addbang(method f);
 	@ingroup class_old
 	@param	f Function to be the int method.
 */
-void addint(method f);
+C74_DEPRECATED ( void addint(method f) );
 
 
 /**
@@ -80,7 +68,7 @@ void addint(method f);
 	@ingroup class_old
 	@param	f Function to be the int method.
 */
-void addfloat(method f);
+C74_DEPRECATED ( void addfloat(method f) );
 
 
 /**
@@ -98,7 +86,7 @@ void addfloat(method f);
 			class with proper use of intin and floatin in your instance creation 
 			function @ref chapter_anatomy_object_new. 
 */
-void addinx(method f, short n);
+C74_DEPRECATED ( void addinx(method f, short n) );
 
 
 /**
@@ -116,7 +104,7 @@ void addinx(method f, short n);
 			class with proper use of intin and floatin in your instance creation 
 			function @ref chapter_anatomy_object_new. 
 */
-void addftx(method f, short n);
+C74_DEPRECATED ( void addftx(method f, short n) );
 
 
 /**
@@ -133,7 +121,7 @@ void addftx(method f, short n);
 						object, so that it can respond with your class's methods if it receives a 
 						message.
 */
-void *newobject(void *maxclass);
+C74_DEPRECATED ( void *newobject(void *maxclass) );
 
 
 /**
@@ -216,7 +204,7 @@ void class_setname(char *obname, char *filename);
 
 
 short force_install(char *classname);
-void loader_setpath(long type, short path);
+void loader_setpath(t_fourcc type, short path);
 
 
 
@@ -229,7 +217,7 @@ void loader_setpath(long type, short path);
 	@param	size	The size to allocate in bytes (up to 32767 bytes).
 	@return			A pointer to the allocated memory.
 */
-char *getbytes(short size);
+char *getbytes(t_getbytes_size size);
 
 
 /**
@@ -239,7 +227,7 @@ char *getbytes(short size);
 	@param	b		A pointer to the block of memory previously allocated that you want to free.
 	@param	size	The size the block specified (as parameter b) in bytes.
 */
-void freebytes(void *b, short size);
+void freebytes(void *b, t_getbytes_size size);
 
 
 /**
@@ -255,7 +243,7 @@ void freebytes(void *b, short size);
 				memory allocated with getbytes16() must be freed with 
 				freebytes16(), not freebytes().
 */
-char *getbytes16(short size);
+char *getbytes16(t_getbytes_size size);
 
 
 /**
@@ -269,7 +257,7 @@ char *getbytes16(short size);
 				memory that was allocated with getbytes(). Use it only with memory 
 				allocated with getbytes16().
 */
-void freebytes16(char *mem, short size);
+void freebytes16(char *mem, t_getbytes_size size);
 
 
 /**
@@ -304,10 +292,8 @@ short growhandle(void *h, long size);
 */
 void disposhandle(char **h);
 
-
-
 #ifdef MM_UNIFIED // sysmem and getbytes are unified
-#define getbytes(size) ((char *)sysmem_newptr((long)(size)))
+#define getbytes(size) ((char *)sysmem_newptr((t_ptr_size)(size)))
 #define freebytes(p,size) sysmem_freeptr((char *)(p))
 #endif
 
@@ -331,14 +317,18 @@ t_symbol *gensym(C74_CONST char *s);
  @param	s		A C-string to be looked up in Max's symbol table and then translated
  @return		A pointer to the #t_symbol in the symbol table.
  */
-	
-t_symbol *gensym_tr(char *s);
+
+#ifdef NO_TRANSLATION_SUPPORT
+#define gensym_tr gensym
+#else
+t_symbol *gensym_tr(const char *s);
+#endif
 
 // other translation stuff, to be documented...
 	
-char *str_tr(char *s);
+char *str_tr(const char *s);
 t_symbol *symbol_tr(t_symbol *s);
-int sprintf_tr(char *d, char *fmt, ...);
+int sprintf_tr(char *d, const char *fmt, ...);
 char *mayquote(char *s);
 	
 /**
@@ -440,8 +430,6 @@ void error(C74_CONST char *fmt, ...);
 void ouchstring(C74_CONST char *s, ...);
 short advise(char *s, ...);
 short advise_explain(char *note, char *explanation, char *b1, char *b2, char *b3);
-void t_cpytext(void);
-void drawstr(char *s);
 
 /**
 	Print multiple items in the same line of text in the Max window.
@@ -777,7 +765,7 @@ void *outlet_bang(void *o);
 	@param	n	Integer value to send.
 	@return		Returns 0 if a stack overflow occurred, otherwise returns 1.
 */
-void *outlet_int(void *o, long n);
+void *outlet_int(void *o, t_atom_long n);
 
 
 /**
@@ -1063,7 +1051,8 @@ long getschedtime(void);
 long getexttime(void);
 void sched_suspend(void);
 void sched_resume(void);
-
+short sched_isinpoll(void);
+short sched_isinqueue(void);
 
 /**
 	Cause a function to be executed at the timer level at some time in the future.
@@ -1094,8 +1083,8 @@ void sched_resume(void);
 
 	@see		defer()
 */
-void schedule(void *ob, method fun, long when, t_symbol *sym, short argc, Atom *argv);
-void schedulef(void *ob, method fun, double when, t_symbol *sym, short argc, Atom *argv);
+void schedule(void *ob, method fun, long when, t_symbol *sym, short argc, t_atom *argv);
+void schedulef(void *ob, method fun, double when, t_symbol *sym, short argc, t_atom *argv);
 
 
 
@@ -1379,7 +1368,7 @@ void *binbuf_new(void);
 	Use binbuf_vinsert() to append a Max message to a Binbuf adding a semicolon.
 	@ingroup binbuf
 	
-	@param	x		Binbuf containing the desired Atom. 
+	@param	x		Binbuf containing the desired t_atom. 
 	@param	fmt		A C-string containing one or more letters corresponding to the types of each element of the message. 
 					s for #t_symbol*, l for long, or f for float.
 	@param	...		Elements of the message, passed directly to the function as Symbols, longs, or floats.
@@ -1466,7 +1455,7 @@ void *binbuf_eval(void *x, short ac, t_atom *av, void *to);
 
 
 /**
-	Use binbuf_getatom to retrieve a single Atom from a Binbuf.
+	Use binbuf_getatom to retrieve a single t_atom from a Binbuf.
 	
 	@ingroup binbuf
 	@param	x	Binbuf containing the desired #t_atom. 
@@ -1552,7 +1541,7 @@ short binbuf_text(void *x, char **srcText, long n);
 	@return			If binbuf_totext runs out of memory during its operation, it returns a non-zero result, 
 					otherwise it returns 0.
 */
-short binbuf_totext(void *x, char **dstText, long *sizep);
+short binbuf_totext(void *x, char **dstText, t_ptr_size *sizep);
 
 
 /**
@@ -1578,25 +1567,21 @@ void binbuf_set(void *x, t_symbol *s, short argc, t_atom *argv);
 */
 void binbuf_append(void *x, t_symbol *s, short argc, t_atom *argv);
 
-// still supported?
-short binbuf_read(void *x, char *name, short volume, short binary);
+C74_DEPRECATED ( short binbuf_read(void *x, char *name, short volume, short binary) );
+C74_DEPRECATED ( short binbuf_write(void *x, char *fn, short vol, short binary) );
 
-// still supported?
-short binbuf_write(void *x, char *fn, short vol, short binary);
-
-void binbuf_savebox(void *x, void *w, t_symbol *what, short d1, short d2, short d3, long d4, short hidden, short user);
 void binbuf_delete(void *x, long fromType, long toType, long fromData, long toData);
 void binbuf_addtext(void *x, char **text, long size);
 
 
 /**
-	Use readatom() to read a single Atom from a text buffer.
+	Use readatom() to read a single t_atom from a text buffer.
 	@ingroup		binbuf
 	@param	outstr	C-string of 256 characters that will receive the next text item read from the buffer.
 	@param	text	Handle to the text buffer to be read.
 	@param	n		Starts at 0, and is modified by readatom to point to the next item in the text buffer. 
 	@param	e		Number of characters in text.
-	@param	ap		Where the resulting Atom read from the text buffer is placed.
+	@param	ap		Where the resulting t_atom read from the text buffer is placed.
 	@return			readatom() returns non-zero if there is more text to read, 
 					and zero if it has reached the end of the text. 
 					Note that this return value has the opposite logic from that of binbuf_getatom().
@@ -1611,7 +1596,7 @@ void binbuf_addtext(void *x, char **text, long size);
 	
 	while (readatom(outstr,textHandle,&index,textLength,&dst)) 
 	{ 
-		// do something with the resulting Atom
+		// do something with the resulting t_atom
 	} 
 	@endcode
 	
@@ -1620,49 +1605,6 @@ void binbuf_addtext(void *x, char **text, long size);
 */
 short readatom(char *outstr, char **text, long *n, long e, t_atom *ap);
 char *atom_string(t_atom *a);
-
-
-// atombuf functions
-
-/**
-	Use atombuf_new() to create a new Atombuf from an array of t_atoms.
-	
-	@ingroup atombuf
-	@param	argc	Number of t_atoms in the argv array. May be 0.
-	@param	argv	Array of t_atoms. If creating an empty Atombuf, you may pass 0.
-	@return			atombuf_new() create a new #t_atombuf and returns a pointer to it. 
-					If 0 is returned, insufficient memory was available.
-*/
-void *atombuf_new(long argc, t_atom *argv);
-
-
-/**
-	Use atombuf_free() to dispose of the memory used by a #t_atombuf.
-
-	@ingroup atombuf
-	@param	x	The #t_atombuf to free.
-*/
-void atombuf_free(t_atombuf *x);
-
-
-/**
-	Use atombuf_text() to convert text to a #t_atom array in a #t_atombuf.
-	To use this routine to create a new Atombuf from the text buffer, first 
-	create a new empty t_atombuf with a call to atombuf_new(0,NULL).
-		
-	@ingroup atombuf
-	@param	x		Pointer to existing atombuf variable. 
-					The variable will be replaced by a new Atombuf containing the converted text.
-	@param	text	Handle to the text to be converted. It need not be zero-terminated.
-	@param	size	Number of characters in the text.
-*/
-void atombuf_text(t_atombuf **x, char **text, long size);
-
-void atombuf_totext(t_atombuf *x, char **text, long *size);
-short atombuf_count(t_atombuf *x);
-void atombuf_set(t_atombuf *x, short start, short num);
-long atombuf_replacepoundargs(t_atombuf *x, long argc, t_atom *argv);
-
 
 // message functions
 
@@ -1730,7 +1672,7 @@ method egetfn(t_object *op, t_symbol *msg);
 method zgetfn(t_object *op, t_symbol *msg);
 
 
-void patcher_eachdo(eachdomethod fun, void *arg);	// this one is still legit
+void patcher_eachdo(t_intmethod fun, void *arg);	// this one is still legit
 void loadbang_suspend(void);  // used by poly~ on windows
 void loadbang_resume(void);  // used by poly~ on windows
 
@@ -1848,18 +1790,12 @@ void *intload(C74_CONST char *name, short volume, t_symbol *s, short ac, t_atom 
 void *stringload(C74_CONST char *name);
 
 void *resource_install(char *name, long rsrc);
-void *toolfile_new(char *name, short vol, long type);
+void *toolfile_new(char *name, short vol, t_fourcc type);
 long toolfile_fread(void *t, char *buf, long n);
 long toolfile_fwrite(void *t, char *buf, long n);
 short toolfile_getc(void *t);
 short collective_load(char *name, short vol, short argc, t_atom *argv);
 void *onecopy_fileload(C74_CONST char *s, short path);
-
-// resource functions
-short rescopy(long type,short id);
-short resnamecopy(long type, char *name);
-
-
 
 // preset functions
 
@@ -1896,7 +1832,7 @@ void preset_store(char *fmt, ... /*struct b100 arg1 */);
 	@param	val		Current value of your object.
 	
 */
-void preset_set(t_object *obj, long val);
+void preset_set(t_object *obj, t_atom_long val);
 
 
 /**	Restore the state of your object with an int message.
@@ -1909,23 +1845,11 @@ void preset_set(t_object *obj, long val);
 	@param	x	Your object.
 	@param	n	Current value of your object.
 */
-void preset_int(void *x,long n);
+void preset_int(t_object *x, t_atom_long n);
 
 
-
-// num functions
-
-/** Increment the event serial number.
-	@ingroup evnum
-*/
-void evnum_incr(void);
-
-
-/** Get the current value of the event serial number.
-	@ingroup evnum
-	@return	The current value of the event serial number.
-*/
-long evnum_get(void);
+C74_DEPRECATED ( void evnum_incr(void) );
+C74_DEPRECATED ( long evnum_get(void) );
 
 
 // proxy functions
@@ -2011,14 +1935,6 @@ void quittask_install(method m, void *a);
 void quittask_remove(method m);
 void quittask_remove2(method m, void *a);
 
-
-// notify functions
-void *notify_new(t_object *owner);
-void notify_enlist(t_object *dependent, t_object *owner);
-void notify_update(void *xx);
-void notify_free(t_object *owner);
-
-
 // miscellaneous functions
 
 /**
@@ -2043,26 +1959,11 @@ void notify_free(t_object *owner);
 short maxversion(void);
 
 
-/** Get a unique number for each Patcher file saved.
-	This function returns a serial number that is incremented each time a 
-	Patcher file is saved. This routine is useful for objects like table and coll 
-	that have multiple objects that refer to the same data, and can embed 
-	the data inside a Patcher file. If the serial number hasn't changed since 
-	your object was last saved, you can detect this and avoid saving 
-	multiple copies of the object's data.
+C74_DEPRECATED ( long serialno(void) );
 
-	@ingroup evnum
-	@return	The serial number.
-*/
-long serialno(void);
-
-
-char **palette(void);
 short ispatcher(t_object *x);
 short isnewex(t_object *x);
 void colorinfo(void *r);
-void *callback_new(void *assoc, ProcPtr proc, long refCon, short offset, ProcPtr *callfun);
-
 
 /**
 	Use open_promptset() to add a prompt message to the open file dialog displayed by open_dialog().
@@ -2099,7 +2000,7 @@ void open_promptset(C74_CONST char *s);
 void saveas_promptset(C74_CONST char *s);
 
 
-void dialog_setkey(long type);
+void dialog_setkey(t_fourcc type);
 void saveasdialog_pathset(short path, short force);
 void dialog_poll(short dosched, short doevent, unsigned short evtMask);
 void forecolor(short index, short way);
@@ -2109,8 +2010,6 @@ void stdlist(t_object *x, t_symbol *s, short ac, t_atom *av);
 void assist_queue(t_object *x, method fun);
 void inspector_open(t_object *x, void *p, void *b);
 void *object_subpatcher(t_object *x, long *index, void *arg);
-
-
 
 // filewatch functions
 
@@ -2157,18 +2056,6 @@ void fileusage_addpathname(void *w, long flags, C74_CONST char *name);
 void fileusage_copyfolder(void *w, C74_CONST char *name, long recursive);
 void fileusage_makefolder(void *w, C74_CONST char *name);
 
-
-// fileformat functions
-void fileformat_stripsuffix(char *name, long *types, short numtypes);
-
-
-#ifdef WIN_VERSION
-// systext functions
-void systext_mactoansi(char *sz);
-void systext_ansitomac(char *sz);
-#endif
-
-
 #ifdef MAC_VERSION
 long fontinfo_getencoding(long id);
 long fontinfo_convert(t_object *x, char *src, long srclen, long encoding, char **out);
@@ -2181,10 +2068,131 @@ long fontinfo_prefcheckencoding(void);
 
 t_atom *atom_dynamic_start(const t_atom *static_array, long static_count, long request_count);
 void atom_dynamic_end(const t_atom *static_array, t_atom *request_array);
+	
+short getfolder(short *vol);
+	
+/**
+ Present the user with the standard open file dialog.
+ This function is convenient wrapper for using Mac OS Navigation 
+ Services or Standard File for opening files. 
+ 
+ The mapping of extensions to types is configured in the C74:/init/max-fileformats.txt file.
+ The standard types to use for Max files are 'maxb' for old-format binary files, 
+ 'TEXT' for text files, and 'JSON' for newer format patchers or other .json files.
+ 
+ @ingroup files
+ @param	name	A C-string that will receive the name of the file the user wants to open.
+ The C-string should be allocated with a size of at least #MAX_FILENAME_CHARS.
+ @param	volptr	Receives the Path ID of the file the user wants to open.
+ @param	typeptr	The file type of the file the user wants to open.
+ @param	types	A list of file types to display. This is not limited to 4 
+ types as in the SFGetFile() trap. Pass NULL to display all types.
+ @param	ntypes	The number of file types in typelist. Pass 0 to display all types.
+ 
+ @return			0 if the user clicked Open in the dialog box.  
+ If the user cancelled, open_dialog() returns a non-zero value.
+ 
+ @see saveasdialog_extended()
+ @see locatefile_extended()
+ */
+short open_dialog(char *name, short *volptr, t_fourcc *typeptr, t_fourcc *types, short ntypes);
 
-#ifdef __cplusplus
-}
-#endif
+
+/**
+ Present the user with the standard save file dialog.
+ 
+ The mapping of extensions to types is configured in the C74:/init/max-fileformats.txt file.
+ The standard types to use for Max files are 'maxb' for old-format binary files, 
+ 'TEXT' for text files, and 'JSON' for newer format patchers or other .json files.
+ 
+ @ingroup files
+ @param	filename	A C-string containing a default name for the file to save.
+ If the user decides to save a file, its name is returned here.
+ The C-string should be allocated with a size of at least #MAX_FILENAME_CHARS.
+ 
+ @param	path		If the user decides to save the file, the Path ID of the location chosen is returned here.
+ 
+ @param	binptr		Pass NULL for this parameter.  
+ This parameter was used in Max 4 to allow the choice of saving binary or text format patchers.
+ 
+ @return				0 if the user choose to save the file.  
+ If the user cancelled, returns a non-zero value.
+ 
+ @see open_dialog()
+ @see saveasdialog_extended()
+ @see locatefile_extended()
+ */
+short saveas_dialog(char *filename, short *path, short *binptr);
+
+
+/**
+ Present the user with the standard save file dialog with your own list of file types.
+ 
+ saveasdialog_extended() is similar to saveas_dialog(), but allows the 
+ additional feature of specifying a list of possible types. These will be 
+ displayed in a pop-up menu. 
+ 
+ File types found in the typelist argument that match known Max types 
+ will be displayed with descriptive text. Unmatched types will simply 
+ display the type name (for example, "foXx" is not a standard type so it 
+ would be shown in the pop-up menu as foXx) 
+ 
+ Known file types include:
+ - TEXT: text file 
+ - maxb: Max binary patcher 
+ - maxc: Max collective 
+ - Midi: MIDI file 
+ - Sd2f: Sound Designer II audio file 
+ - NxTS: NeXT/Sun audio file 
+ - WAVE: WAVE audio file. 
+ - AIFF: AIFF audio file
+ - mP3f: Max preference file 
+ - PICT: PICT graphic file 
+ - MooV: Quicktime movie file 
+ - aPcs: VST plug-in 
+ - AFxP: VST effect patch data file 
+ - AFxB: VST effect bank data file 
+ - DATA: Raw data audio file 
+ - ULAW: NeXT/Sun audio file
+ 
+ @ingroup files
+ @param	name		A C-string containing a default name for the file to save.
+ If the user decides to save a file, its name is returned here.
+ The C-string should be allocated with a size of at least #MAX_FILENAME_CHARS.
+ 
+ @param	vol			If the user decides to save the file, the Path ID of the location chosen is returned here.
+ 
+ @param	type		Returns the type of file chosen by the user.
+ @param	typelist	The list of types provided to the user. 
+ @param	numtypes	The number of file types in typelist.
+ 
+ @return				0 if the user choose to save the file.  
+ If the user cancelled, returns a non-zero value.
+ 
+ @see open_dialog()
+ @see locatefile_extended()
+ */
+short saveasdialog_extended(char *name, short *vol, t_fourcc *type, t_fourcc *typelist, short numtypes);
+
+void saveas_autoextension(char way);
+void saveas_setselectedtype(t_fourcc type);
+
+void typelist_make(t_fourcc *types, long include, short *numtypes);
+
+
+
+short preferences_path(C74_CONST char *name, short create, short *path);
+short preferences_subpath(C74_CONST char *name, short path, short create, short *subpath);
+short textpreferences_read(C74_CONST char *filename, short path, short defaultid);
+short textpreferences_default(short id);
+void *textpreferences_open(void);
+void textpreferences_addraw(void *p, C74_CONST char *fmt, ...);
+void textpreferences_add(void *p, C74_CONST char *fmt, ...);
+void textpreferences_addoption(void *p, C74_CONST char *fmt, ...);
+void textpreferences_addrect(void *p, char *msg, short top, short left, short bottom, short right);
+short textpreferences_close(void *p, C74_CONST char *filename, short path);
+	
+END_USING_C_LINKAGE
 
 #endif // _EXT_PROTO_H_
 

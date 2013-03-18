@@ -8,6 +8,8 @@
 #ifndef _JIT_OP_H_
 #define _JIT_OP_H_
 
+#include "jit.common.h"
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -86,16 +88,16 @@ void jit_op_vector_abs_long		(long n, void *vecdata, t_jit_op_info *in0, t_jit_o
 void jit_op_vector_avg_long		(long n, void *vecdata, t_jit_op_info *in0, t_jit_op_info *in1, t_jit_op_info *out); 
 void jit_op_vector_absdiff_long	(long n, void *vecdata, t_jit_op_info *in0, t_jit_op_info *in1, t_jit_op_info *out); 
 
-void jit_op_vector_pass_long_altivec	(long n, void *vecdata, long *ip1, long *op); 
-void jit_op_vector_mult_long_altivec	(long n, void *vecdata, long *ip1, long *ip2, long *op); 
-void jit_op_vector_div_long_altivec		(long n, void *vecdata, long *ip1, long *ip2, long *op); //unimplemented
-void jit_op_vector_mod_long_altivec		(long n, void *vecdata, long *ip1, long *ip2, long *op); //unimplemented
-void jit_op_vector_add_long_altivec		(long n, void *vecdata, long *ip1, long *ip2, long *op); 
-void jit_op_vector_sub_long_altivec		(long n, void *vecdata, long *ip1, long *ip2, long *op); 
-void jit_op_vector_min_long_altivec		(long n, void *vecdata, long *ip1, long *ip2, long *op); 
-void jit_op_vector_max_long_altivec		(long n, void *vecdata, long *ip1, long *ip2, long *op); 
-void jit_op_vector_abs_long_altivec		(long n, void *vecdata, long *ip1, long *op); 
-void jit_op_vector_avg_long_altivec		(long n, void *vecdata, long *ip1, long *ip2, long *op); 
+void jit_op_vector_pass_long_altivec	(long n, void *vecdata, t_int32 *ip1, t_int32 *op); 
+void jit_op_vector_mult_long_altivec	(long n, void *vecdata, t_int32 *ip1, t_int32 *ip2, t_int32 *op); 
+void jit_op_vector_div_long_altivec		(long n, void *vecdata, t_int32 *ip1, t_int32 *ip2, t_int32 *op); //unimplemented
+void jit_op_vector_mod_long_altivec		(long n, void *vecdata, t_int32 *ip1, t_int32 *ip2, t_int32 *op); //unimplemented
+void jit_op_vector_add_long_altivec		(long n, void *vecdata, t_int32 *ip1, t_int32 *ip2, t_int32 *op); 
+void jit_op_vector_sub_long_altivec		(long n, void *vecdata, t_int32 *ip1, t_int32 *ip2, t_int32 *op); 
+void jit_op_vector_min_long_altivec		(long n, void *vecdata, t_int32 *ip1, t_int32 *ip2, t_int32 *op); 
+void jit_op_vector_max_long_altivec		(long n, void *vecdata, t_int32 *ip1, t_int32 *ip2, t_int32 *op); 
+void jit_op_vector_abs_long_altivec		(long n, void *vecdata, t_int32 *ip1, t_int32 *op); 
+void jit_op_vector_avg_long_altivec		(long n, void *vecdata, t_int32 *ip1, t_int32 *ip2, t_int32 *op); 
 
 void jit_op_vector_pass_float32		(long n, void *vecdata, t_jit_op_info *in0, t_jit_op_info *in1, t_jit_op_info *out); 
 void jit_op_vector_mult_float32		(long n, void *vecdata, t_jit_op_info *in0, t_jit_op_info *in1, t_jit_op_info *out); 
@@ -179,12 +181,12 @@ void jit_op_vector_bitnot_long	(long n, void *vecdata, t_jit_op_info *in0, t_jit
 void jit_op_vector_lshift_long	(long n, void *vecdata, t_jit_op_info *in0, t_jit_op_info *in1, t_jit_op_info *out); 
 void jit_op_vector_rshift_long	(long n, void *vecdata, t_jit_op_info *in0, t_jit_op_info *in1, t_jit_op_info *out); 
 
-void jit_op_vector_bitand_long_altivec	(long n, void *vecdata, long *ip1, long *ip2, long *op); 
-void jit_op_vector_bitor_long_altivec	(long n, void *vecdata, long *ip1, long *ip2, long *op); 
-void jit_op_vector_bitxor_long_altivec	(long n, void *vecdata, long *ip1, long *ip2, long *op); 
-void jit_op_vector_bitnot_long_altivec	(long n, void *vecdata, long *ip1, long *op); 
-void jit_op_vector_lshift_long_altivec	(long n, void *vecdata, long *ip1, long *ip2, long *op); 
-void jit_op_vector_rshift_long_altivec	(long n, void *vecdata, long *ip1, long *ip2, long *op); 
+void jit_op_vector_bitand_long_altivec	(long n, void *vecdata, t_int32 *ip1, t_int32 *ip2, t_int32 *op); 
+void jit_op_vector_bitor_long_altivec	(long n, void *vecdata, t_int32 *ip1, t_int32 *ip2, t_int32 *op); 
+void jit_op_vector_bitxor_long_altivec	(long n, void *vecdata, t_int32 *ip1, t_int32 *ip2, t_int32 *op); 
+void jit_op_vector_bitnot_long_altivec	(long n, void *vecdata, t_int32 *ip1, t_int32 *op); 
+void jit_op_vector_lshift_long_altivec	(long n, void *vecdata, t_int32 *ip1, t_int32 *ip2, t_int32 *op); 
+void jit_op_vector_rshift_long_altivec	(long n, void *vecdata, t_int32 *ip1, t_int32 *ip2, t_int32 *op); 
 
 //logical
 void jit_op_vector_and_char	(long n, void *vecdata, t_jit_op_info *in0, t_jit_op_info *in1, t_jit_op_info *out); 

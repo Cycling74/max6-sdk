@@ -25,10 +25,14 @@ typedef struct _jit_gl_gridshape {
 	long				dim[2];
 	float				rad_minor; // for torus
 	char				gridmode;
-	char				displaylist;
+	long				displaylist;
 	long				usetangents;
 	void				*mesh;
 	void				*tangents;
+	t_symbol			*cache_mode;
+	GLuint				dlref;
+	long				multdraw;
+	long				dobounds;
 } t_jit_gl_gridshape;
 
 void *_jit_gl_gridshape_class;
@@ -42,6 +46,7 @@ t_jit_err jit_gl_gridshape_shape(t_jit_gl_gridshape *x, void *attr, long argc, t
 t_jit_err jit_gl_gridshape_dim(t_jit_gl_gridshape *x, void *attr, long argc, t_atom *argv);
 t_jit_err jit_gl_gridshape_rad_minor(t_jit_gl_gridshape *x, void *attr, long argc, t_atom *argv);
 t_jit_err jit_gl_gridshape_displaylist(t_jit_gl_gridshape *x, void *attr, long argc, t_atom *argv);
+t_jit_err jit_gl_gridshape_cache_mode_set(t_jit_gl_gridshape *x, void *attr, long argc, t_atom *argv);
 t_jit_err jit_gl_gridshape_gridmode(t_jit_gl_gridshape *x, void *attr, long argc, t_atom *argv);
 t_jit_err jit_gl_gridshape_rebuild(t_jit_gl_gridshape *x);
 t_jit_err jit_gl_gridshape_rebuild_geometry(t_jit_gl_gridshape *x);
@@ -54,6 +59,9 @@ t_jit_err jit_gl_gridshape_attr_setcolor(t_jit_gl_gridshape *x, void *attr, long
 
 t_jit_err jit_gl_gridshape_recalc(t_jit_gl_gridshape *x);
 t_jit_err jit_gl_gridshape_dest_closing(t_jit_gl_gridshape *x);
+
+t_jit_err jit_gl_gridshape_multiple_draw_begin(t_jit_gl_gridshape *x);
+t_jit_err jit_gl_gridshape_multiple_draw_end(t_jit_gl_gridshape *x);
 
 void calc_sphere(t_jit_gl_gridshape *x);
 void calc_cylinder(t_jit_gl_gridshape *x);
@@ -71,7 +79,9 @@ void color_surface(t_jit_gl_gridshape *x);
 void draw_grid(t_jit_gl_gridshape *x, t_jit_object *matrix, GLenum mode);
 
 t_symbol *ps_circle,*ps_sphere,*ps_torus,*ps_cylinder,*ps_opencylinder,*ps_cube,*ps_opencube,*ps_plane, *ps_capsule, *ps_cone;
-t_symbol *ps_matrixoutput;
+t_symbol *ps_matrixoutput, *ps_immediate;
+t_symbol *ps_texunits;
+t_symbol *ps_drawraw;
 
 // --------------------------------------------------------------------------------
 //
@@ -107,12 +117,19 @@ t_jit_err jit_gl_gridshape_init(void) {
 		(method)0L,(method)jit_gl_gridshape_rad_minor,calcoffset(t_jit_gl_gridshape, rad_minor));	
 	jit_class_addattr(_jit_gl_gridshape_class,attr);
 	
-	attr = jit_object_new(_jit_sym_jit_attr_offset,"displaylist",_jit_sym_char,attrflags,
-		(method)0L,(method)jit_gl_gridshape_displaylist,calcoffset(t_jit_gl_gridshape, displaylist));	
+	attr = jit_object_new(_jit_sym_jit_attr_offset,"displaylist",_jit_sym_long,attrflags,
+		(method)0L,(method)jit_gl_gridshape_displaylist,calcoffset(t_jit_gl_gridshape, displaylist));
+	object_addattr_parse(attr,"style",_jit_sym_symbol,0,"onoff");
 	jit_class_addattr(_jit_gl_gridshape_class,attr);
+	
+    attr = jit_object_new(_jit_sym_jit_attr_offset, "cache_mode", _jit_sym_symbol, attrflags,
+		(method)0L, (method)jit_gl_gridshape_cache_mode_set, calcoffset(t_jit_gl_gridshape, cache_mode));
+    jit_class_addattr(_jit_gl_gridshape_class, (t_jit_object*)attr);
+	CLASS_ATTR_ENUM(_jit_gl_gridshape_class,"cache_mode",0,"immediate vertexarray vertexbuffer");
 	
 	attr = jit_object_new(_jit_sym_jit_attr_offset,"gridmode",_jit_sym_char,attrflags,
 		(method)0L,(method)jit_gl_gridshape_gridmode,calcoffset(t_jit_gl_gridshape, gridmode));	
+	object_addattr_parse(attr,"style",_jit_sym_symbol,0,"onoff");
 	jit_class_addattr(_jit_gl_gridshape_class,attr);
 	
 	attr = jit_object_new(_jit_sym_jit_attr_offset_array,"color",_jit_sym_float32,4,attrflags,
@@ -146,7 +163,11 @@ t_jit_err jit_gl_gridshape_init(void) {
 	// must register for ob3d	
 	jit_class_addmethod(_jit_gl_gridshape_class, (method)jit_object_register, 			"register",		A_CANT, 0L);
 	jit_class_addmethod(_jit_gl_gridshape_class, (method)jit_gl_gridshape_get_cache,	"get_cache",	A_CANT, 0L);
-
+	
+	// when drawing from gl.multiple, these are called before and after iterating
+	jit_class_addmethod(_jit_gl_gridshape_class, (method)jit_gl_gridshape_multiple_draw_begin, "multiple_draw_begin", A_CANT, 0L);
+	jit_class_addmethod(_jit_gl_gridshape_class, (method)jit_gl_gridshape_multiple_draw_end, "multiple_draw_end", A_CANT, 0L);
+	
 	jit_class_register(_jit_gl_gridshape_class);
 
 	ps_circle 			= gensym("circle");
@@ -160,7 +181,10 @@ t_jit_err jit_gl_gridshape_init(void) {
 	ps_matrixoutput 	= gensym("matrixoutput");
 	ps_capsule			= gensym("capsule");
 	ps_cone				= gensym("cone");	
-
+	ps_immediate		= gensym("immediate");
+	ps_texunits			= gensym("texunits");
+	ps_drawraw			= gensym("drawraw");
+	
 	return JIT_ERR_NONE;
 }
 
@@ -199,12 +223,23 @@ t_jit_gl_gridshape *jit_gl_gridshape_new(t_symbol * dest_name) {
 
 		// allocate glchunk matrix used to store and draw geometry
 		x->chunk = jit_glchunk_grid_new(_jit_sym_gl_quad_grid, 12, x->dim[0], x->dim[1]);
+		x->cache_mode = gensym("vertexarray");
+        x->dlref = 0;
+		x->multdraw = 0;
+		x->dobounds = 0;
 	} 
 	
 	return x;
 }
 
 void jit_gl_gridshape_free(t_jit_gl_gridshape *x) {
+
+	if(x->dlref) {
+		if(jit_ob3d_set_context(x)==JIT_ERR_NONE) {
+			glDeleteLists(x->dlref,1);
+		}
+	}
+
 	if (x->chunk) {
 		jit_glchunk_delete(x->chunk);
 	}
@@ -262,14 +297,37 @@ t_jit_err jit_gl_gridshape_displaylist(t_jit_gl_gridshape *x, void *attr, long a
 	if (argc&&argv) {
 		x->displaylist = jit_atom_getlong(argv);
 		x->recalc = 1;
-		if(x->displaylist) {
-			jit_attr_setsym(x->mesh, gensym("cache_mode"), gensym("displaylist"));
-		}
-		else {
-			jit_attr_setsym(x->mesh, gensym("cache_mode"), gensym("auto"));
+		if(x->cache_mode!=ps_immediate) {
+			if(x->displaylist) {
+				jit_attr_setsym(x->mesh, gensym("cache_mode"), gensym("displaylist"));
+			}
+			else {
+				jit_attr_setsym(x->mesh, gensym("cache_mode"), x->cache_mode);
+			}
 		}
 	}
 	return JIT_ERR_NONE;
+}
+
+t_jit_err jit_gl_gridshape_cache_mode_set(t_jit_gl_gridshape *x, void *attr, long argc, t_atom *argv)
+{
+	t_jit_err err = JIT_ERR_NONE;
+	t_symbol *v;
+	if(!x||!argc||!argv) return JIT_ERR_INVALID_PTR;
+	v = jit_atom_getsym(argv);
+	if (x->cache_mode != v) {
+		x->cache_mode = v;
+		x->recalc = 1;
+		if(x->cache_mode!=ps_immediate) {
+			if(x->displaylist) {
+				jit_attr_setsym(x->mesh, gensym("cache_mode"), gensym("displaylist"));
+			}
+			else {
+				jit_attr_setsym(x->mesh, gensym("cache_mode"), x->cache_mode);
+			}
+		}		
+	}
+	return err;
 }
 
 t_jit_err jit_gl_gridshape_gridmode(t_jit_gl_gridshape *x, void *attr, long argc, t_atom *argv) {
@@ -327,11 +385,23 @@ t_jit_err jit_gl_gridshape_recalc(t_jit_gl_gridshape *x) {
 
 t_jit_err jit_gl_gridshape_dest_closing(t_jit_gl_gridshape *x) {
 	// destination is closing, free our context dependent resources
+	if (x->dlref) {
+		glDeleteLists(x->dlref,1);
+		x->dlref=0;
+		x->recalc=1;
+	}
+	
 	return JIT_ERR_NONE; 
 }
 
 t_jit_err jit_gl_gridshape_dest_changed(t_jit_gl_gridshape *x) {
 	// destination has changed, requires rebuilding context dependent resources
+	jit_attr_setsym(x->mesh, gensym("drawto"), jit_attr_getsym(x, gensym("drawto")));
+	
+	if(x->displaylist) {
+		x->recalc = 1;
+	}
+
 	return JIT_ERR_NONE;
 }
 
@@ -354,41 +424,90 @@ t_jit_err jit_gl_gridshape_rebuild_geometry(t_jit_gl_gridshape *x) {
 	return JIT_ERR_NONE;
 }
 
-t_jit_err jit_gl_gridshape_draw(t_jit_gl_gridshape *x) {
-	t_jit_err result = JIT_ERR_NONE;
+void jit_gl_gridshape_draw_begin(t_jit_gl_gridshape *x)
+{
 	void *ob3d = jit_ob3d_get(x);
 	long ntextures = ob3d_texture_count(ob3d);
-	
 	long boundcalc = jit_attr_getlong(x, _jit_sym_boundcalc);
+
+	jit_attr_setlong(x->mesh, ps_texunits, ntextures);
+	
 	if (x->recalc) {
 		jit_gl_gridshape_recalc(x);
-	}
-	
-	jit_attr_setlong(x->mesh, gensym("texunits"), ntextures);
-	
-	if (x->chunk&&x->chunk->m_vertex) {
-		if (!jit_attr_getlong(x,ps_matrixoutput)) {
-			jit_object_method(x->mesh, gensym("drawraw"));
-			glEnable(GL_COLOR_MATERIAL);
+
+		if (x->displaylist&&x->cache_mode==ps_immediate) {
+			// cache/restore context in case in capture mode
+			t_jit_gl_context ctx = jit_gl_get_context();
+			jit_ob3d_set_context(x);			
+			
+			if (x->dlref) {
+				glDeleteLists(x->dlref,1);
+				x->dlref = 0;
+			}
+			if (x->dlref=glGenLists(1)) {
+				GLenum prim = (x->gridmode) ? GL_TRIANGLE_STRIP : GL_QUAD_STRIP;
+				glNewList(x->dlref, GL_COMPILE);
+				if (x->chunk&&x->chunk->m_vertex) 
+					draw_grid(x,x->chunk->m_vertex, prim);
+				glEndList();
+			}
+			jit_gl_set_context(ctx);
 		}
-		else {
-			color_surface(x);
-			result = jit_ob3d_draw_chunk(x->ob3d, x->chunk);
-		}
 	}
-	
+		
 	if(boundcalc != jit_attr_getlong(x->mesh, _jit_sym_boundcalc))
 		jit_attr_setlong(x->mesh, _jit_sym_boundcalc, boundcalc);
 	
-	if(x->recalc) {
-		if(boundcalc) {
-			float bounds[6];
-			jit_attr_getfloat_array(x->mesh, _jit_sym_bounds, 6, bounds);
-			jit_attr_setfloat_array(x, _jit_sym_bounds, 6, bounds);
+	if(x->recalc && boundcalc)
+		x->dobounds = 1;
+}
+
+t_jit_err jit_gl_gridshape_multiple_draw_begin(t_jit_gl_gridshape *x)
+{
+	x->multdraw = 1;
+	jit_gl_gridshape_draw_begin(x);
+	return JIT_ERR_NONE;
+}
+
+t_jit_err jit_gl_gridshape_multiple_draw_end(t_jit_gl_gridshape *x)
+{
+	x->multdraw = 0;
+	return JIT_ERR_NONE;
+}
+
+t_jit_err jit_gl_gridshape_draw(t_jit_gl_gridshape *x) {
+	t_jit_err result = JIT_ERR_NONE;
+
+	if(!x->multdraw)
+		jit_gl_gridshape_draw_begin(x);
+	
+	if (x->chunk&&x->chunk->m_vertex) {
+		if (!jit_attr_getlong(x,ps_matrixoutput)) {
+			if(x->cache_mode!=ps_immediate) {
+				jit_object_method(x->mesh, ps_drawraw);
+				glEnable(GL_COLOR_MATERIAL);
+			}
+			else if (x->displaylist&&x->dlref) {
+				glCallList(x->dlref);
+			}
+			else {
+				GLenum prim = (x->gridmode) ? GL_TRIANGLE_STRIP : GL_QUAD_STRIP;
+				draw_grid(x,x->chunk->m_vertex, prim);
+			}
+		} else{
+			color_surface(x);
+			result = jit_ob3d_draw_chunk(x->ob3d, x->chunk); //output matrix
 		}
-		x->recalc = 0;
 	}
 	
+	if(x->dobounds) {
+		float bounds[6];
+		jit_attr_getfloat_array(x->mesh, _jit_sym_bounds, 6, bounds);
+		jit_attr_setfloat_array(x, _jit_sym_bounds, 6, bounds);
+		x->dobounds = 0;
+	}
+		
+	x->recalc = 0;
 	return result;
 }
 

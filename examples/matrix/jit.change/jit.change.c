@@ -85,7 +85,7 @@ t_jit_err jit_change_init(void)
 	//add attributes	
 	attrflags = JIT_ATTR_GET_DEFER_LOW | JIT_ATTR_SET_USURP_LOW;
 
-	CLASS_STICKY_ATTR(_jit_change_class,"category",0,"Behavior");
+	CLASS_STICKY_CATEGORY(_jit_change_class,0,"Behavior");
 	CLASS_STICKY_ATTR(_jit_change_class,"basic",0,"1");
 	
 	attr = jit_object_new(_jit_sym_jit_attr_offset,"thresh",_jit_sym_long,attrflags,
@@ -97,9 +97,9 @@ t_jit_err jit_change_init(void)
 		(method)0L,(method)0L,calcoffset(t_jit_change,mode));
 	jit_class_addattr(_jit_change_class,attr);
 	CLASS_ATTR_LABEL(_jit_change_class,"mode",0,"Pass Mode");	
-	CLASS_ATTR_ENUMINDEX(_jit_change_class, "mode", 0, "More-Than-Threshold Less-Than-Threshold");
+	CLASS_ATTR_ENUMINDEX2(_jit_change_class, "mode", 0, "More-Than-Threshold", "Less-Than-Threshold");
 	
-	CLASS_STICKY_ATTR_CLEAR(_jit_change_class, "category");
+	CLASS_STICKY_CATEGORY_CLEAR(_jit_change_class);
 	CLASS_STICKY_ATTR_CLEAR(_jit_change_class, "basic");
 
 	attrflags = JIT_ATTR_GET_OPAQUE_USER | JIT_ATTR_SET_OPAQUE_USER;
@@ -403,10 +403,10 @@ t_jit_err jit_change_calculate_ndim(long dimcount, long *dim, long planecount,
 t_jit_err jit_change_vector_char_plane4(long n, t_jit_change_vecdata_char *vecdata, t_jit_op_info *in, t_jit_op_info *out) 
 {
 	long thresh;
-	long *ip,*op;
+	t_uint32 *ip,*op;
 		
-	ip = ((long *)in->p);
-	op  = ((long *)out->p);
+	ip = ((t_uint32 *)in->p);
+	op  = ((t_uint32 *)out->p);
 	
 	thresh = vecdata->thresh;
 	
@@ -476,10 +476,10 @@ t_jit_err jit_change_vector_char(long n, t_jit_change_vecdata_char *vecdata, t_j
 t_jit_err jit_change_vector_long(long n, t_jit_change_vecdata_long *vecdata, t_jit_op_info *in, t_jit_op_info *out) 
 {
 	long thresh, planecount, k;
-	long *ip,*op;
+	t_int32 *ip,*op;
 		
-	ip = ((long *)in->p);
-	op  = ((long *)out->p);
+	ip = ((t_int32 *)in->p);
+	op  = ((t_int32 *)out->p);
 	
 	thresh = vecdata->thresh;
 	planecount = vecdata->planecount;

@@ -46,7 +46,7 @@ static t_class *s_uitextfield_class = NULL;
 /**********************************************************************/
 // Class Definition and Life Cycle
 
-int main(void)
+int C74_EXPORT main(void)
 {
 	t_class *c; 
 	
@@ -153,7 +153,7 @@ void uitextfield_set(t_uitextfield *x, t_symbol *s, long ac, t_atom *av)
 		if (atom_gettype(av) == A_SYM)
 			strcpy(buff, atom_getsym(av)->s_name);
 		else if (atom_gettype(av) == A_LONG)
-			sprintf(buff, "%ld", atom_getlong(av));
+			sprintf(buff, "%i", (int)atom_getlong(av));
 		else if (atom_gettype(av) == A_FLOAT)
 			sprintf(buff, "%f", atom_getfloat(av));
 		else {

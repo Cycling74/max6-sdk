@@ -40,7 +40,7 @@ void pictmeter_dsp64(t_pictmeter *x, t_object *dsp64, short *count, double sampl
 static t_class *s_pictmeter_class;
 
 
-int main(void)
+int C74_EXPORT main(void)
 {	
 	t_class *c;
 		
@@ -155,7 +155,8 @@ void pictmeter_read(t_pictmeter *x, t_symbol *s)
 void pictmeter_doread(t_pictmeter *x, t_symbol *s, long argc, t_atom *argv)
 {
 	char filename[MAX_PATH_CHARS];
-	long *type,ntype,outtype;
+	t_fourcc *type, outtype;
+	long ntype;
 	t_max_err err;
 	char alloc;
 	short path;
@@ -163,7 +164,7 @@ void pictmeter_doread(t_pictmeter *x, t_symbol *s, long argc, t_atom *argv)
 	
 	jgraphics_getfiletypes(x, &ntype, &type, &alloc);
 	if (s == gensym("")) {
-		err = open_dialog(filename, &path,(void *)&outtype, (void *)type, ntype);
+		err = open_dialog(filename, &path, &outtype, type, ntype);
 		if (err)
 			return;
 	} else {		

@@ -21,7 +21,7 @@ extern "C" {
     #pragma pack(2)
 #endif
 
-typedef	long t_jit_cubicspline_basismatrix_fixed[4][4];
+typedef	t_int32 t_jit_cubicspline_basismatrix_fixed[4][4];
 typedef	float t_jit_cubicspline_basismatrix_float32[4][4];
 typedef	double t_jit_cubicspline_basismatrix_float64[4][4];
 
@@ -38,26 +38,26 @@ extern t_symbol *ps_jit_cubicspline_basisname_power;
 
 t_jit_err jit_cubicspline_fillbasis_fixed(
 	t_symbol *name, t_jit_cubicspline_basismatrix_fixed *matrix, 
-	long *stepcount);
+	t_int32 *stepcount);
 
 t_jit_err jit_cubicspline_fillbasis_float32(
 	t_symbol *name, t_jit_cubicspline_basismatrix_float32 *matrix, 
-	long *stepcount);
+	t_int32 *stepcount);
 
 t_jit_err jit_cubicspline_fillbasis_float64(
 	t_symbol *name, t_jit_cubicspline_basismatrix_float64 *matrix, 
-	long *stepcount);
+	t_int32 *stepcount);
 
-long jit_cubicspline_general_eval_fixed(
-	long val, long stepcount, long knotcount, long *knots, 
+t_int32 jit_cubicspline_general_eval_fixed(
+	t_int32 val, t_int32 stepcount, t_int32 knotcount, t_int32 *knots, 
 	t_jit_cubicspline_basismatrix_fixed matrix);
 
 float jit_cubicspline_general_eval_float32(
-	float val, long stepcount, long knotcount, float *knots, 
+	float val, t_int32 stepcount, t_int32 knotcount, float *knots, 
 	t_jit_cubicspline_basismatrix_float32 matrix);
 
 double jit_cubicspline_general_eval_float64(
-	double val, long stepcount, long knotcount, double *knots, 
+	double val, t_int32 stepcount, t_int32 knotcount, double *knots, 
 	t_jit_cubicspline_basismatrix_float64 matrix);
 
 // --------------------------------------------------------------------------

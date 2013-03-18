@@ -1,9 +1,7 @@
 #ifndef __EXT_PROTO_WIN_H__
 #define __EXT_PROTO_WIN_H__
 
-#ifdef __cplusplus
-extern "C" {
-#endif
+BEGIN_USING_C_LINKAGE
 
 #if C74_PRAGMA_STRUCT_PACKPUSH
     #pragma pack(push, 2)
@@ -27,9 +25,6 @@ LPSTR main_get_appfilename(void);
     #pragma pack()
 #endif
 
-#ifdef __cplusplus
-}
-#endif
-
+END_USING_C_LINKAGE
 
 #endif // __EXT_PROTO_WIN_H__

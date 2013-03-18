@@ -3,9 +3,7 @@
 
 #include "ext_obex.h"
 
-#ifdef __cplusplus
-extern "C" {
-#endif
+BEGIN_USING_C_LINKAGE
 
 /** An opaque thread instance pointer. 
 	@ingroup threading
@@ -240,10 +238,7 @@ long systhread_cond_wait(t_systhread_cond pcond, t_systhread_mutex pmutex);
 long systhread_cond_signal(t_systhread_cond pcond);
 long systhread_cond_broadcast(t_systhread_cond pcond);
 
-
-#ifdef __cplusplus
-}
-#endif
+END_USING_C_LINKAGE
 
 #endif // _EXT_SYSTHREAD_H_
 

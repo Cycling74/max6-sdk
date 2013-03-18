@@ -48,7 +48,7 @@ void minimum_resize(t_minimum *x, long size);
 static t_class *minimum_class = NULL;
 
 
-int main()
+int C74_EXPORT main()
 {
 	t_class *c;
 

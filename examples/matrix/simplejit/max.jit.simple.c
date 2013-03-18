@@ -35,18 +35,23 @@ static void	*max_jit_simple_class = NULL;
 
 /************************************************************************************/
 
-int main(void)
-{	
-	void *p, *q;
+int C74_EXPORT main(void)
+{
+	t_class *max_class, *jit_class;
 	
 	jit_simple_init();	
-	setup((t_messlist**)&max_jit_simple_class, (method)max_jit_simple_new, (method)max_jit_simple_free, sizeof(t_max_jit_simple), 0, A_GIMME, 0);
 
-	p = max_jit_classex_setup(calcoffset(t_max_jit_simple, obex));
-	q = jit_class_findbyname(gensym("jit_simple"));    
-    max_jit_classex_mop_wrap(p, q, 0);							// attrs & methods for name, type, dim, planecount, bang, outputmatrix, etc
-    max_jit_classex_standard_wrap(p, q, 0);						// attrs & methods for getattributes, dumpout, maxjitclassaddmethods, etc
-    addmess((method)max_jit_mop_assist, "assist", A_CANT, 0);	// standard matrix-operator (mop) assist fn
+	max_class = class_new("jit.simple", (method)max_jit_simple_new, (method)max_jit_simple_free, sizeof(t_max_jit_simple), NULL, A_GIMME, 0);
+	max_jit_class_obex_setup(max_class, calcoffset(t_max_jit_simple, obex));
+
+	jit_class = jit_class_findbyname(gensym("jit_simple"));
+    max_jit_class_mop_wrap(max_class, jit_class, 0);			// attrs & methods for name, type, dim, planecount, bang, outputmatrix, etc
+	max_jit_class_wrap_standard(max_class, jit_class, 0);		// attrs & methods for getattributes, dumpout, maxjitclassaddmethods, etc
+
+	class_addmethod(max_class, (method)max_jit_mop_assist, "assist", A_CANT, 0);	// standard matrix-operator (mop) assist fn
+
+	class_register(CLASS_BOX, max_class);
+	max_jit_simple_class = max_class;
 	return 0;
 }
 
@@ -59,7 +64,7 @@ void *max_jit_simple_new(t_symbol *s, long argc, t_atom *argv)
 	t_max_jit_simple	*x;
 	void			*o;
 
-	x = (t_max_jit_simple*)max_jit_obex_new(max_jit_simple_class, gensym("jit_simple"));
+	x = (t_max_jit_simple*)max_jit_object_alloc(max_jit_simple_class, gensym("jit_simple"));
 	if (x) {
 		o = jit_object_new(gensym("jit_simple"));
 		if (o) {
@@ -68,7 +73,7 @@ void *max_jit_simple_new(t_symbol *s, long argc, t_atom *argv)
 		} 
 		else {
 			jit_object_error((t_object*)x, "jit.simple: could not allocate object");
-			freeobject((t_object*)x);
+			object_free((t_object*)x);
 			x = NULL;
 		}
 	}
@@ -80,6 +85,6 @@ void max_jit_simple_free(t_max_jit_simple *x)
 {
 	max_jit_mop_free(x);
 	jit_object_free(max_jit_obex_jitob_get(x));
-	max_jit_obex_free(x);
+	max_jit_object_free(x);
 }
 

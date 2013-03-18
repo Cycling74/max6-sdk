@@ -7,32 +7,6 @@
 #ifndef __JIT_WINDOW_H__
 #define __JIT_WINDOW_H__
 
-#if TARGET_RT_MAC_MACHO
-// don't need these includes
-#else
-#include <Devices.h>
-#include <Dialogs.h>
-#include <DriverServices.h>
-#include <Events.h>
-#include <LowMem.h>
-#include <TextEdit.h>
-#include <ToolUtils.h>
-#include <Windows.h>
-#include <MacWindows.h>
-
-#include <math.h>
-#include <stdio.h>
-#endif
-
-#ifndef WIN_VERSION //win_todo
-#if TARGET_RT_MAC_MACHO
-#include <AGL/agl.h>
-#include <GLUT/glut.h>
-#else
-#include "agl.h"
-#include "glut.h"
-#endif
-#endif
 #include "jit.common.h"
 
 #ifndef __max_ext_wind_h

@@ -22,9 +22,9 @@ t_jit_err max_jit_pack_jit_matrix(t_max_jit_pack *x, t_symbol *s, long argc, t_a
 void setOutputPlanes(t_max_jit_pack *x);
 
 
-void *max_jit_pack_class;
+t_messlist *max_jit_pack_class;
 		 	
-void main(void)
+void C74_EXPORT main(void)
 {	
 	void *p,*q;
 //	long attrflags;
@@ -96,7 +96,7 @@ t_jit_err max_jit_pack_assist(t_max_jit_pack *x, void *b, long m, long a, char *
 void setOutputPlanes(t_max_jit_pack *x)
 {
 	long i, outputPlanes=0;
-	long jump[JIT_MATRIX_MAX_PLANECOUNT];
+	t_atom_long jump[JIT_MATRIX_MAX_PLANECOUNT];
 	void *o;
 	
 	o = max_jit_obex_jitob_get(x);
@@ -199,7 +199,7 @@ void *max_jit_pack_new(t_symbol *s, long argc, t_atom *argv)
 			max_jit_mop_setup(x);
 			//add fake inputs + one real input
 			if (argc&&(n=jit_atom_getlong(argv))) {
-				CLIP(n,1,JIT_MATRIX_MAX_PLANECOUNT);
+				CLIP_ASSIGN(n,1,JIT_MATRIX_MAX_PLANECOUNT);
 			} else {
 				n=4;
 			}
@@ -226,7 +226,7 @@ void *max_jit_pack_new(t_symbol *s, long argc, t_atom *argv)
 			max_jit_attr_args(x,argc,argv);
 		} else {
 			jit_object_error((t_object *)x,"jit.pack: could not allocate object");
-			freeobject(x);
+			freeobject((t_object *) x);
 			x = NULL;
 		}
 	}

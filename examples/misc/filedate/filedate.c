@@ -24,13 +24,13 @@ void *filedate_class;
 
 void filedate_assist(t_filedate *x, void *b, long m, long a, char *s);
 void filedate_doanything(t_filedate *x, t_symbol *s, short argc, t_atom *argv);
-void filedate_out(t_filedate *x, unsigned long date);
+void filedate_out(t_filedate *x, t_ptr_uint date);
 void filedate_anything(t_filedate *x, t_symbol *s, short argc, t_atom *argv);
 void *filedate_new(void);
 
 t_symbol *ps_nothing, *ps_list;
 
-int main()
+int C74_EXPORT main()
 {
 	t_class *c;
 	
@@ -69,8 +69,8 @@ void filedate_doanything(t_filedate *x, t_symbol *s, short argc, t_atom *argv)
 {	
 	char filename[MAX_PATH_CHARS];
 	short vol,err;
-	long type;
-	unsigned long date;
+	t_fourcc type;
+	t_ptr_uint date;
 	
 	if (s == ps_nothing)
 		return;
@@ -102,7 +102,7 @@ void filedate_doanything(t_filedate *x, t_symbol *s, short argc, t_atom *argv)
 	}
 }
 
-void filedate_out(t_filedate *x, unsigned long date)
+void filedate_out(t_filedate *x, t_ptr_uint date)
 {
 	t_datetime dtr;
 	t_atom list[16];

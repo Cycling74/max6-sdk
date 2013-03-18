@@ -51,11 +51,13 @@
 #define PREFER_POST_INC
 #ifdef WIN_JITLIB
 //used by jitlib only
+#ifdef C74_USING_QUICKTIME
 #include "QTML.h"
 #include "jit.mac.h"
 #define ushort ushort
 #define FREDDIE ushort
 #define GetPixRowBytes(x) (0x3FFF&((*(x))->rowBytes)) //win_todo
+#endif  // #ifdef C74_USING_QUICKTIME
 #endif //WIN_JITLIB
 #endif
 
@@ -84,6 +86,11 @@
 //thread related
 #include "jit.critical.h"
 
+// enable CG for x86 builds
+#if !defined(C74_X64)
+#define C74_SUPPORT_CG
+#endif
+
 //vector
 #ifdef WIN_VERSION
 #define JIT_CAN_ALTIVEC 0
@@ -92,7 +99,8 @@
 #if __i386__
 #define JIT_CAN_ALTIVEC 0
 #else
-#define JIT_CAN_ALTIVEC 1
+// rbs: altivec is never true now, we should clean this stuff up
+#define JIT_CAN_ALTIVEC 0
 #endif
 
 #endif // !WIN_VERSION
@@ -115,10 +123,17 @@
 #endif
 
 //utils
+#ifndef calcoffset
 #define calcoffset(x,y) ((long)(&(((x *)0L)->y)))
+#endif
 
 #ifdef WIN_VERSION
 #define	hypot _hypot		
+// not sure that we want to define pascal to be nothing
+// windef.h defines it to be __stdcall but that gives an error
+// when used like: pascal void foo() as it is expecting
+//  void __stdcall foo()
+#define pascal			
 #endif
 
 #endif

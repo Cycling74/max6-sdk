@@ -1,5 +1,4 @@
 #include "ext.h"
-#include "ext_strings.h"
 
 #ifdef WIN_VERSION
 

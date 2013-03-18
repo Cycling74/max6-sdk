@@ -11,11 +11,28 @@ typedef volatile int64_t t_int64_atomic;
 typedef volatile u_int32_t t_uint32_atomic;
 typedef volatile u_int64_t t_uint64_atomic;
 
-// return value of ATOMIC_INCREMENT and ATOMIC_DECREMENT is the *new* value after performing the operation 
+/** increment an atomic int value
+	@ingroup threading
+	return value of ATOMIC_INCREMENT and ATOMIC_DECREMENT is the *new* value after performing the operation
+*/
 #define ATOMIC_INCREMENT(atomicptr) OSAtomicIncrement32((int32_t *)atomicptr)
+
+/** increment an atomic int value with a memory barrier
+	@ingroup threading
+	return value of ATOMIC_INCREMENT and ATOMIC_DECREMENT is the *new* value after performing the operation
+*/
 #define ATOMIC_INCREMENT_BARRIER(atomicptr) OSAtomicIncrement32Barrier((int32_t *)atomicptr)
 
+/** decrement an atomic int value
+	@ingroup threading
+	return value of ATOMIC_INCREMENT and ATOMIC_DECREMENT is the *new* value after performing the operation
+*/
 #define ATOMIC_DECREMENT(atomicptr) OSAtomicDecrement32((int32_t *)atomicptr)
+
+/** decrement an atomic int value with a memory barrier
+	@ingroup threading
+	return value of ATOMIC_INCREMENT and ATOMIC_DECREMENT is the *new* value after performing the operation
+*/
 #define ATOMIC_DECREMENT_BARRIER(atomicptr) OSAtomicDecrement32Barrier((int32_t *)atomicptr)
 
 #define ATOMIC_COMPARE_SWAP32(oldvalue, newvalue, atomicptr) (OSAtomicCompareAndSwap32Barrier(oldvalue, newvalue, atomicptr))

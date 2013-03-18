@@ -95,8 +95,8 @@ t_jit_err jit_split_matrix_calc(t_jit_split *x, void *inputs, void *outputs)
 				
 		//allow any planes, will simply wrap. i think that's okay  - jkc		
 		
-		setmem(&conv,sizeof(t_matrix_conv_info),0);
-		setmem(&conv2,sizeof(t_matrix_conv_info),0);
+		memset(&conv,0,sizeof(t_matrix_conv_info));
+		memset(&conv2,0,sizeof(t_matrix_conv_info));
 		for (i=0;i<JIT_MATRIX_MAX_PLANECOUNT;i++) { 
 			conv.planemap[i] = i;
 			conv2.planemap[i] = i;

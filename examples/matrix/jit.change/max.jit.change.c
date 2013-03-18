@@ -18,11 +18,11 @@ t_jit_err jit_change_init(void);
 void *max_jit_change_new(t_symbol *s, long argc, t_atom *argv);
 void max_jit_change_mproc(t_max_jit_change *x, void *mop);
 void max_jit_change_free(t_max_jit_change *x);
-void *max_jit_change_class;
+t_messlist *max_jit_change_class;
 
 t_symbol *ps_change;
 
-void main(void)
+void C74_EXPORT main(void)
 {	
 	long attrflags;
 	void *p, *q, *attr;
@@ -103,7 +103,7 @@ void *max_jit_change_new(t_symbol *s, long argc, t_atom *argv)
 			max_jit_attr_args(x,argc,argv);
 		} else {
 			jit_object_error((t_object *)x,"jit.change: could not allocate object");
-			freeobject(x);
+			freeobject((t_object *) x);
 			x = NULL;
 		}
 	}

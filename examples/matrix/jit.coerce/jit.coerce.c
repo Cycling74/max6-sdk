@@ -76,7 +76,7 @@ t_jit_err jit_coerce_matrix_calc(t_jit_coerce *x, void *inputs, void *outputs)
 		if (!(out_minfo.flags&JIT_MATRIX_DATA_REFERENCE)) 
 			{ err=JIT_ERR_INVALID_OUTPUT; goto out; }
 		
-		CLIP(x->planecount,1,32);
+		CLIP_ASSIGN(x->planecount,1,32);
 		if (x->type == _jit_sym_long) {
 			size = 4;
 		} else if (x->type == _jit_sym_float32) {

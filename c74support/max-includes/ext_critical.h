@@ -1,11 +1,9 @@
 // critical.h -- platform-independent way to define critical regions
 
-#ifndef _CRITICAL_H_
-#define _CRITICAL_H_
+#ifndef _EXT_CRITICAL_H_
+#define _EXT_CRITICAL_H_
 
-#ifdef __cplusplus
-extern "C" {
-#endif
+BEGIN_USING_C_LINKAGE
 
 #if C74_PRAGMA_STRUCT_PACKPUSH
     #pragma pack(push, 2)
@@ -13,28 +11,18 @@ extern "C" {
     #pragma pack(2)
 #endif
 
-#define CRITICAL_DEFAULT 2000 * kDurationMillisecond
+#ifdef MAC_VERSION
 
+typedef MPCriticalRegionID t_critical;	///< a critical region  @ingroup critical
+	
+#endif // MAC_VERSION
+	
 #ifdef WIN_VERSION
-typedef LPCRITICAL_SECTION t_critical;
-typedef unsigned long t_thread;
-#elif TARGET_API_MAC_CARBON
-typedef MPCriticalRegionID t_critical;
-typedef ThreadID t_thread;
-#else
-/**
-	A Max critical region.
-	@ingroup critical
-*/
-typedef void t_critical;
-
-/**
-	A Max thread.
-	@ingroup threading
-*/
-typedef void t_thread;
-#endif
-
+	
+typedef LPCRITICAL_SECTION t_critical;	///< a critical region  @ingroup critical
+	
+#endif  // WIN_VERSION
+	
 
 /**
 	Create a new critical region.
@@ -102,8 +90,6 @@ short critical_tryenter(t_critical x);
     #pragma pack()
 #endif
 
-#ifdef __cplusplus
-}
-#endif
+END_USING_C_LINKAGE
 
-#endif // _CRITICAL_H_
+#endif // _EXT_CRITICAL_H_

@@ -25,11 +25,11 @@ void max_jit_fill_float(t_max_jit_fill *x, double val);
 void max_jit_fill_list(t_max_jit_fill *x, t_symbol *s, long argc, t_atom *argv);
 //void max_jit_fill_offset_bp(t_max_jit_fill *x, char **bp, t_jit_matrix_info *minfo);
 
-void *max_jit_fill_class;
+t_messlist *max_jit_fill_class;
 		 	
 t_symbol *ps_done;
 
-void main(void)
+void C74_EXPORT main(void)
 {	
 	long attrflags;
 	void *p,*attr;
@@ -64,7 +64,7 @@ void max_jit_fill_int(t_max_jit_fill *x, long val)
 	t_atom a;
 	
 	jit_atom_setlong(&a,val);
-	typedmess(x,_jit_sym_list,1,&a);
+	typedmess((t_object *) x,_jit_sym_list,1,&a);
 }
 
 void max_jit_fill_float(t_max_jit_fill *x, double val)
@@ -72,7 +72,7 @@ void max_jit_fill_float(t_max_jit_fill *x, double val)
 	t_atom a;
 	
 	jit_atom_setfloat(&a,val);
-	typedmess(x,_jit_sym_list,1,&a);
+	typedmess((t_object *) x,_jit_sym_list,1,&a);
 }
 
 void max_jit_fill_list(t_max_jit_fill *x, t_symbol *s, long argc, t_atom *argv)
@@ -102,9 +102,9 @@ void max_jit_fill_list(t_max_jit_fill *x, t_symbol *s, long argc, t_atom *argv)
 			//limited to filling at most into 2 dimensions per list
 			offset0 = (x->offsetcount>0)?x->offset[0]:0;
 			offset1 = (x->offsetcount>1)?x->offset[1]:0;
-			CLIP(offset0,0,minfo.dim[0]-1);
-			CLIP(offset1,0,minfo.dim[1]-1);
-			CLIP(argc,0,(minfo.dim[0]*(minfo.dim[1]-offset1))-offset0);
+			CLIP_ASSIGN(offset0,0,minfo.dim[0]-1);
+			CLIP_ASSIGN(offset1,0,minfo.dim[1]-1);
+			CLIP_ASSIGN(argc,0,(minfo.dim[0]*(minfo.dim[1]-offset1))-offset0);
 			j = offset0 + offset1*minfo.dim[0];
 					
 			if (minfo.type==_jit_sym_char) {
@@ -118,7 +118,7 @@ void max_jit_fill_list(t_max_jit_fill *x, t_symbol *s, long argc, t_atom *argv)
 				bp += x->plane*4;
 				for (i=0;i<argc;i++,j++) {
 					p = bp + (j/minfo.dim[0])*minfo.dimstride[1] + (j%minfo.dim[0])*minfo.dimstride[0];
-					*((long *)p) = jit_atom_getlong(argv+i);
+					*((t_int32 *)p) = jit_atom_getlong(argv+i);
 				}
 			} else if (minfo.type==_jit_sym_float32) {
 				bp += x->plane*4;
@@ -152,7 +152,7 @@ void max_jit_fill_offset_bp(t_max_jit_fill *x, char **bp, t_jit_matrix_info *min
 	for (i=0;i<dimcount;i++)
 	{	
 		offset = x->offset[i];
-		CLIP(offset,0,minfo->dim[i]-1);
+		CLIP_ASSIGN(offset,0,minfo->dim[i]-1);
 		*bp += offset*minfo->dimstride[i];
 	}
 }			
@@ -191,9 +191,13 @@ void *max_jit_fill_new(t_symbol *s, long argc, t_atom *argv)
 
 		attrstart = max_jit_attr_args_offset(argc,argv);
 		if (attrstart&&argv) {
+			t_atom_long al;
 			jit_atom_arg_getsym(&x->matrix_name, 0, attrstart, argv);
-			jit_atom_arg_getlong(&x->plane, 1, attrstart, argv);
-		}	
+			if (!jit_atom_arg_getlong(&al, 1, attrstart, argv)) {
+				C74_ASSERT_FITS_LONG(al);
+				x->plane = (long) al;
+			}
+		}
 		
 		max_jit_attr_args(x,argc,argv); //handle attribute args
 	}

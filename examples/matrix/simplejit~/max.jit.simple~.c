@@ -1,13 +1,15 @@
 /**
 	 @file
-	 jit.simple - simple example of a Jitter external
-	 multiplies an incoming matrix by a constant
+	 max.jit.simple~ - simple example of an MSP+Jitter combination external.
+	 + multiplies an incoming matrix by a constant, which can be set using an audio signal.
 	 
 	 @ingroup	examples
+	 @see		jit.simple
+	 @see		max.jit.simple
 	 
 	 Copyright 2009 - Cycling '74
 	 Timothy Place, tim@cycling74.com
-*/
+ */
 
 #include "jit.common.h"
 #include "max.jit.mop.h"
@@ -40,21 +42,24 @@ static t_symbol	*ps_gain = NULL;
 
 /************************************************************************************/
 
-int main(void)
+int C74_EXPORT main(void)
 {	
-	void *p, *q;
+	t_class *p, *q;
 	
 	jit_simple_init();	
-	setup((t_messlist**)&s_max_jit_simple_class, (method)max_jit_simple_new, (method)max_jit_simple_free, sizeof(t_max_jit_simple), 0, A_GIMME, 0);
+	p = class_new("jit.simple~", (method)max_jit_simple_new, (method)max_jit_simple_free, sizeof(t_max_jit_simple), NULL, A_GIMME, 0);
 
-	p = max_jit_classex_setup(calcoffset(t_max_jit_simple, obex));
-	q = jit_class_findbyname(gensym("jit_simple~"));    
-    max_jit_classex_mop_wrap(p, q, 0);							// attrs & methods for name, type, dim, planecount, bang, outputmatrix, etc
-    max_jit_classex_standard_wrap(p, q, 0);						// attrs & methods for getattributes, dumpout, maxjitclassaddmethods, etc
-    addmess((method)max_jit_mop_assist, "assist", A_CANT, 0);	// standard matrix-operator (mop) assist fn
-	
-	addmess((method)max_jit_simple_dsp, "dsp", A_CANT, 0);
-	dsp_initclass();
+	max_jit_class_obex_setup(p, calcoffset(t_max_jit_simple, obex));
+	q = jit_class_findbyname(gensym("jit_simple~"));
+    max_jit_class_mop_wrap(p, q, 0);			// attrs & methods for name, type, dim, planecount, bang, outputmatrix, etc
+	max_jit_class_wrap_standard(p, q, 0);		// attrs & methods for getattributes, dumpout, maxjitclassaddmethods, etc
+
+    class_addmethod(p, (method)max_jit_mop_assist, "assist", A_CANT, 0);	// standard matrix-operator (mop) assist fn
+	class_addmethod(p, (method)max_jit_simple_dsp, "dsp", A_CANT, 0);
+
+	class_dspinit(p);
+	class_register(CLASS_BOX, p);
+	s_max_jit_simple_class = p;
 
 	ps_gain = gensym("gain");
 	return 0;
@@ -68,7 +73,7 @@ void *max_jit_simple_new(t_symbol *s, long argc, t_atom *argv)
 {
 	t_max_jit_simple *x;
 
-	x = (t_max_jit_simple*)max_jit_obex_new(s_max_jit_simple_class, gensym("jit_simple~"));
+	x = (t_max_jit_simple*)max_jit_object_alloc(s_max_jit_simple_class, gensym("jit_simple~"));
 	if (x) {
 		x->simple = (t_object*)jit_object_new(gensym("jit_simple~"));
 		if (x->simple) {
@@ -91,7 +96,7 @@ void max_jit_simple_free(t_max_jit_simple *x)
 	dsp_free((t_pxobject*)x);
 	max_jit_mop_free(x);
 	jit_object_free(max_jit_obex_jitob_get(x));
-	max_jit_obex_free(x);
+	max_jit_object_free(x);
 }
 
 

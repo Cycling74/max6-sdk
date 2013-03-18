@@ -212,8 +212,8 @@ t_jit_err jit_str_op_matrix_calc(t_jit_str_op *x, void *inputs, void *outputs) {
 		else if (in1_minfo.dimcount == 2 && in1_minfo.dim[1] > 1 && x->multiline_in) { // we need to collapse the matrix
 			long dim[2]; // limit to 2D at the moment;
 			long rowstride;
-			Boolean slice = (x->opsym == ps_slice) ? true : false;
-			Boolean flag = slice;
+			t_bool slice = (x->opsym == ps_slice) ? true : false;
+			t_bool flag = slice;
 			
 			dim[0] = in1_minfo.dim[0];
 			dim[1] = in1_minfo.dim[1];
@@ -471,7 +471,7 @@ void jit_str_op_read_char(t_jit_str_op *x, long *dim, t_jit_matrix_info *info, c
 	}
 }
 
-char *jit_str_op_tostring(t_jit_str_op *x, long dimcount, long *dim, long rowstride, char *bip, Boolean *flag)
+char *jit_str_op_tostring(t_jit_str_op *x, long dimcount, long *dim, long rowstride, char *bip, t_bool *flag)
 {
 	long i, j;
 	char *ip;

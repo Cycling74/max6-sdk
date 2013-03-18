@@ -1,5 +1,5 @@
-#ifndef _SYSSEM_H_
-#define _SYSSEM_H_
+#ifndef _EXT_SYSSEM_H_
+#define _EXT_SYSSEM_H_
 
 BEGIN_USING_C_LINKAGE
 
@@ -17,4 +17,4 @@ t_max_err syssem_post(t_syssem x);
 
 END_USING_C_LINKAGE
 
-#endif // #ifndef _SYSSEM_H_
+#endif // #ifndef _EXT_SYSSEM_H_

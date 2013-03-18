@@ -19,7 +19,7 @@ typedef struct filein {
 	t_filehandle f_fh;			
 	short f_open;			/* spool flag */
 	short f_spool;
-	Byte **f_data;			/* read in data */
+	t_uint8 **f_data;			/* read in data */
 	long f_size;
 	void *f_out;
 	void *f_eof;
@@ -43,7 +43,7 @@ void *filein_new(t_symbol *fn, t_symbol *spoolFlag);
 void ctopcpy(unsigned char *p1, char *p2);
 //char *strcpy(char *s1, const char *s2);
 
-int main()
+int C74_EXPORT main()
 {
 	t_class *c;
 
@@ -70,9 +70,9 @@ int main()
 
 void filein_access(t_filein *x, t_symbol *s, short ac, t_atom *av)
 {
-	OSErr err;
-	Byte data[8];
-	long count;
+	t_max_err err;
+	t_uint8 data[8];
+	t_ptr_size count;
 	unsigned long dummy;
 	
 	if (s==ps_int)
@@ -101,9 +101,9 @@ void filein_access(t_filein *x, t_symbol *s, short ac, t_atom *av)
 void filein_int(t_filein *x, long n)		/* byte access */
 {
 	t_atom info;
-	Byte data[16];
-	long count;
-	OSErr err;
+	t_uint8 data[16];
+	t_ptr_size count;
+	t_max_err err;
 	
 	if (x->f_open) {
 		if (isr()) {
@@ -140,8 +140,8 @@ void filein_in1(t_filein *x, long n)		/* int access */
 {
 	t_atom info;
 	unsigned short data[4];
-	long count;
-	OSErr err;
+	t_ptr_size count;
+	t_max_err err;
 	
 	if (x->f_open) {
 		if (isr()) {
@@ -169,7 +169,7 @@ void filein_in1(t_filein *x, long n)		/* int access */
 			outlet_bang(x->f_eof);
 		else {
 		 	sysmem_copyptr(*(x->f_data)+n,data,2L);
-		 	outlet_int(x->f_out,(unsigned long)data[0]);
+		 	outlet_int(x->f_out,data[0]);
 		 }
 	}
 }
@@ -177,9 +177,9 @@ void filein_in1(t_filein *x, long n)		/* int access */
 void filein_in2(t_filein *x, long n)		/* long access */
 {
 	t_atom info;
-	unsigned long data[4];
-	long count;
-	OSErr err;
+	t_uint32 data[4];
+	t_ptr_size count;
+	t_max_err err;
 	
 	if (x->f_open) {
 		if (isr()) {
@@ -228,13 +228,13 @@ void filein_close(t_filein *x)
 
 void filein_open(t_filein *x, char *name)
 {
-	long size;
+	t_ptr_size size;
 	
 	if (x->f_spool)
 		x->f_open = TRUE;
 	else {
 		sysfile_geteof(x->f_fh,&size);
-		if (!(x->f_data = (Byte **)sysmem_newhandle(size)))
+		if (!(x->f_data = (t_uint8 **)sysmem_newhandle(size)))
 			object_error((t_object *)x, "%s too big to read",name);
 		else {
 			sysmem_lockhandle((t_handle)x->f_data,1);
@@ -250,8 +250,7 @@ void filein_doread(t_filein *x, t_symbol *s)
 {
 	short vol,err;
 	char ps[MAX_PATH_CHARS];
-	long type;
-	short savelock;
+	t_fourcc type;
 	
 	filein_close(x);
 	if (s==ps_nothing) {
@@ -270,9 +269,7 @@ void filein_doread(t_filein *x, t_symbol *s)
 		return;
 	}
 	filein_open(x,ps);
-	savelock = lockout_set(1);
 	outlet_bang(x->f_readdone);
-	lockout_set(savelock);
 }
 
 void filein_spool(t_filein *x, t_symbol *s)
@@ -297,9 +294,9 @@ void filein_assist(t_filein *x, void *b, long m, long a, char *s)
 	// this system eliminates the need for a STR# resource
 	if (m==1) {
 		switch (a) {
-			case 0: sprintf(s,"Read Byte from File"); break;
-			case 1: sprintf(s,"Read Word from File"); break;
-			case 2: sprintf(s,"Read Long from File"); break;
+			case 0: sprintf(s,"Read 8 bit unsigned integer from File"); break;
+			case 1: sprintf(s,"Read 16 bit unsigned integer from File"); break;
+			case 2: sprintf(s,"Read 32 bit unsigned integer from File"); break;
 		}
 	} 
 	else if (m==2) {

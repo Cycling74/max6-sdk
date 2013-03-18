@@ -15,9 +15,9 @@
 #define JIT_BIG_ENDIAN 
 #endif
 
-#define SWAP16(x) ((short)(((((unsigned short)(x))>>8)&0x00ff)+((((unsigned short)(x))<<8)&0xff00)))
-#define SWAP32(x) ((long)(((((unsigned long)(x))>>24L)&0x000000ff)+((((unsigned long)(x))>>8L)&0x0000ff00)+ \
-((((unsigned long)(x))<<24L)&0xff000000)+((((unsigned long)(x))<<8L)&0x00ff0000)))
+#define SWAP16(x) ((t_int16)(((((t_uint16)(x))>>8)&0x00ff)+((((t_uint16)(x))<<8)&0xff00)))
+#define SWAP32(x) ((t_int32)(((((t_uint32)(x))>>24L)&0x000000ff)+((((t_uint32)(x))>>8L)&0x0000ff00)+ \
+((((t_uint32)(x))<<24L)&0xff000000)+((((t_uint32)(x))<<8L)&0x00ff0000)))
 #define SWAPF32 			swapf32
 #define SWAPF64 			swapf64
 #define SWAPF32_PTR 		swap_pointer_32

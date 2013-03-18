@@ -5,6 +5,7 @@
 #include "ext_systhread.h"
 #include "ext_critical.h"
 #include "ext_atomic.h"
+#include "ext_buffer.h"
 
 #if C74_PRAGMA_STRUCT_PACKPUSH
     #pragma pack(push, 2)
@@ -29,9 +30,10 @@ enum {
 
 
 /**	Data structure for the buffer~ object.
-	@ingroup buffers
+	Deprectated.
+	Use #t_buffer_ref and #t_buffer_obj instead.
 */
-typedef struct _buffer
+struct _buffer
 {
 	t_object b_obj;		///< doesn't have any signals so it doesn't need to be pxobject
 	long b_valid;		///< flag is off during read replacement or editing operation
@@ -59,7 +61,8 @@ typedef struct _buffer
 	double b_pixperfr;
 	double b_frperpix;
 	long b_imagesize;
-	Point b_scroll;
+	short b_unusedshort1;		// was Point b_scroll
+	short b_unusedshort2;		// could chop if struct compatibility wasn't important
 	long b_scrollscale;
 	long b_selbegin[MAXCHAN];
 	long b_selend[MAXCHAN];
@@ -73,7 +76,7 @@ typedef struct _buffer
 	long b_outputbytes;		///< number of bytes used for output sample (1-4)
 	long b_modtime;			///< last modified time ("dirty" method)
 	struct _buffer *b_peer;	///< objects that share this symbol (used as a link in the peers)
-	Boolean b_owner;		///< b_memory/b_samples "owned" by this object
+	t_bool b_owner;		///< b_memory/b_samples "owned" by this object
 	long b_outputfmt;		///< sample type (A_LONG, A_FLOAT, etc.)
 	t_int32_atomic b_inuse;	///< objects that use buffer should ATOMIC_INCREMENT / ATOMIC_DECREMENT this in their perform
 	void *b_dspchain;		///< dspchain used for this instance
@@ -82,59 +85,19 @@ typedef struct _buffer
 	t_object *b_jsoundfile;	///< internal instance for reading/writing FLAC format
 	t_systhread_mutex b_mutex; ///< mutex to use when locking and performing operations anywhere except perform method
 	long b_wasvalid;		///< internal flag used by replacement or editing operation
-} t_buffer;
+};
 
-typedef struct _buffer_info
-{
-	t_symbol *b_name;	///< name of the buffer
-	float *b_samples;	///< stored with interleaved channels if multi-channel
-	long b_frames;		///< number of sample frames (each one is sizeof(float) * b_nchans bytes)
-	long b_nchans;		///< number of channels
-	long b_size;		///< size of buffer in floats
-	float b_sr;			///< sampling rate of the buffer
-	long b_modtime;		///< last modified time ("dirty" method)
-	long b_rfu[57];		///< reserved for future use (total struct size is 64x4 = 256 bytes)
-} t_buffer_info;
+// Direct access to a t_buffer struct is deprecated and will no longer be supported in the future.
+// Instead, use t_buffer_ref and t_buffer_obj as defined in the 'ext_buffer.h' header file.
+
+#ifdef C74_BUFFER_INTERNAL
+typedef struct _buffer t_buffer;
+#else
+C74_DEPRECATED( typedef struct _buffer t_buffer );
+#endif // C74_BUFFER_INTERNAL
+
 
 #define BUFWIND(x) ((t_wind *)(x->b_wind))
-
-BEGIN_USING_C_LINKAGE
-
-// buffer_perform functions to replace the direct use of 
-// atomics and other buffer state flags from the perform method
-t_max_err buffer_perform_begin(t_buffer *b);
-t_max_err buffer_perform_end(t_buffer *b);
-
-// utility function for getting buffer info without needing to know entire buffer struct
-t_max_err buffer_getinfo(t_buffer *b, t_buffer_info *info);
-
-// the following functions are not to be called in the perform method
-// please use the lightweight buffer_perform methods 
-
-// use buffer_edit functions to collapse all operations of 
-// locking heavy b_mutex, setting b_valid flag, 
-// waiting on lightweight atomic b_inuse, etc. 
-t_max_err buffer_edit_begin(t_buffer *b);
-t_max_err buffer_edit_end(t_buffer *b, long valid);  // valid 0=FALSE, positive=TRUE, negative=RESTORE_OLD_VALID (not common)
-
-// low level mutex locking used by buffer_edit fucntions. 
-// use only if you really know what you're doing.
-// otherwise, use the buffer_edit functions 
-// if you're touching a t_buffer outside perform 
-t_max_err buffer_lock(t_buffer *b);
-t_max_err buffer_trylock(t_buffer *b);
-t_max_err buffer_unlock(t_buffer *b);
-
-// low level utilities used by buffer_edit functions
-// use only if you really know what you're doing.
-// otherwise, use the buffer_edit functions 
-// if you're touching a t_buffer outside perform 
-t_buffer *buffer_findowner(t_buffer *x);
-long buffer_spinwait(t_buffer *x);
-long buffer_valid(t_buffer *x, long way);
-
-
-END_USING_C_LINKAGE
 
 
 #if C74_PRAGMA_STRUCT_PACKPUSH

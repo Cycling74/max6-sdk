@@ -20,7 +20,7 @@ typedef struct vexpr
 	char v_scalarmode;
 } t_vexpr;
 
-int main(void);
+int C74_EXPORT main(void);
 void vexpr_bang (t_vexpr *x);
 void vexpr_scalarbang(t_vexpr *x);
 void vexpr_vectorbang(t_vexpr *x);
@@ -34,7 +34,7 @@ void vexpr_free (t_vexpr *x);
 void *vexpr_new (t_symbol *s, short ac, t_atom *av);
 
 
-int main(void)
+int C74_EXPORT main(void)
 {
 	t_class *c;
 	
@@ -70,7 +70,7 @@ void vexpr_scalarbang(t_vexpr *x)
 	long i,j,count,index;
 	t_atom result[MAXLIST],input[10];
 	short scalar[10];
-	Boolean hadscalar = false;
+	t_bool hadscalar = false;
 	
 	count = MAXLIST+1;	// count should be higher than the limit
 	for (i=0; i <= x->v_numargs; i++) {
@@ -142,9 +142,9 @@ void vexpr_int(t_vexpr *x, long number)
 	i = proxy_getinlet((t_object *)x);
 	x->v_argc[i] = 1;
 	if (x->v_expr->exp_var[i].ex_type==ET_FI)
-		SETFLOAT(x->v_argv[i],(float)number);
+		A_SETFLOAT(x->v_argv[i],(float)number);
 	else 
-		SETLONG(x->v_argv[i],number);
+		A_SETLONG(x->v_argv[i],number);
 	if (!i)
 		vexpr_bang(x);
 }
@@ -156,9 +156,9 @@ void vexpr_float(t_vexpr *x, double number)
 	i = proxy_getinlet((t_object *)x);
 	x->v_argc[i] = 1;
 	if (x->v_expr->exp_var[i].ex_type==ET_II)
-		SETLONG(x->v_argv[i],(long)number);
+		A_SETLONG(x->v_argv[i],(long)number);
 	else
-		SETFLOAT(x->v_argv[i],number);
+		A_SETFLOAT(x->v_argv[i],number);
 	if (!i)
 		vexpr_bang(x);
 }
@@ -175,11 +175,11 @@ void vexpr_list(t_vexpr *x, t_symbol *s, short argc, t_atom *argv)
 	switch (x->v_expr->exp_var[i].ex_type) {
 	case ET_II:
 		for (j=0;j<argc;j++)
-			SETLONG((x->v_argv[i])+j,atom_getlong(argv+j));
+			A_SETLONG((x->v_argv[i])+j,atom_getlong(argv+j));
 		break;
 	case ET_FI:
 		for (j=0;j<argc;j++)
-			SETFLOAT((x->v_argv[i])+j,atom_getfloat(argv+j));
+			A_SETFLOAT((x->v_argv[i])+j,atom_getfloat(argv+j));
 		break;
 	default:
 		sysmem_copyptr(argv,x->v_argv[i],argc * sizeof(t_atom));

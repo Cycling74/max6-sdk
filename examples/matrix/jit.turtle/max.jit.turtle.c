@@ -90,9 +90,9 @@ void max_jit_turtle_bang(t_max_jit_turtle *x); // does nothing
 void max_jit_turtle_int(t_max_jit_turtle *x, long n); // this is where the QD stuff is interpreted
 void max_jit_turtle_reset(t_max_jit_turtle *x); // resets the turtle's state
 
-void     *max_jit_turtle_class;
+t_messlist     *max_jit_turtle_class;
 		 	
-void main(void)
+void C74_EXPORT main(void)
 {	
 	long attrflags;
 	void *p,*attr;

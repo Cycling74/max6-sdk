@@ -29,7 +29,7 @@ static t_class	*s_dict_strip_class;
 
 
 /************************************************************************************/
-int main(void)
+int C74_EXPORT main(void)
 {
 	t_class	*c;
 	
@@ -96,7 +96,7 @@ void dict_strip_dictionary(t_dict_strip *x, t_symbol *s)
 {
 	t_dictionary	*d = dictobj_findregistered_retain(s);
 	long			i;
-	t_atom			a;
+	t_atom			a[2];
 	t_max_err		err;
 	
 	if (!d) {
@@ -105,19 +105,42 @@ void dict_strip_dictionary(t_dict_strip *x, t_symbol *s)
 	}
 	
 	for (i=0; i < x->numkeys; i++) {
-		err = dictionary_getatom(d, x->keys[i], &a);
+		t_atom			akey[1];
+		t_dictionary	*d0 = NULL;
+		t_symbol		*key0 = NULL;
+		
+		atom_setsym(akey, x->keys[i]);
+		err = dictobj_key_parse((t_object*)x, d, akey, false, &d0, &key0, NULL);
+		if (err) {
+			object_error((t_object*)x, "could not parse key %s", x->keys[i]->s_name);
+			continue;
+		}
+		
+		err = dictionary_getatom(d0, key0, a);
 		if (!err) {
-			if (atomisatomarray(&a)) {
+			if (atomisatomarray(a)) {
 				t_atom	*av = NULL;
 				long	ac = 0;
 				
-				atomarray_copyatoms((t_atomarray*)a.a_w.w_obj, &ac, &av);
+				atomarray_copyatoms((t_atomarray*)a->a_w.w_obj, &ac, &av);
 				outlet_anything(x->outlet_keyvals, x->keys[i], ac, av);
 				sysmem_freeptr(av);
 			}
+			else if (atomisdictionary(a)) {
+				t_dictionary	*d1 = (t_dictionary*)atom_getobj(a);
+				t_symbol		*d1_name;
+				
+				d1_name = dictobj_namefromptr(d1);
+				if (!d1_name)
+					dictobj_register(d1, &d1_name);
+				
+				atom_setsym(a, _sym_dictionary);
+				atom_setsym(a+1, d1_name);
+				outlet_anything(x->outlet_keyvals, x->keys[i], 2, a);
+			}
 			else
-				outlet_anything(x->outlet_keyvals, x->keys[i], 1, &a);
-			dictionary_deleteentry(d, x->keys[i]);
+				outlet_anything(x->outlet_keyvals, x->keys[i], 1, a);
+			dictionary_deleteentry(d0, key0);
 		}
 	}
 	

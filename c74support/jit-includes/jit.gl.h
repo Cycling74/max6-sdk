@@ -11,20 +11,33 @@
 
 // --------------------------------------------------------------------------------
 
-#ifdef MAC_VERSION 
-#if TARGET_RT_MAC_MACHO
-#include <AGL/agl.h>
-#include <OpenGL/glu.h>
-#include <OpenGL/OpenGL.h>
+#ifdef MAC_VERSION
+
+#ifdef C74_X64 
+	#define JIT_GL_NSGL
 #else
-#include "agl.h"
-#include "glu.h"
+	#define JIT_GL_AGL
 #endif
 
+#ifdef JIT_GL_AGL 
+#include <AGL/agl.h>
+#else
+#include <OpenGL/gl.h>
+#endif
+#include <OpenGL/glu.h>
+#include <OpenGL/OpenGL.h>
+
 #include "jit.agl.h"
+
+// defined in jit.agl.h
+#ifdef JIT_GL_AGL
+#define glGetProcAddress aglGetProcAddress
+#else
+#define glGetProcAddress nsglGetProcAddress
+#endif
+
 #include "jit.glext.h"
-#define glGetProcAddress aglGetProcAddress	// defined in jit.agl.h
-#endif 
+#endif	// MAC_VERSION
 
 // --------------------------------------------------------------------------------
 
@@ -72,6 +85,27 @@ extern "C" {
 #define		PI	3.141592653589793
 #endif
 
+// layer defines
+#define JIT_GL_LAYER_FIRST		-1000
+#define JIT_GL_LAYER_DEFAULT	0
+#define JIT_GL_LAYER_LAST		1000
+
+// animator update priority flags
+#define JIT_ANIMATOR_PRIORITY_FIRST	-1000
+#define JIT_ANIMATOR_PRIORITY_DEF	0
+#define JIT_ANIMATOR_PRIORITY_PASS2	1000	// updated *after* nodes are updated
+
+// default animator mouse-ui priority
+#define JIT_ANIM_UIP_FIRST			-1000
+#define JIT_ANIM_UIP_CORNERPIN		-900	// gl.cornerpin
+#define JIT_ANIM_UIP_PHYS			-800	// phys.picker
+#define JIT_ANIM_UIP_HANDLE			-700	// gl.handle
+#define JIT_ANIM_UIP_DEFAULT		0
+#define JIT_ANIM_UIP_ADRIVE			900	// anim.drive
+#define JIT_ANIM_UIP_LAST			1000
+
+#define JIT_GL_MAX_PICK_FILTERS		10
+
 // --------------------------------------------------------------------------------
 // utility methods
 
@@ -104,19 +138,19 @@ long jit_gl_get_datasize_from_datatype(GLenum e);
  *
  */
 typedef struct {
-   Atom			mouseatoms[8];	///< h, v, (up/down), cmdKey, shiftKey, alphaLock, option, control.
+   t_atom		mouseatoms[8];	///< h, v, (up/down), cmdKey, shiftKey, alphaLock, option, control.
    int			argc;			///< argument count
    t_symbol 	*mousesymbol;	///< mouse event type
 }  t_wind_mouse_info;
 
 typedef struct {
-   Atom			mouseatoms[16];	///< h, v, (up/down), cmdKey, shiftKey, alphaLock, option, control, dx, dy + RFU
+   t_atom		mouseatoms[16];	///< h, v, (up/down), cmdKey, shiftKey, alphaLock, option, control, dx, dy + RFU
    int			argc;			///< argument count
    t_symbol 	*mousesymbol;	///< mouse event type
 }  t_wind_mousewheel_info;
 
 typedef struct {
-   Atom			keyatoms[8];	///< keycode, textcharacter, (up/down), cmdKey, shiftKey, alphaLock, option, control.
+   t_atom		keyatoms[8];	///< keycode, textcharacter, (up/down), cmdKey, shiftKey, alphaLock, option, control.
    int			argc;			///< argument count
    t_symbol 	*keysymbol;		///< key event type
 }  t_wind_key_info;

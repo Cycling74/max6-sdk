@@ -63,7 +63,7 @@ t_jit_err jit_map_init(void)
 	//add attributes	
 	attrflags = JIT_ATTR_GET_DEFER_LOW | JIT_ATTR_SET_USURP_LOW;
 	
-	CLASS_STICKY_ATTR(_jit_map_class,"category",0,"Behavior");
+	CLASS_STICKY_CATEGORY(_jit_map_class,0,"Behavior");
 	CLASS_STICKY_ATTR(_jit_map_class,"basic",0,"1");
 
 	attr = jit_object_new(_jit_sym_jit_attr_offset_array,"map",_jit_sym_float64,4,attrflags,
@@ -76,7 +76,7 @@ t_jit_err jit_map_init(void)
 	jit_class_addattr(_jit_map_class,attr);
 	CLASS_ATTR_STYLE_LABEL(_jit_map_class,"clip",0,"onoff","Clip Values");	
 	
-	CLASS_STICKY_ATTR_CLEAR(_jit_map_class, "category");
+	CLASS_STICKY_CATEGORY_CLEAR(_jit_map_class);
 	CLASS_STICKY_ATTR_CLEAR(_jit_map_class, "basic");
 
 	jit_class_register(_jit_map_class);
@@ -98,8 +98,8 @@ t_jit_err jit_map_getvecdata(t_jit_map *x, t_jit_map_vecdata *vd)
 		vd->lmax 		= vd->max;
 		vd->cmin 		= vd->min*255.;
 		vd->cmax 		= vd->max*255.;
-		CLIP(vd->cmin,0,255);
-		CLIP(vd->cmax,0,255);
+		CLIP_ASSIGN(vd->cmin,0,255);
+		CLIP_ASSIGN(vd->cmax,0,255);
 		
 		return JIT_ERR_NONE;
 	} else {
@@ -276,11 +276,11 @@ void jit_map_vector_long(long n, t_jit_map_vecdata *vecdata, t_jit_op_info *in, 
 {
 	double scale=vecdata->scale;
 	double bias=vecdata->bias;
-	long *ip,*op;
+	t_int32 *ip,*op;
 	long is,os;
 		
-	ip = ((long *)in->p);
-	op = ((long *)out->p);
+	ip = ((t_int32 *)in->p);
+	op = ((t_int32 *)out->p);
 	is = in->stride; 
 	os = out->stride; 
 	
@@ -383,12 +383,12 @@ void jit_map_vector_long_clip(long n, t_jit_map_vecdata *vecdata, t_jit_op_info 
 	long max=vecdata->lmax;
 	double scale=vecdata->scale;
 	double bias=vecdata->bias;
-	long *ip,*op;
+	t_int32 *ip,*op;
 	long is,os;
 	long tmp;
 		
-	ip = ((long *)in->p);
-	op = ((long *)out->p);
+	ip = ((t_int32 *)in->p);
+	op = ((t_int32 *)out->p);
 	is = in->stride; 
 	os = out->stride; 
 	

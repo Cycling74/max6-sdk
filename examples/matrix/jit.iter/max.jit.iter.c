@@ -23,11 +23,11 @@ void max_jit_iter_assist(t_max_jit_iter *x, void *b, long m, long a, char *s);
 void max_jit_iter_jit_matrix(t_max_jit_iter *x, t_symbol *s, long argc, t_atom *argv);
 void max_jit_iter_calculate_ndim(t_max_jit_iter *x, long dimcount, long *dim, t_atom *a_coord, t_jit_matrix_info *in_minfo, char *bip);
 
-void *max_jit_iter_class;
+t_messlist *max_jit_iter_class;
 		 	
 t_symbol *ps_done;
 
-void main(void)
+void C74_EXPORT main(void)
 {	
 	long attrflags;
 	void *p,*attr;
@@ -149,7 +149,7 @@ void max_jit_iter_calculate_ndim(t_max_jit_iter *x, long dimcount, long *dim, t_
 					for (i=0;i<dim[1];i++) {	
 						jit_atom_setlong(&(a_coord[1]),i);	
 						for (k=0;k<in_minfo->planecount;k++) {
-							jit_atom_setlong(&(a_val[k]),((long *)ip)[k]);
+							jit_atom_setlong(&(a_val[k]),((t_int32 *)ip)[k]);
 						}
 						if (in_minfo->dimcount>1)
 							outlet_anything(x->coordout,_jit_sym_list,in_minfo->dimcount,a_coord);
@@ -234,7 +234,7 @@ void max_jit_iter_calculate_ndim(t_max_jit_iter *x, long dimcount, long *dim, t_
 					for (j=0;j<dim[0];j++) {	
 						jit_atom_setlong(&(a_coord[0]),j);	
 						for (k=0;k<in_minfo->planecount;k++) {
-							jit_atom_setlong(&(a_val[k]),((long *)ip)[(j*in_minfo->planecount)+k]);
+							jit_atom_setlong(&(a_val[k]),((t_int32 *)ip)[(j*in_minfo->planecount)+k]);
 						}
 						if (in_minfo->dimcount>1)
 							outlet_anything(x->coordout,_jit_sym_list,in_minfo->dimcount,a_coord);

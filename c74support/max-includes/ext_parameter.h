@@ -8,7 +8,6 @@
 #ifndef _EXT_PARAMETER_H_
 #define _EXT_PARAMETER_H_
 
-#include "ext_prefix.h"	/* this header must always be first */
 
 BEGIN_USING_C_LINKAGE
 
@@ -17,6 +16,8 @@ BEGIN_USING_C_LINKAGE
 #define PARAMETER_METHOD_FLAG_POST        (1L << 1L) // user-defined post-processing function for standard method
 #define PARAMETER_METHOD_FLAG_FULL        (1L << 2L) // user-defined override method
 #define PARAMETER_METHOD_FLAG_DONOTHING   (1L << 15L) // don't override at all
+
+#define PARAMETER_GESTURE_INDEX			  999999
 
 typedef enum {
 	PARAM_TYPE_INVALID = -1,
@@ -30,7 +31,7 @@ typedef enum {
 	PARAM_TYPE_BLOB,	// generic atom type, can be stored, but doesn't use 
 						// any other parameter features at this time (order excepted)
 
-	PARAM_TYPE_FILE		// not used yet
+	PARAM_TYPE_FILE
 } PARAM_TYPE;
 
 typedef enum {
@@ -102,6 +103,7 @@ typedef enum {
 	PARAM_DATA_TYPE_FILEREF_DISPLAYNAME,
 	PARAM_DATA_TYPE_DEVICESTATE, // read-only
 	PARAM_DATA_TYPE_DEFER,
+	PARAM_DATA_TYPE_MAPPING_INDEX,
 } PARAM_DATA_TYPE;
 
 typedef enum {
@@ -166,13 +168,15 @@ t_max_err object_parameter_dictionary_process(t_object *x, t_dictionary *d);
 // call in free function
 t_max_err object_parameter_free(t_object *x);
 // call in notify function, return value of TRUE means the notification was param data, in the pnd struct
-Boolean object_parameter_notify(t_object *x, t_symbol *s, t_symbol *msg, void *sender, void *data, t_parameter_notify_data *pnd);
+t_bool object_parameter_notify(t_object *x, t_symbol *s, t_symbol *msg, void *sender, void *data, t_parameter_notify_data *pnd);
 // get the value of a particular parameter datum
 t_max_err object_parameter_getinfo(t_object *x, PARAM_DATA_TYPE type, long *ac, t_atom **av);
 // set the value of a particular parameter datum
 t_max_err object_parameter_setinfo(t_object *x, PARAM_DATA_TYPE type, long ac, t_atom *av);
 // get the display string for a particular value
 t_max_err object_parameter_string_get(t_object *x, double val, char **outstr);
+// convert the string according to parameter type and unit to a value
+t_max_err object_parameter_stringtovalue(t_object *x, double *value, char *str);
 // set object value, returns clipped/stepped value
 t_max_err object_parameter_value_set(t_object *x, PARAM_VALUE_SET_TYPE how, double *linear, double *real, char blobnotify);
 // get the specified value, in the specified format
@@ -199,10 +203,11 @@ t_max_err parameter_default_anything(t_object *x, t_symbol *s, long ac, t_atom *
 
 t_max_err class_parameter_register_default_color(t_class *c, t_symbol *attrname, t_symbol *colorname);
 
-Boolean object_parameter_is_initialized(t_object *x);
-Boolean object_parameter_is_plugged(t_object *x);
-Boolean object_parameter_is_automated(t_object *x);
+t_bool object_parameter_is_initialized(t_object *x);
+t_bool object_parameter_is_plugged(t_object *x);
+t_bool object_parameter_is_automated(t_object *x);
 t_max_err object_parameter_wants_focus(t_object *x);
+
 
 // available colors
 #define ps_surface_bg			gensym("surface_bg")

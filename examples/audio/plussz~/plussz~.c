@@ -28,7 +28,7 @@ void plussz_dsp64(t_plussz *x, t_object *dsp64, short *count, double samplerate,
 void plussz_assist(t_plussz *x, void *b, long m, long a, char *s);
 
 
-int main(void)
+int C74_EXPORT main(void)
 {
     t_class *c = class_new("plussz~", (method)plussz_new, (method)dsp_free, sizeof(t_plussz), NULL, A_DEFFLOAT, 0);
     

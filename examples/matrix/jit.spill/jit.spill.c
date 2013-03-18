@@ -147,7 +147,7 @@ void jit_spill_calculate_2d_char(t_jit_spill *x, long dimcount, long *dim, long 
 	
 	width  = dim[0];
 	height = dim[1];
-	CLIP(listlength, 0, MAX_OUT);
+	CLIP_ASSIGN(listlength, 0, MAX_OUT);
 	
 	tmp = (char *)bip;
 	for (i = 2; i < dimcount; i++) {
@@ -185,14 +185,14 @@ void jit_spill_calculate_2d_long(t_jit_spill *x, long dimcount, long *dim, long 
 {
 	long i,j,width,height;
 	char *tmp;
-	long *ip;
+	t_int32 *ip;
 	long offtmp;
 	char plane = x->plane;
 	long listlength = x->listlength, templength = 0;
 	
 	width  = dim[0];
 	height = dim[1];
-	CLIP(listlength, 0, MAX_OUT);
+	CLIP_ASSIGN(listlength, 0, MAX_OUT);
 	
 	tmp = (char *)bip;
 	for (i = 2; i < dimcount; i++) {
@@ -203,7 +203,7 @@ void jit_spill_calculate_2d_long(t_jit_spill *x, long dimcount, long *dim, long 
 	i = CLAMP(x->offset[1], 0, height - 1);
 	j = CLAMP(x->offset[0], 0, width - 1);
 	
-	ip = (long *)(tmp + i * in_minfo->dimstride[1] + j * in_minfo->dimstride[0]);
+	ip = (t_int32 *)(tmp + i * in_minfo->dimstride[1] + j * in_minfo->dimstride[0]);
 	
 	if (i < height && templength < listlength) {
 		for ( ; j < width && templength < listlength; j++) {
@@ -213,7 +213,7 @@ void jit_spill_calculate_2d_long(t_jit_spill *x, long dimcount, long *dim, long 
 	}
 	i++;
 	for ( ; i < height && templength < listlength; i++) {
-		ip = (long *)(tmp + i * in_minfo->dimstride[1]);
+		ip = (t_int32 *)(tmp + i * in_minfo->dimstride[1]);
 		for (j = 0; j < width && templength < listlength; j++) {
 			jit_atom_setlong(&x->spill[templength++], *(ip + plane));
 			ip += planecount;
@@ -237,7 +237,7 @@ void jit_spill_calculate_2d_float32(t_jit_spill *x, long dimcount, long *dim, lo
 	
 	width  = dim[0];
 	height = dim[1];
-	CLIP(listlength, 0, MAX_OUT);
+	CLIP_ASSIGN(listlength, 0, MAX_OUT);
 	
 	tmp = (char *)bip;
 	for (i = 2; i < dimcount; i++) {
@@ -282,7 +282,7 @@ void jit_spill_calculate_2d_float64(t_jit_spill *x, long dimcount, long *dim, lo
 	
 	width  = dim[0];
 	height = dim[1];
-	CLIP(listlength, 0, MAX_OUT);
+	CLIP_ASSIGN(listlength, 0, MAX_OUT);
 	
 	tmp = (char *)bip;
 	for (i = 2; i < dimcount; i++) {

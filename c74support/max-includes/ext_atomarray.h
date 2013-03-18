@@ -1,6 +1,6 @@
 
-#ifndef __ATOMARRAY_H__
-#define __ATOMARRAY_H__
+#ifndef _EXT_ATOMARRAY_H_
+#define _EXT_ATOMARRAY_H_
 
 #if C74_PRAGMA_STRUCT_PACKPUSH
     #pragma pack(push, 2)
@@ -17,17 +17,43 @@
 
 #define ATOMARRAY_FLAG_FREECHILDREN		(1)
 
-/** The atomarray object. This struct is provided for debugging convenience, 
-	but should be considered opaque and is subject to change without notice. 
+#ifndef C74_X64
 
-	@ingroup atomarray
-*/
+union word64			
+{
+	long w_long;
+	double w_float;
+	struct symbol *w_sym;
+	struct object *w_obj;
+};
+
+typedef struct atom64	
+{
+	short a_type;		
+	union word64 a_w;
+} t_atom64;
+
+#else
+
+#define t_atom64 t_atom
+
+#endif
+
+
+/** The atomarray object. This struct is provided for debugging convenience, 
+ but should be considered opaque and is subject to change without notice. 
+ 
+ @ingroup atomarray
+ */
 typedef struct _atomarray
 {
 	t_object	ob;
 	long		ac;
 	t_atom		*av;
 	long		flags; 
+#ifndef C74_X64
+	t_atom64	*av64;
+#endif
 } t_atomarray;
 
 
@@ -37,10 +63,7 @@ typedef struct _atomarray
     #pragma pack()
 #endif
 
-#ifdef __cplusplus
-	extern "C" {
-#endif // __cplusplus
-
+BEGIN_USING_C_LINKAGE
 
 /** 
 	Create a new atomarray object.
@@ -152,7 +175,7 @@ t_max_err atomarray_copyatoms(t_atomarray *x, long *ac, t_atom **av);
 	@param	x	The atomarray instance.
 	@return		The number of atoms in the array.
 */
-long atomarray_getsize(t_atomarray *x);
+t_atom_long atomarray_getsize(t_atomarray *x);
 
 
 /** 
@@ -269,9 +292,14 @@ void atomarray_clear(t_atomarray *x);
 */
 void atomarray_funall(t_atomarray *x, method fun, void *arg);
 
+#ifndef C74_X64
+#define atom64_setfloat(x, f) ((x)->a_type = A_FLOAT, (x)->a_w.w_float = (f))
+#define atom64_getfloat(x) (((t_atom64*)x)->a_w.w_float);
+#else
+#define atom64_setfloat(x, f) atom_setfloat(x, f)
+#define atom64_getfloat(x) atom_getfloat(x)
+#endif
 
-#ifdef __cplusplus
-}
-#endif // __cplusplus
+END_USING_C_LINKAGE
 
-#endif // __ATOMARRAY_H__
+#endif // #ifndef _EXT_ATOMARRAY_H_

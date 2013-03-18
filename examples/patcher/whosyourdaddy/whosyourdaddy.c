@@ -28,7 +28,7 @@ void whosyourdaddy_bang(t_whosyourdaddy *x); // incoming bang message
 //////////////////////// global class pointer variable
 void *whosyourdaddy_class;
 
-int main(void)
+int C74_EXPORT main(void)
 {	
 	t_class *c;
 		

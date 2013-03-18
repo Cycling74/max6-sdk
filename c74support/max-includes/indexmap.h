@@ -41,7 +41,7 @@ typedef struct _indexmap
 
 
 // private -- initialize the indexmap class
-void indexmap_initclass();
+void indexmap_initclass(void);
 
 
 /** Create a new indexmap object.

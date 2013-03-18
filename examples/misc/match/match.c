@@ -34,7 +34,7 @@ void match_list(t_match *x, t_symbol *s, short argc, t_atom *argv);
 void match_anything(t_match *x, t_symbol *s, short argc, t_atom *argv);
 void match_atom(t_match *x, t_atom *a);
 void atom_compare(t_match *x);
-Boolean atom_equal(t_atom *a, t_atom *b);
+t_bool atom_equal(t_atom *a, t_atom *b);
 void outlet_atomlist(void *out, long argc, t_atom *argv);
 void match_clear(t_match *x);
 void match_set(t_match *x, t_symbol *s, short ac, t_atom *av);
@@ -45,7 +45,7 @@ void *match_new(t_symbol *s, short ac, t_atom *av);
 t_atom atom_novalue = { A_LONG, {NOVALUE}  };
 t_symbol *ps_nn, *ps_list;
 
-int main()
+int C74_EXPORT main()
 {
 	t_class *c;
 
@@ -148,7 +148,7 @@ void atom_compare(t_match *x)
 	outlet_atomlist(x->m_out,x->m_size,x->m_seen);
 }
 
-Boolean atom_equal(t_atom *a, t_atom *b)
+t_bool atom_equal(t_atom *a, t_atom *b)
 {
 	if (atom_gettype(b) == A_SYM) {
 		if(atom_getsym(b) == ps_nn) // wild card match
@@ -212,7 +212,6 @@ void match_clear(t_match *x)
 void match_set(t_match *x, t_symbol *s, short ac, t_atom *av)
 {
 	t_atom *temp;
-	char savelock;
 
 	if (!ac)
 		return;
@@ -222,7 +221,6 @@ void match_set(t_match *x, t_symbol *s, short ac, t_atom *av)
 	else
 		temp = x->m_want;
 	match_setwant(temp,ac,av);
-	savelock = lockout_set(1);
 	critical_enter(x->m_critical);
 	if (ac != x->m_size) {
 		match_freebytes(x);
@@ -231,7 +229,6 @@ void match_set(t_match *x, t_symbol *s, short ac, t_atom *av)
 	}
 	x->m_size = ac;
 	match_clear(x);
-	lockout_set(savelock);
 	critical_exit(x->m_critical);
 }	
 	

@@ -35,7 +35,8 @@
 extern "C" {
 #endif
 
-t_jit_err max_jit_classex_mop_wrap(void *mclass, void *jclass, long flags);
+t_jit_err max_jit_classex_mop_wrap(void *mclass, void *jclass, long flags);		// legacy api
+t_jit_err max_jit_class_mop_wrap(t_class *mclass, t_class *jclass, long flags);	// new api
 t_jit_err max_jit_classex_mop_mproc(void *mclass, void *jclass, void *mproc); //mproc should be method(void *x, void *mop)
 t_jit_err max_jit_mop_setup(void *x);
 t_jit_err max_jit_mop_inputs(void *x);

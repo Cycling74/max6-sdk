@@ -43,7 +43,7 @@ t_jit_err jit_gradient_init(void)
 	//add attributes	
 	attrflags = JIT_ATTR_GET_DEFER_LOW | JIT_ATTR_SET_USURP_LOW;
 
-	CLASS_STICKY_ATTR(_jit_gradient_class,"category",0,"Behavior");
+	CLASS_STICKY_CATEGORY(_jit_gradient_class,0,"Behavior");
 	CLASS_STICKY_ATTR(_jit_gradient_class,"basic",0,"1");
 
 	// start - beginning gradient cell
@@ -65,7 +65,7 @@ t_jit_err jit_gradient_init(void)
 	jit_class_addattr(_jit_gradient_class,attr);
 	CLASS_ATTR_LABEL(_jit_gradient_class,"cheby",0,"Chebyshev Coefficients");	
 
-	CLASS_STICKY_ATTR_CLEAR(_jit_gradient_class, "category");
+	CLASS_STICKY_CATEGORY_CLEAR(_jit_gradient_class);
 	CLASS_STICKY_ATTR_CLEAR(_jit_gradient_class, "basic");
 
 	jit_class_register(_jit_gradient_class);
@@ -182,8 +182,8 @@ void jit_gradient_calculate_ndim(t_jit_gradient *x, long dimcount, long *dim, lo
 			for (i=0;i<height;i++){
 			op = bop + i*out_minfo->dimstride[1];
 			if (i>0) {
-				lp1 = bop; 
-				lp2 = op; 
+				lp1 = (long*) bop; 
+				lp2 = (long*) op; 
 				for (j=0;j<width;j++) {
 					*lp2++ = *lp1++;
 				}	

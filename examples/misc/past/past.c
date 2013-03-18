@@ -31,7 +31,7 @@ short past_compare(t_past *x, t_atom *a, long index);
 
 void *past_class;
 
-int main()
+int C74_EXPORT main()
 {
 	t_class *c;
 

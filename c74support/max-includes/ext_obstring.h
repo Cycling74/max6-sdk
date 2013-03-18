@@ -5,12 +5,10 @@
  *
  */
 
-#ifndef __OBSTRING_H__
-#define __OBSTRING_H__
+#ifndef _EXT_OBSTRING_H_
+#define _EXT_OBSTRING_H_
 
-#ifdef __cplusplus
-	extern "C" {
-#endif // __cplusplus
+BEGIN_USING_C_LINKAGE
 
 #if C74_PRAGMA_STRUCT_PACKPUSH
     #pragma pack(push, 2)
@@ -89,9 +87,6 @@ void string_chop(t_string *x, long numchars);
 
 // TODO: This object has a number of additional methods exposed via Max's messaging interface
 
+END_USING_C_LINKAGE
 
-#ifdef __cplusplus
-}
-#endif // __cplusplus
-
-#endif //__OBSTRING_H__
+#endif //#ifndef _EXT_OBSTRING_H_

@@ -42,7 +42,7 @@ t_jit_err jit_glue_init(void)
 	//add attributes	
 	attrflags = JIT_ATTR_GET_DEFER_LOW | JIT_ATTR_SET_USURP_LOW;
 	
-	CLASS_STICKY_ATTR(_jit_glue_class,"category",0,"Behavior");
+	CLASS_STICKY_CATEGORY(_jit_glue_class,0,"Behavior");
 	CLASS_STICKY_ATTR(_jit_glue_class,"basic",0,"1");
 
 	attr = jit_object_new(_jit_sym_jit_attr_offset,"rows",_jit_sym_long,attrflags,
@@ -57,7 +57,7 @@ t_jit_err jit_glue_init(void)
 	jit_class_addattr(_jit_glue_class,attr);
 	CLASS_ATTR_LABEL(_jit_glue_class,"columns",0,"Columns");	
 
-	CLASS_STICKY_ATTR_CLEAR(_jit_glue_class, "category");
+	CLASS_STICKY_CATEGORY_CLEAR(_jit_glue_class);
 	CLASS_STICKY_ATTR_CLEAR(_jit_glue_class, "basic");
 
 	attrflags = JIT_ATTR_GET_OPAQUE_USER | JIT_ATTR_SET_OPAQUE_USER;
@@ -139,7 +139,7 @@ t_jit_err jit_glue_matrix_calc(t_jit_glue *x, void *inputs, void *outputs)
 		
 		}
 		
-		setmem(&conv,sizeof(t_matrix_conv_info),0);
+		memset(&conv,0,sizeof(t_matrix_conv_info));
 		for(i=0;i<JIT_MATRIX_MAX_PLANECOUNT;i++) {
 			conv.planemap[i] = i;
 		}

@@ -12,7 +12,8 @@
 #ifdef __cplusplus
 	extern "C" {
 #endif // __cplusplus
-		
+
+#include "ext.h"
 #include "jit.platform.h"
 #include "jit.error.h"
 #include "jit.file.h"
@@ -21,7 +22,14 @@
 #include "jit.gworld.h"
 #include "jit.qt.codec.h"
 #include "jit.critical.h"
-		
+#include "ext_preprocessor.h"
+
+#define SIZE_INT32		sizeof(t_int32)
+#define SIZE_INT64		sizeof(t_int64)
+#define SIZE_FLOAT32	sizeof(float)
+#define SIZE_FLOAT64	sizeof(double)
+#define SIZE_PTR		sizeof(t_ptr_int)
+
 #ifndef TRUE
 #define TRUE 	1
 #endif
@@ -58,21 +66,10 @@
 #define JIT_MATRIX_CONVERT_SRCDIM	0x00000004	///< use source dimensions                                            @ingroup jitter
 #define JIT_MATRIX_CONVERT_DSTDIM	0x00000008	///< use destination dimensions                                       @ingroup jitter
 
-#ifndef __OBEX_H__
 typedef unsigned long 	ulong;
 typedef unsigned int 	uint;
 typedef unsigned short 	ushort;
 typedef unsigned char 	uchar;
-#endif
-
-/**
- * for passing on the stack in method calls 
- * (no need for struct packing here, since flat array)
- */
-typedef struct _stack_splat
-{
-	char b[64];	///< byte array to push onto stack
-} t_stack_splat;
 
 #include "jit.op.h"
 #include "jit.linklist.h"
@@ -139,13 +136,13 @@ typedef struct _matrix_conv_info
 #include "jit.parallel.utils.h"
 
 
-long jit_method_true(void *x);
-long jit_method_false(void *x);
+t_atom_long jit_method_true(void *x);
+t_atom_long jit_method_false(void *x);
 
 void *jit_class_new(C74_CONST char *name, method mnew, method mfree, long size, ...);
 t_jit_err jit_class_free(void *c);
 t_jit_err jit_class_register(void *c);
-t_jit_err jit_class_addmethod(void *c, method m, char *name, ...);
+t_jit_err jit_class_addmethod(void *c, method m, const char *name, ...);
 t_jit_err jit_class_addattr(void *c, t_jit_object *attr);
 t_jit_err jit_class_addadornment(void *c, t_jit_object *o);
 t_jit_err jit_class_addinterface(void *c, void *interfaceclass, long byteoffset, long flags);
@@ -162,8 +159,16 @@ t_symbol *jit_class_method_argsafe_get(void *c, t_symbol *s);
 
 void *jit_object_alloc(void *c);
 void *jit_object_new(t_symbol *classname, ...);
+#ifdef C74_X64
+#define jit_object_new(...) C74_VARFUN(jit_object_new_imp, __VA_ARGS__)
+#endif
+void *jit_object_new_imp(void *classname, void *p1, void *p2, void *p3, void *p4, void *p5, void *p6, void *p7, void *p8, void *dummy);
 t_jit_err jit_object_free(void *x);
 void *jit_object_method(void *x, t_symbol *s, ...) JIT_WEAKLINK;
+#ifdef C74_X64
+#define jit_object_method(...) C74_VARFUN(jit_object_method_imp, __VA_ARGS__)
+#endif
+void *jit_object_method_imp(void *x, void *s, void *p1, void *p2, void *p3, void *p4, void *p5, void *p6, void *p7, void *p8);
 void *jit_object_method_typed(void *x, t_symbol *s, long ac, t_atom *av, t_atom *rv);
 method jit_object_getmethod(void *x, t_symbol *s);
 t_symbol *jit_object_classname(void *x);
@@ -198,18 +203,18 @@ void jit_disposeptr(char *ptr);
 
 
 //atom functions
-t_jit_err jit_atom_setlong(t_atom *a, long b);
+t_jit_err jit_atom_setlong(t_atom *a, t_atom_long b);
 t_jit_err jit_atom_setfloat(t_atom *a, double b);
 t_jit_err jit_atom_setsym(t_atom *a, t_symbol *b);				
 t_jit_err jit_atom_setobj(t_atom *a, void *b);
-long jit_atom_getlong(t_atom *a);
+t_atom_long jit_atom_getlong(t_atom *a);
 double jit_atom_getfloat(t_atom *a);
 t_symbol *jit_atom_getsym(t_atom *a);
 void *jit_atom_getobj(t_atom *a);
 long jit_atom_getcharfix(t_atom *a);
 //the following are useful for setting the values _only_ if there is an arg
 //rather than setting it to 0 or _jit_sym_nothing
-long jit_atom_arg_getlong(long *c, long idx, long ac, t_atom *av);
+long jit_atom_arg_getlong(t_atom_long *c, long idx, long ac, t_atom *av);
 long jit_atom_arg_getfloat(float *c, long idx, long ac, t_atom *av);
 long jit_atom_arg_getdouble(double *c, long idx, long ac, t_atom *av);
 long jit_atom_arg_getsym(t_symbol **c, long idx, long ac, t_atom *av);
@@ -233,14 +238,14 @@ t_symbol *jit_mop_ioproc_tosym(void *ioproc);
 long max_jit_attr_args_offset(short ac, t_atom *av);
 void max_jit_attr_args(void *x, short ac, t_atom *av);
 //for easy access of simple attributes
-long jit_attr_getlong(void *x, t_symbol *s);
-t_jit_err jit_attr_setlong(void *x, t_symbol *s, long c);
-float jit_attr_getfloat(void *x, t_symbol *s);
-t_jit_err jit_attr_setfloat(void *x, t_symbol *s, float c);
+t_atom_long jit_attr_getlong(void *x, t_symbol *s);
+t_jit_err jit_attr_setlong(void *x, t_symbol *s, t_atom_long c);
+t_atom_float jit_attr_getfloat(void *x, t_symbol *s);
+t_jit_err jit_attr_setfloat(void *x, t_symbol *s, t_atom_float c);
 t_symbol *jit_attr_getsym(void *x, t_symbol *s);
 t_jit_err jit_attr_setsym(void *x, t_symbol *s, t_symbol *c);
-long jit_attr_getlong_array(void *x, t_symbol *s, long max, long *vals);
-t_jit_err jit_attr_setlong_array(void *x, t_symbol *s, long count, long *vals);
+long jit_attr_getlong_array(void *x, t_symbol *s, long max, t_atom_long *vals);
+t_jit_err jit_attr_setlong_array(void *x, t_symbol *s, long count, t_atom_long *vals);
 long jit_attr_getchar_array(void *x, t_symbol *s, long max, uchar *vals);
 t_jit_err jit_attr_setchar_array(void *x, t_symbol *s, long count, uchar *vals);
 long jit_attr_getfloat_array(void *x, t_symbol *s, long max, float *vals);
@@ -285,8 +290,8 @@ void jit_post_sym(void *x,t_symbol *s);  //interrupt safe
 #endif
 
 //util macros
-#ifndef CLIP
-#define CLIP(x,a,b) (x)=(x)<(a)?(a):(x)>(b)?(b):(x)		
+#ifndef CLIP_ASSIGN
+#define CLIP_ASSIGN(x,a,b) (x)=(x)<(a)?(a):(x)>(b)?(b):(x)		
 #endif
 
 #ifndef CLAMP

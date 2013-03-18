@@ -53,7 +53,7 @@ t_jit_err jit_histogram_init(void)
 	//add attributes	
 	attrflags = JIT_ATTR_GET_DEFER_LOW | JIT_ATTR_SET_USURP_LOW;
 
-	CLASS_STICKY_ATTR(_jit_histogram_class,"category",0,"Behavior");
+	CLASS_STICKY_CATEGORY(_jit_histogram_class,0,"Behavior");
 	CLASS_STICKY_ATTR(_jit_histogram_class,"basic",0,"1");
 
 	attr = jit_object_new(_jit_sym_jit_attr_offset,"normval",_jit_sym_long,attrflags,
@@ -71,7 +71,7 @@ t_jit_err jit_histogram_init(void)
 	jit_class_addattr(_jit_histogram_class,attr);
 	CLASS_ATTR_STYLE_LABEL(_jit_histogram_class,"normalize",0,"onoff","Normalize Histogram");	
 
-	CLASS_STICKY_ATTR_CLEAR(_jit_histogram_class, "category");
+	CLASS_STICKY_CATEGORY_CLEAR(_jit_histogram_class);
 	CLASS_STICKY_ATTR_CLEAR(_jit_histogram_class, "basic");
 
 	jit_class_register(_jit_histogram_class);
@@ -181,9 +181,9 @@ void jit_histogram_calculate_ndim(t_jit_histogram *x, long dimcount, long *dim, 
 		break;
 	default:
 		for	(i=0;i<dim[dimcount-1];i++) {
-			ip1 = bip1 + i*in1_minfo->dimstride[dimcount-1];
-			op = bop + i*out_minfo->dimstride[dimcount-1];
-			jit_histogram_calculate_ndim(x,dimcount-1,dim,planecount,in1_minfo,ip1,out_minfo,op);
+			ip1 = (uchar*)(bip1 + i*in1_minfo->dimstride[dimcount-1]);
+			op = (uchar*)(bop + i*out_minfo->dimstride[dimcount-1]);
+			jit_histogram_calculate_ndim(x,dimcount-1,dim,planecount,in1_minfo,(char*)ip1,out_minfo,(char*)op);
 		}
 	}
 }
@@ -192,10 +192,10 @@ void jit_histogram_calculate_ndim(t_jit_histogram *x, long dimcount, long *dim, 
 void jit_histogram_vector_char(long n, long maxsize, t_jit_op_info *in1, t_jit_op_info *out) 
 {
 	uchar *ip1;
-	long *op,is1,os;
+	t_int32 *op,is1,os;
 		
 	ip1 = ((uchar *)in1->p);
-	op  = ((long *)out->p);
+	op  = ((t_int32 *)out->p);
 	is1 = in1->stride; 
 	os  = out->stride; 
 	
@@ -207,10 +207,10 @@ void jit_histogram_vector_char(long n, long maxsize, t_jit_op_info *in1, t_jit_o
 
 void jit_histogram_vector_long(long n, long maxsize, t_jit_op_info *in1, t_jit_op_info *out) 
 {
-	long *ip1,*op,is1,os,c;
+	t_int32 *ip1,*op,is1,os,c;
 		
-	ip1 = ((long *)in1->p);
-	op  = ((long *)out->p);
+	ip1 = ((t_int32 *)in1->p);
+	op  = ((t_int32 *)out->p);
 	is1 = in1->stride; 
 	os  = out->stride; 
 	
@@ -224,7 +224,8 @@ void jit_histogram_vector_long(long n, long maxsize, t_jit_op_info *in1, t_jit_o
 
 void jit_histogram_normalize(t_jit_matrix_info *out_minfo, char *bop, long normval) 
 {
-	long j,n,in,*op,os,max;
+	long j,n,os,max;
+	t_int32 *op;
 	double scale;
 		
 	os = out_minfo->planecount; 
@@ -232,11 +233,11 @@ void jit_histogram_normalize(t_jit_matrix_info *out_minfo, char *bop, long normv
 	
 	for (j=0;j<out_minfo->planecount;j++) {
 		n 	= out_minfo->dim[0] + 1; 
-		op 	= bop + j*4;
+		op 	= (t_int32*) (bop + j*4);
 		max = 0;
 		while (--n) { max = MAX(max,ABS(*op)); op += os; }
 		n 	= out_minfo->dim[0] + 1; 
-		op 	= bop + j*4;
+		op 	= (t_int32*) (bop + j*4);
 		if (max&&normval) {
 			scale = (double)normval/(double)max;
 			while (--n) { *op = (long)(((double)(*op))*scale); op += os; }
@@ -249,16 +250,17 @@ void jit_histogram_normalize(t_jit_matrix_info *out_minfo, char *bop, long normv
 
 void jit_histogram_normalize2(t_jit_matrix_info *out_minfo, char *bop, long normval) 
 {
-	long j,n,in,*op,os,max=0;
+	long n,max=0;
+	t_int32*op;
 	double scale;
 		
 	normval = ABS(normval);
 	
 	n 	= (out_minfo->dim[0]*out_minfo->planecount) + 1; 
-	op 	= bop;
+	op 	= (t_int32*) bop;
 	while (--n) { max = MAX(max,ABS(*op)); op++; }
 	n 	= (out_minfo->dim[0]*out_minfo->planecount) + 1; 
-	op 	= bop;
+	op 	= (t_int32*) bop;
 	if (max&&normval) {
 		scale = (double)normval/(double)max;
 		while (--n) { *op = (long)(((double)(*op))*scale); op++; }

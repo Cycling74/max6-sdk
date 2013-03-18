@@ -43,7 +43,7 @@ t_jit_err jit_demultiplex_init(void)
 	//add methods
 	jit_class_addmethod(_jit_demultiplex_class, (method)jit_demultiplex_matrix_calc, "matrix_calc", A_CANT, 0L);
 
-	CLASS_STICKY_ATTR(_jit_demultiplex_class,"category",0,"Behavior");
+	CLASS_STICKY_CATEGORY(_jit_demultiplex_class,0,"Behavior");
 	CLASS_STICKY_ATTR(_jit_demultiplex_class,"basic",0,"1");
 
 	//add attributes	
@@ -69,7 +69,7 @@ t_jit_err jit_demultiplex_init(void)
 	jit_class_addattr(_jit_demultiplex_class,attr);
 	CLASS_ATTR_LABEL(_jit_demultiplex_class,"scan_b",0,"Scanline Count (Right)");		
 
-	CLASS_STICKY_ATTR_CLEAR(_jit_demultiplex_class, "category");
+	CLASS_STICKY_CATEGORY_CLEAR(_jit_demultiplex_class);
 	CLASS_STICKY_ATTR_CLEAR(_jit_demultiplex_class, "basic");
 		
 	jit_class_register(_jit_demultiplex_class);
@@ -116,8 +116,8 @@ t_jit_err jit_demultiplex_matrix_calc(t_jit_demultiplex *x, void *inputs, void *
 				
 		//allow any planes, will simply wrap. i think that's okay  - jkc		
 		
-		setmem(&conv,sizeof(t_matrix_conv_info),0);
-		setmem(&conv2,sizeof(t_matrix_conv_info),0);
+		memset(&conv,0,sizeof(t_matrix_conv_info));
+		memset(&conv2,0,sizeof(t_matrix_conv_info));
 		for (i=0;i<JIT_MATRIX_MAX_PLANECOUNT;i++) { 
 			conv.planemap[i] = i;
 			conv2.planemap[i] = i;
@@ -140,8 +140,8 @@ t_jit_err jit_demultiplex_matrix_calc(t_jit_demultiplex *x, void *inputs, void *
 		}
 		
 		i = demultiplexdim;
-		CLIP(scan_a, 0, in_minfo.dim[i]);
-		CLIP(scan_b, 0, in_minfo.dim[i]);
+		CLIP_ASSIGN(scan_a, 0, in_minfo.dim[i]);
+		CLIP_ASSIGN(scan_b, 0, in_minfo.dim[i]);
 		plexsize = CLAMP(scan_a + scan_b, 0, in_minfo.dim[i]);
 			
 		tmpsize = in_minfo.dim[i];
@@ -232,8 +232,8 @@ t_jit_err jit_demultiplex_calc_out_matrix(t_jit_demultiplex *x, t_jit_matrix_inf
 	}
 	
 	i = demultiplexdim;
-	CLIP(scan_a, 0, in_minfo->dim[i]);
-	CLIP(scan_b, 0, in_minfo->dim[i]);
+	CLIP_ASSIGN(scan_a, 0, in_minfo->dim[i]);
+	CLIP_ASSIGN(scan_b, 0, in_minfo->dim[i]);
 	plexsize = CLAMP(scan_a + scan_b, 0, in_minfo->dim[i]);
 	if (scan_b == 0) {
 		out_minfo->dim[i] = scan_a;

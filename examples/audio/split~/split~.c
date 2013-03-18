@@ -34,11 +34,10 @@ static t_class* s_split_class = NULL;
 
 //***********************************************************************************************
 
-int main(void)
+int C74_EXPORT main(void)
 {	
 	t_class* c = class_new("split~", (method)split_new, (method)dsp_free, sizeof(t_split), NULL, A_GIMME, 0);
 	
-	common_symbols_init();
 	class_addmethod(c, (method)split_int,		"int",		A_LONG, 0);
 	class_addmethod(c, (method)split_float,		"float",	A_FLOAT, 0);
 	class_addmethod(c, (method)split_dsp,		"dsp",		A_CANT, 0);		// Old 32-bit MSP dsp chain compilation for Max 5 and earlier
@@ -46,7 +45,7 @@ int main(void)
 	class_addmethod(c, (method)split_assist,	"assist",	A_CANT, 0);
 	
 	class_dspinit(c);
-	class_register(_sym_box, c);
+	class_register(CLASS_BOX, c);
 	s_split_class = c;
 
 	return 0;

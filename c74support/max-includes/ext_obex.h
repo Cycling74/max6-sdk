@@ -1,11 +1,10 @@
 
-#ifndef __OBEX_H__
-#define __OBEX_H__
+#ifndef _EXT_OBEX_H_
+#define _EXT_OBEX_H_
 
-#ifdef __cplusplus
-	extern "C" {
-#endif // __cplusplus
+#include "ext_preprocessor.h"
 
+BEGIN_USING_C_LINKAGE
 
 #ifndef TRUE
 #define TRUE 	1
@@ -43,7 +42,8 @@ typedef enum {
 	ATTR_SET_DEFER =		0x01000000, // Placeholder for potential future functionality: The attribute setter will be called through a defer().
 	ATTR_SET_USURP =		0x02000000,	// Placeholder for potential future functionality: Any calls to set the attribute will be called through the equivalent of a defer_low(), repeated calls will be ignored until the setter is actually run.
 	ATTR_SET_DEFER_LOW =	0x04000000, // Placeholder for potential future functionality: The attribute setter will be called through a defer_low()
-	ATTR_SET_USURP_LOW =	0x08000000	// Placeholder for potential future functionality: Any calls to set the attribute will be called through the equivalent of a defer_low(), repeated calls will be ignored until the setter is actually run.
+	ATTR_SET_USURP_LOW =	0x08000000,	// Placeholder for potential future functionality: Any calls to set the attribute will be called through the equivalent of a defer_low(), repeated calls will be ignored until the setter is actually run.
+	ATTR_IS_JBOXATTR =		0x10000000  // a common jbox attr
 } e_max_attrflags;
 
 
@@ -66,65 +66,10 @@ typedef enum {
 	OBJ_FLAG_DATA =			0x00000002,	///< don't free data or call method
 	OBJ_FLAG_MEMORY =		0x00000004,	///< don't call method, and when freeing use sysmem_freeptr() instead of freeobject 
 	OBJ_FLAG_SILENT =		0x00000100,	///< don't notify when modified
-	OBJ_FLAG_INHERITABLE =	0x00000200  ///< obexprototype entry will be inherited by subpatchers and abstractions
+	OBJ_FLAG_INHERITABLE =	0x00000200,  ///< obexprototype entry will be inherited by subpatchers and abstractions
+	OBJ_FLAG_ITERATING =	0x00001000,	///< used by linklist to signal when is inside iteration 
+	OBJ_FLAG_DEBUG =		0x40000000	///< context-dependent flag, used internally for linklist debug code
 } e_max_datastore_flags;
-
-
-#ifdef calcoffset //find better place for this?
-	// The ifdefs for this macro have been set up like this so that Doxygen can document this macro on a Mac [TAP]
-#else
-	#ifdef WIN_VERSION
-		// rbs truncation of pointer to long is safe if the struct is smaller than 2^32 bytes.
-		// this seems like a good assumption.  
-		// PtrToLong is defined in Basetsd.h (windows) and is described here http://msdn2.microsoft.com/En-US/library/aa384242.aspx
-		#define calcoffset(x,y) (PtrToLong(&(((x *)0L)->y)))
-	#else
-		/** 
-			Find byte offset of a named member of a struct, relative to the beginning of that struct.
-			@ingroup misc
-			@param	x	The name of the struct
-			@param	y	The name of the member
-			@return		A long integer representing the number of bytes into the struct where the member begins.
-		*/
-		#define calcoffset(x,y) ((long)(&(((x *)0L)->y)))
-	#endif
-#endif
-
-#ifndef __JIT_COMMON_H__
-/**	An unsigned long integer.
-	@ingroup datatypes */
-typedef unsigned long 	ulong;
-
-/**	An unsigned integer.
-	@ingroup datatypes */
-#ifndef uint
-typedef unsigned int 	uint;
-#endif // uint
-
-/**	An unsigned short integer.
-	@ingroup datatypes */
-#ifndef ushort
-typedef unsigned short 	ushort;
-#endif // ushort
-
-/**	An unsigned char.
-	@ingroup datatypes */
-#ifndef uchar
-typedef unsigned char 	uchar;
-#endif // uchar
-#endif // __JIT_COMMON_H__
-
-
-/**
-	A Max error code.  Common error codes are defined in #e_max_errorcodes.
-	@ingroup datatypes
-*/
-typedef long t_max_err;
-
-#include "commonsyms.h"
-#include "ext_linklist.h"
-#include "ext_hashtab.h"
-#include "ext_atomarray.h"
 
 #if C74_PRAGMA_STRUCT_PACKPUSH
     #pragma pack(push, 2)
@@ -132,25 +77,21 @@ typedef long t_max_err;
     #pragma pack(2)
 #endif
 
-//for passing on the stack in method calls
-/*
-typedef struct _stack_splat
-{
-	char b[64];
-} t_stack_splat;
-*/
-
-#define C74_USE_VA_ARG_SPLAT
-#ifdef C74_USE_VA_ARG_SPLAT
-#define C74_SPLAT_PREPARE(splat_prev_arg)	va_list splat_va_args; va_start(splat_va_args, splat_prev_arg);
-#define C74_SPLAT_PASS						(*((t_stack_splat *)(splat_va_args)))
-#define C74_SPLAT_CLEANUP					va_end(splat_va_args);
-#else
-#define C74_SPLAT_PREPARE(splat_prev_arg)	char *splat_args = ((char *)(&(splat_prev_arg)))+4;
-#define C74_SPLAT_PASS						(*((t_stack_splat *)(splat_args)))
-#define C74_SPLAT_CLEANUP
-#endif
+#define C74_SPLAT_PREPARE(splat_prev_arg)   va_list splat_va_args;     \
+void *sp_arg1, *sp_arg2, *sp_arg3, *sp_arg4, *sp_arg5, *sp_arg6, *sp_arg7, *sp_arg8;  \
+va_start(splat_va_args, splat_prev_arg);     \
+sp_arg1 = va_arg(splat_va_args, void*); \
+sp_arg2 = va_arg(splat_va_args, void*); \
+sp_arg3 = va_arg(splat_va_args, void*); \
+sp_arg4 = va_arg(splat_va_args, void*); \
+sp_arg5 = va_arg(splat_va_args, void*); \
+sp_arg6 = va_arg(splat_va_args, void*); \
+sp_arg7 = va_arg(splat_va_args, void*); \
+sp_arg8 = va_arg(splat_va_args, void*); 
+#define C74_SPLAT_PASS						sp_arg1, sp_arg2, sp_arg3, sp_arg4, sp_arg5, sp_arg6, sp_arg7, sp_arg8
 		
+#define C74_SPLAT_CLEANUP					va_end(splat_va_args);
+				
 /** Common attr struct. This struct is provided for debugging convenience, 
 	but should be considered opaque and is subject to change without notice. 
 
@@ -174,14 +115,14 @@ typedef struct _attr
 	A method that always returns true.
 	@ingroup misc
 */
-long method_true(void *x);
+t_atom_long method_true(void *x);
 
 
 /**
 	A method that always returns false.
 	@ingroup misc
 */
-long method_false(void *x);
+t_atom_long method_false(void *x);
 
 
 /**
@@ -397,7 +338,6 @@ t_class *class_getifloaded_casefree(t_symbol *name_space, t_symbol *classname);
 */
 long object_classname_compare(void *x, t_symbol *name);
 
-
 t_hashtab *reg_object_namespace_lookup(t_symbol *name_space);
 method class_method(t_class *x, t_symbol *methodname);
 t_messlist *class_mess(t_class *x, t_symbol *methodname);
@@ -445,6 +385,12 @@ void *object_alloc(t_class *c);
 */
 void *object_new(t_symbol *name_space, t_symbol *classname, ...);
 
+#ifdef C74_X64
+#define object_new(...) C74_VARFUN(object_new_imp, __VA_ARGS__)
+#endif
+
+void *object_new_imp(void *p1, void *p2, void *p3, void *p4, void *p5, void *p6, void *p7, void *p8, void *p9, void *p10);
+
 
 /**
 	Allocates the memory for an instance of an object class and initialize its object header <em>internal to Max</em>. 
@@ -487,6 +433,8 @@ t_max_err object_free(void *x);
 
 /**
 	Sends an untyped message to an object. 
+	There are some caveats to its use, however, particularly for 64-bit architectures.
+	object_method_direct() should be used in cases where floating-point or other non-integer types are being passed on the stack or in return values.
 
 	@ingroup obj
 
@@ -502,11 +450,49 @@ t_max_err object_free(void *x);
 	bang_result = object_method(bang_me, gensym("bang"));
 	@endcode
 */
+
 void *object_method(void *x, t_symbol *s, ...);
 
+#ifdef C74_X64
+#define object_method(...) C74_VARFUN(object_method_imp, __VA_ARGS__)
+#endif
+		    
+void *object_method_imp(void *x, void *sym, void *p1, void *p2, void *p3, void *p4, void *p5, void *p6, void *p7, void *p8);
+        
+/**
+	do a strongly typed direct call to a method of an object
+
+	@ingroup obj
+
+	
+	@param  rt		The type of the return value (double, void*, void...)
+	@param	sig		the actual signature of the function in brackets ! 
+					something like (t_object *, double, long)		
+	@param 	x		The object where the method we want to call will be looked for,
+					it will also always be the first argument to the function call
+	@param 	s		The message selector
+	@param 	...		Any arguments to the call, the first one will always be the object (x)
+
+	@return 		will return anything that the called function returns, typed by (rt)
+ 
+	@remark 		Example: To call the function identified by <tt>getcolorat</tt> on the object <tt>pwindow</tt>
+					which is declared like:
+					t_jrgba pwindow_getcolorat(t_object *window, double x, double y)
+	@code
+	double x = 44.73;
+	double y = 79.21;
+	t_object *pwindow;
+	t_jrgba result = object_method_direct(t_jrgba, (t_object *, double, double), pwindow, gensym("getcolorat"), x, y);
+	@endcode
+*/
+		
+#define object_method_direct(rt, sig, x, s, ...) ((rt (*)sig)object_method_direct_getmethod((t_object *)x, s))(object_method_direct_getobject((t_object *)x, s), __VA_ARGS__)
+
+method object_method_direct_getmethod(t_object *x, t_symbol *sym);
+void *object_method_direct_getobject(t_object *x, t_symbol *sym);
 
 /**
-	Sends a type-checked message to an object. 
+	Sends a type-checked message to an object.
 
 	@ingroup obj
 
@@ -626,7 +612,20 @@ void *object_findregistered(t_symbol *name_space, t_symbol *s);
 */
 t_max_err object_findregisteredbyptr(t_symbol **name_space, t_symbol **s, void *x);
 
+/**
+	Returns all registered names in a namespace
 
+	@ingroup obj
+
+	@param 	name_space	Pointer to a t_symbol, the namespace to lookup names in
+	@param 	namecount	Pointer to a long, to receive the count of the registered names within the namespace
+	@param 	names		Pointer to a t_symbol **, to receive the allocated names. This pointer should be freed after use
+
+	@return 	This function returns the error code <tt>MAX_ERR_NONE</tt> if successful, 
+				or one of the other error codes defined in "ext_obex.h" if unsuccessful.
+*/
+t_max_err object_register_getnames(t_symbol *name_space, long *namecount, t_symbol ***names);
+		
 /**
 	Attaches a client to a registered object. 
 	Once attached, the object will receive notifications sent from the registered object (via the object_notify() function), 
@@ -791,20 +790,18 @@ t_max_err object_unsubscribe(t_symbol *name_space, t_symbol *s, t_symbol *classn
 */
 t_max_err object_unregister(void *x);
 
-// function: object_register_getnames
 /**
- * Returns all registered names in a namespace
- *
- * @ingroup obj
- *
- * @param 	name_space	Pointer to a t_symbol, the namespace to lookup names in
- * @param 	namecount	Pointer to a long, to receive the count of the registered names within the namespace
- * @param 	names		Pointer to a t_symbol **, to receive the allocated names. This pointer should be freed after use
- *
- * @return 	This function returns the error code <tt>MAX_ERR_NONE</tt> if successful, 
- *			or one of the other error codes defined in "ext_obex.h" if unsuccessful.
- *
- */
+	Returns all registered names in a namespace
+ 
+	@ingroup obj
+ 
+	@param 	name_space	Pointer to a t_symbol, the namespace to lookup names in
+	@param 	namecount	Pointer to a long, to receive the count of the registered names within the namespace
+	@param 	names		Pointer to a t_symbol **, to receive the allocated names. This pointer should be freed after use
+ 
+	@return				This function returns the error code <tt>MAX_ERR_NONE</tt> if successful, 
+						or one of the other error codes defined in "ext_obex.h" if unsuccessful.
+*/
 t_max_err object_register_getnames(t_symbol *name_space, long *namecount, t_symbol ***names);
 
 		
@@ -935,11 +932,6 @@ t_max_err object_getvalueof(void *x, long *ac, t_atom **av);
 	@endcode
 */
 t_max_err object_setvalueof(void *x, long ac, t_atom *av);
-
-
-
-t_max_err object_attr_getnames(void *x, long *argc, t_symbol ***argv);
-
 
 /**
 	Returns the pointer to an attribute, given its name. 
@@ -1130,7 +1122,8 @@ long class_obexoffset_get(t_class *c);
 	@endcode
 */
 t_max_err object_obex_lookup(void *x, t_symbol *key, t_object **val);
-
+t_max_err object_obex_lookuplong(void *x, t_symbol *key, t_atom_long *val);
+t_max_err object_obex_lookupsym(void *x, t_symbol *key, t_symbol **val);
 
 /**
 	Stores data in the object's obex. 
@@ -1153,6 +1146,9 @@ t_max_err object_obex_lookup(void *x, t_symbol *key, t_object **val);
 */
 t_max_err object_obex_store(void *x,t_symbol *key, t_object *val);
 t_max_err object_obex_storeflags(void *x,t_symbol *key, t_object *val, long flags);
+
+t_max_err object_obex_storelong(void *x, t_symbol *key, t_atom_long val); 
+t_max_err object_obex_storesym(void *x, t_symbol *key, t_symbol *val); 
 
 
 // private
@@ -1186,7 +1182,8 @@ t_hashtab *object_obex_enforce(void *x);
 void object_obex_dumpout(void *x, t_symbol *s, long argc, t_atom *argv);
 
 
-void object_obex_free(void *x);
+// DO NOT CALL THIS -- It is called automatically now from object_free() or freeobject() -- calling this will cause problems.
+C74_DEPRECATED( void object_obex_free(void *x) );
 
 
 //atom functions 
@@ -1202,7 +1199,7 @@ void object_obex_free(void *x);
 	@return 	This function returns the error code #MAX_ERR_NONE if successful, 
 	 			or one of the other error codes defined in #e_max_errorcodes if unsuccessful.
 */
-t_max_err atom_setlong(t_atom *a, long b);
+t_max_err atom_setlong(t_atom *a, t_atom_long b);
 
 
 /**
@@ -1259,7 +1256,7 @@ t_max_err atom_setobj(t_atom *a, void *b);
 					the atom_getlong() function will return the truncated integer value of <tt>at</tt>, or <tt>3</tt>. 
 					An attempt is also made to coerce #t_symbol data.
 */
-long atom_getlong(const t_atom *a);
+t_atom_long atom_getlong(const t_atom *a);
 
 
 /**
@@ -1274,7 +1271,7 @@ long atom_getlong(const t_atom *a);
 					the atom_getfloat() function will return the value of <tt>at</tt> as a float, or <tt>5.0</tt>. 
 					An attempt is also made to coerce #t_symbol data.
 */
-float atom_getfloat(const t_atom *a);
+t_atom_float atom_getfloat(const t_atom *a);
 
 
 /**
@@ -1349,7 +1346,7 @@ long atom_gettype(const t_atom *a);
 	@code
 	void myobject_mymessage(t_myobject *x, t_symbol *s, long ac, t_atom *av)
 	{
-		long var = -1;
+		t_atom_long var = -1;
 
 		// here, we are expecting a value of 0 or greater
 		atom_arg_getlong(&var, 0, ac, av);
@@ -1361,7 +1358,7 @@ long atom_gettype(const t_atom *a);
 	}
 	@endcode
 */
-long atom_arg_getlong(long *c, long idx, long ac, const t_atom *av);
+t_max_err atom_arg_getlong(t_atom_long *c, long idx, long ac, const t_atom *av);
 
 
 /**
@@ -1652,7 +1649,7 @@ t_object *attr_filter_proc_new(method proc);
 	@remark 		If the attribute is not of the type specified by the function, the 
 	 				function will attempt to coerce a valid value from the attribute.
 */
-long object_attr_getlong(void *x, t_symbol *s);
+t_atom_long object_attr_getlong(void *x, t_symbol *s);
 
 
 /**
@@ -1667,7 +1664,7 @@ long object_attr_getlong(void *x, t_symbol *s);
 	@return 		This function returns the error code #MAX_ERR_NONE if successful, 
 	 				or one of the other error codes defined in #e_max_errorcodes if unsuccessful.
 */
-t_max_err object_attr_setlong(void *x, t_symbol *s, long c);
+t_max_err object_attr_setlong(void *x, t_symbol *s, t_atom_long c);
 
 
 /**
@@ -1683,7 +1680,7 @@ t_max_err object_attr_setlong(void *x, t_symbol *s, long c);
 	@remark 		If the attribute is not of the type specified by the function, the 
 	 				function will attempt to coerce a valid value from the attribute.
 */
-float object_attr_getfloat(void *x, t_symbol *s);
+t_atom_float object_attr_getfloat(void *x, t_symbol *s);
 
 
 /**
@@ -1698,7 +1695,7 @@ float object_attr_getfloat(void *x, t_symbol *s);
 	@return 		This function returns the error code #MAX_ERR_NONE if successful, 
 	 				or one of the other error codes defined in #e_max_errorcodes if unsuccessful.
 */
-t_max_err object_attr_setfloat(void *x, t_symbol *s, float c);
+t_max_err object_attr_setfloat(void *x, t_symbol *s, t_atom_float c);
 
 
 /**
@@ -1752,7 +1749,7 @@ t_max_err object_attr_setobj(void *x, t_symbol *s, t_object *o);
 	@remark 		If the attribute is not of the type specified by the function, the 
 	 				function will attempt to coerce a valid value from the attribute.
 */
-long object_attr_getlong_array(void *x, t_symbol *s, long max, long *vals);
+long object_attr_getlong_array(void *x, t_symbol *s, long max, t_atom_long *vals);
 
 
 /**
@@ -1768,7 +1765,7 @@ long object_attr_getlong_array(void *x, t_symbol *s, long max, long *vals);
 	@return 		This function returns the error code #MAX_ERR_NONE if successful, 
 	 				or one of the other error codes defined in #e_max_errorcodes if unsuccessful.
 */
-t_max_err object_attr_setlong_array(void *x, t_symbol *s, long count, long *vals);
+t_max_err object_attr_setlong_array(void *x, t_symbol *s, long count, t_atom_long *vals);
 
 
 /**
@@ -1788,7 +1785,7 @@ t_max_err object_attr_setlong_array(void *x, t_symbol *s, long count, long *vals
 	@remark 		If the attribute is not of the type specified by the function, the 
 	 				function will attempt to coerce a valid value from the attribute.
 */
-long object_attr_getchar_array(void *x, t_symbol *s, long max, uchar *vals);
+long object_attr_getchar_array(void *x, t_symbol *s, long max, t_uint8 *vals);
 
 
 /**
@@ -1804,7 +1801,7 @@ long object_attr_getchar_array(void *x, t_symbol *s, long max, uchar *vals);
 	@return 		This function returns the error code #MAX_ERR_NONE if successful, 
 	 				or one of the other error codes defined in #e_max_errorcodes if unsuccessful.
 */
-t_max_err object_attr_setchar_array(void *x, t_symbol *s, long count, C74_CONST uchar *vals);
+t_max_err object_attr_setchar_array(void *x, t_symbol *s, long count, C74_CONST t_uint8 *vals);
 
 
 /**
@@ -2086,7 +2083,7 @@ t_max_err attr_addfilterget_proc(void *x, method proc);
 	@ingroup	misc
 	@return 	This function returns a unique #t_symbol *.
 */
-t_symbol *symbol_unique();
+t_symbol *symbol_unique(void);
 
 
 void error_code(void *x,t_max_err v); //interrupt safe
@@ -2137,12 +2134,6 @@ void object_obex_quickref(void *x, long *numitems, t_symbol **items);
 
 
 method class_menufun_get(t_class *c);
-
-
-// new for Max 5 (some headers might change)
-#include "ext_obex_util.h"
-#include "ext_dictionary.h"
-#include "ext_obstring.h"
 
 long class_clonable(t_class *x);
 long object_clonable(t_object *x);
@@ -2246,6 +2237,7 @@ t_max_err object_chuckmethod(t_object *x, t_symbol *methodsym);
 
 t_max_err attr_typedfun_set(void *parent, t_object *x, long ac, t_atom *av);
 
+t_max_err object_attr_getnames(void *x, long *argc, t_symbol ***argv);
 
 /**
 	Allocate a single atom.
@@ -2319,6 +2311,12 @@ t_max_err class_subclass(t_class *superclass, t_class *subclass);
 */		
 t_object *class_super_construct(t_class *c, ...);
 
+#ifdef C74_X64
+#define class_super_construct(...) C74_VARFUN(class_super_construct_imp, __VA_ARGS__)
+#endif
+
+t_object *class_super_construct_imp(void *c, void *p1, void *p2, void *p3, void *p4, void *p5, void *p6, void *p7, void *p8, void *p9);
+
 /**
 	Sends an untyped message to an object using superclass methods.
 	Uses a thread specific stack to ensure traversal up the class hierarchy.
@@ -2333,6 +2331,12 @@ t_object *class_super_construct(t_class *c, ...);
 */		
 void *object_super_method(t_object *x, t_symbol *s, ...);
 
+#ifdef C74_X64
+#define object_super_method(...) C74_VARFUN(object_super_method_imp, __VA_ARGS__)
+#endif
+
+void *object_super_method_imp(void *x, void *s, void *p1, void *p2, void *p3, void *p4, void *p5, void *p6, void *p7, void *p8);
+
 /**
 	Sends an untyped message to an object, respects a thread specific class stack from object_super_method() calls
 
@@ -2346,7 +2350,12 @@ void *object_super_method(t_object *x, t_symbol *s, ...);
 */				
 void *object_this_method(t_object *x, t_symbol *s, ...);
 
-		
+#ifdef C74_X64
+#define object_this_method(...) C74_VARFUN(object_this_method_imp, __VA_ARGS__)
+#endif
+
+void *object_this_method_imp(void *x, void *s, void *p1, void *p2, void *p3, void *p4, void *p5, void *p6, void *p7, void *p8);
+
 /**
 	Mark an attribute as being touched by some code not from the attribute setter.
 	This will notify clients that the attribute has changed.
@@ -2373,16 +2382,13 @@ t_max_err object_attr_touch(t_object *x, t_symbol *attrname);
 	@return				A Max error code 
  */				
 t_max_err object_attr_touch_parse(t_object *x, char *attrnames);
-		
-		
+
 #if C74_PRAGMA_STRUCT_PACKPUSH
     #pragma pack(pop)
 #elif C74_PRAGMA_STRUCT_PACK
     #pragma pack()
 #endif
 
-#ifdef __cplusplus
-}
-#endif // __cplusplus
+END_USING_C_LINKAGE
 
-#endif // __OBEX_H__
+#endif // _EXT_OBEX_H_

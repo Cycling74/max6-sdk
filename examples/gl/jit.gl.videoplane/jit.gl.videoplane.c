@@ -21,7 +21,9 @@
 #include "ext_strings.h"
 #if !TARGET_RT_MAC_MACHO
 #include <math.h>
+#ifdef C74_USING_QUICKTIME
 #include "ImageCompression.h"
+#endif
 #endif
 
 #ifdef MAC_VERSION
@@ -396,7 +398,7 @@ void jit_gl_videoplane_jit_matrix(t_jit_gl_videoplane *x, t_symbol *s, int argc,
 	t_symbol *name;
 	void *m;
 	t_jit_matrix_info info;
-	long dim[2];
+	t_atom_long dim[2];
 	
 	if ((name=jit_atom_getsym(argv)) != _jit_sym_nothing) {
 		m = jit_object_findregistered(name);
@@ -433,7 +435,7 @@ t_jit_err jit_gl_videoplane_draw(t_jit_gl_videoplane *x)
 	t_jit_err result = JIT_ERR_NONE;
 	GLenum prim;
 	
-	CLIP (x->nudge,0.,0.5);
+	CLIP_ASSIGN (x->nudge,0.,0.5);
 	prim = (x->gridmode) ? GL_TRIANGLE_STRIP : GL_QUAD_STRIP;
 	
 	if (x->recalc) {
@@ -584,9 +586,9 @@ void calc_plane(t_jit_gl_videoplane *x)
 			//texture
 			//tmp = 1.-((lominor + (numminor-j)*tex_numminor_inv)*tx - tx_off); //flip orientation 
 			tmp = ((lominor + (numminor-j)*tex_numminor_inv)*tx - tx_off); // don't flip x-orientation
-			*p++ = CLIP(tmp,lominor,himinor);
+			*p++ = CLAMP(tmp,lominor,himinor);
 			tmp = 1.-((lomajor + (nummajor-i)*tex_nummajor_inv)*ty - ty_off); //flip orientation
-			*p++ = CLIP(tmp,lomajor,himajor);
+			*p++ = CLAMP(tmp,lomajor,himajor);
 			//normals
 			*p++ = 0; 
 			*p++ = 0; 

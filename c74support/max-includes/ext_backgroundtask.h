@@ -11,11 +11,15 @@
 #ifdef __cplusplus
 extern "C" {
 #endif // __cplusplus
+
+#ifndef __BACKGROUNDTASK_H_INTERNAL__
 	
 typedef struct _backgroundtask 
 {
-	void *opaque[7];
+	void *opaque;
 } t_backgroundtask;
+	
+#endif // __BACKGROUNDTASK_H_INTERNAL__
 
 long backgroundtask_execute(t_object *owner, void *args, method cbtask, method cbcomplete, t_backgroundtask **task, long flags);
 long backgroundtask_execute_method(t_object *obtask, t_symbol *mtask, long actask, t_atom *avtask, 

@@ -268,7 +268,7 @@ float db_result_float(t_db_result *result, long recordindex, long fieldindex);
 	@param		recordindex		The zero-based index number of the record (row) in the result.
 	@param		fieldindex		The zero-based index number of the field (column) in the result.
 	@return						The datetime represented in seconds.							*/
-unsigned long db_result_datetimeinseconds(t_db_result *result, long recordindex, long fieldindex);
+t_ptr_uint db_result_datetimeinseconds(t_db_result *result, long recordindex, long fieldindex);
 
 
 // UTILITIES
@@ -277,7 +277,7 @@ unsigned long db_result_datetimeinseconds(t_db_result *result, long recordindex,
 	@ingroup	database
 	@param		string			A C-string containing a date and time in SQL format.
 	@param		date			The datetime represented in seconds upon return. */
-void db_util_stringtodate(const char *string, unsigned long *date);
+void db_util_stringtodate(const char *string, t_ptr_uint *date);
 
 
 /**	A utility to convert from seconds into a sql-ready datetime string.
@@ -285,7 +285,7 @@ void db_util_stringtodate(const char *string, unsigned long *date);
 	@param		date			The datetime represented in seconds.
 	@param		string			The address of a valid C-string 
 								whose contents will be set to a SQL-ready string format upon return. */
-void db_util_datetostring(const unsigned long date, char *string);
+void db_util_datetostring(const t_ptr_uint date, char *string);
 
 
 END_USING_C_LINKAGE

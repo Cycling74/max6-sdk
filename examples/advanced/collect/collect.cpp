@@ -97,8 +97,6 @@ int T_EXPORT main(void)
 							A_GIMME,
 							0);
 
-	common_symbols_init();
-
 	class_addmethod(c, (method)collect_bang,	"bang",			0);
 	class_addmethod(c, (method)collect_int,		"int",			A_LONG,	0);
 	class_addmethod(c, (method)collect_float,	"float",		A_FLOAT,0);
@@ -108,7 +106,7 @@ int T_EXPORT main(void)
 	class_addmethod(c, (method)collect_assist,	"assist",		A_CANT, 0);
 	class_addmethod(c, (method)stdinletinfo,	"inletinfo",	A_CANT, 0);
 
-	class_register(_sym_box, c);
+	class_register(CLASS_BOX, c);
 	s_collect_class = c;
 
 	return 0;
@@ -128,7 +126,7 @@ void *collect_new(t_symbol *s, long argc, t_atom *argv)
 		x->c_outlet = outlet_new(x, NULL);
 		x->c_vector = new numberVector;
 		x->c_vector->reserve(10);
-		collect_list(x, _sym_list, argc, argv);
+		collect_list(x, gensym("list"), argc, argv);
 	}
 	return(x);
 }
@@ -197,7 +195,7 @@ void collect_bang(t_collect *x)
 		collect_clear(x);
 
 		DPOST("about to outlet\n", ac);
-		outlet_anything(x->c_outlet, _sym_list, ac, av); // don't want to call outlets in mutexes either
+		outlet_anything(x->c_outlet, gensym("list"), ac, av); // don't want to call outlets in mutexes either
 
 		DPOST("about to delete\n", ac);
 		delete[] av;

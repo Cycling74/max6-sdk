@@ -1,5 +1,5 @@
-#ifndef _SYSSHMEM_H_
-#define _SYSSHMEM_H_
+#ifndef _EXT_SYSSHMEM_H_
+#define _EXT_SYSSHMEM_H_
 
 BEGIN_USING_C_LINKAGE
 
@@ -18,4 +18,4 @@ void* sysshmem_getptr(t_sysshmem x);				// pointer to actual memory
 
 END_USING_C_LINKAGE
 
-#endif // #ifndef _SYSSHMEM_H_
+#endif // #ifndef _EXT_SYSSHMEM_H_

@@ -556,7 +556,7 @@ void		jgraphics_path_getpointalongpath(t_jpath *path, double distancefromstart, 
 	@param y					y position of the target point 
 	@param path_x				pointer to double to receive the x position of closest point on path
 	@param path_y				pointer to double to receive the y position of the closest point on path 
-	@return						returns the distance from the path start position to the found point on the path 
+	@return						returns the distance along the path from the path start position to the found point on the path 
 */
 double		jgraphics_path_getnearestpoint(t_jpath *path, double x, double y, double *path_x, double *path_y);
 
@@ -1769,7 +1769,7 @@ long jrgba_compare(t_jrgba *rgba1, t_jrgba *rgba2);
 	@remark This example shows a common usage of jgraphics_getfiletypes().
 	@code
 	char       filename[MAX_PATH_CHARS];
-	long       *type = NULL;
+	t_fourcc   *type = NULL;
 	long       ntype;
 	long       outtype;
 	t_max_err  err;
@@ -1795,7 +1795,7 @@ out:
 		sysmem_freeptr((char *)type);
 	@endcode
 */
-void jgraphics_getfiletypes(void *dummy, long *count, long **filetypes, char *alloc);
+void jgraphics_getfiletypes(void *dummy, long *count, t_fourcc **filetypes, char *alloc);
 
 
 // boxlayer stuff

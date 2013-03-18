@@ -47,7 +47,7 @@ void buddy_clear(t_buddy *x);
 void *buddy_class;
 t_symbol *ps_list;
 
-int main()
+int C74_EXPORT main()
 {
 	t_class *c;
 

@@ -49,7 +49,7 @@ void lores_clear(t_lores *x);
 void lores_assist(t_lores *x, void *b, long m, long a, char *s);
 void *lores_new(double freq, double reso);
 
-int main(void)
+int C74_EXPORT main(void)
 {
 	t_class *c;
 

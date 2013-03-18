@@ -40,7 +40,7 @@ void urner_reset(t_urner *x); // incoming reset message
 void *urner_class;
 
 
-int main(void)
+int C74_EXPORT main(void)
 {	
 	t_class *c;
 	

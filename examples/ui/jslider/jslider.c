@@ -35,7 +35,7 @@ typedef struct _jslider
 	double		j_size;			// number of steps
 	double		j_mult;
 	double		j_val;
-	long		j_floatoutput;
+	t_atom_long	j_floatoutput;
 	char		j_relative;		// relative mousing (like orig miller slider, but not like h/uslider)
 	char		j_orientation;	// 0 = auto, 1 = horiz, 2 = vertical
 	t_jrgba		j_brgba;
@@ -69,7 +69,7 @@ void jslider_mousedragdelta(t_jslider *x, t_object *patcherview, t_pt pt, long m
 void jslider_mouseup(t_jslider *x, t_object *patcherview, t_pt pt, long modifiers);
 void jslider_getdrawparams(t_jslider *x, t_object *patcherview, t_jboxdrawparams *params);
 
-int main()
+int C74_EXPORT main()
 {
 	t_class *c; 
 
@@ -107,7 +107,7 @@ int main()
 	
 	CLASS_ATTR_DEFAULT(c,"patching_rect",0, "0. 0. 20. 140.");
 	
-	CLASS_STICKY_ATTR(c,"category",0,"Value");
+	CLASS_STICKY_CATEGORY(c,0,"Value");
 	CLASS_ATTR_DOUBLE(c, "size", 0, t_jslider, j_size);
 	CLASS_ATTR_ACCESSORS(c,"size",(method)NULL,(method)jslider_setattr_size);
 	CLASS_ATTR_BASIC(c, "size", 0);
@@ -118,23 +118,23 @@ int main()
 	CLASS_ATTR_DOUBLE(c, "mult", 0, t_jslider, j_mult);
 	CLASS_ATTR_BASIC(c, "mult", 0);
 	
-	CLASS_ATTR_LONG(c, "floatoutput", 0, t_jslider, j_floatoutput);
+	CLASS_ATTR_ATOM_LONG(c, "floatoutput", 0, t_jslider, j_floatoutput);
 	CLASS_ATTR_ACCESSORS(c, "floatoutput", (method)NULL, (method)jslider_setattr_floatoutput);
 	CLASS_ATTR_BASIC(c, "floatoutput", 0);
 	
 	CLASS_ATTR_CHAR(c,"relative", 0, t_jslider, j_relative);
 	CLASS_ATTR_LABEL(c,"relative", 0, "Mousing Mode");
-	CLASS_ATTR_ENUMINDEX(c, "relative", 0, "Absolute Relative");
+	CLASS_ATTR_ENUMINDEX2(c, "relative", 0, "Absolute", "Relative");
 	CLASS_ATTR_BASIC(c, "relative", 0);
-	CLASS_STICKY_ATTR_CLEAR(c, "category");
+	CLASS_STICKY_CATEGORY_CLEAR(c);
 	
 	CLASS_ATTR_CHAR(c,"orientation",0,t_jslider,j_orientation);
 	CLASS_ATTR_LABEL(c,"orientation",0,"Orientation");
-	CLASS_ATTR_ENUMINDEX(c,"orientation", 0,"Automatic Horizontal Vertical");
+	CLASS_ATTR_ENUMINDEX3(c,"orientation", 0,"Automatic", "Horizontal", "Vertical");
 	CLASS_ATTR_DEFAULT_SAVE_PAINT(c, "orientation", 0, "0");
 	CLASS_ATTR_CATEGORY(c, "orientation", 0, "Appearance");
 	
-	CLASS_STICKY_ATTR(c, "category", 0, "Color");
+	CLASS_STICKY_CATEGORY(c, 0, "Color");
 	CLASS_ATTR_RGBA_LEGACY(c, "bgcolor", "brgb", 0, t_jslider, j_brgba);
 	CLASS_ATTR_ALIAS(c,"bgcolor", "brgba");
 	CLASS_ATTR_DEFAULTNAME_SAVE_PAINT(c,"bgcolor",0,"1. 1. 1. 1.");
@@ -154,7 +154,7 @@ int main()
 	CLASS_ATTR_DEFAULTNAME_SAVE_PAINT(c,"bordercolor",0,"0.5 0.5 0.5 1.");
 	CLASS_ATTR_STYLE_LABEL(c,"bordercolor",0,"rgba","Border Color");
 	class_parameter_register_default_color(c, gensym("bordercolor"), ps_control_bg);
-	CLASS_STICKY_ATTR_CLEAR(c, "category");
+	CLASS_STICKY_CATEGORY_CLEAR(c);
 
 	// hide the color attribute from the inspector
 	// it's still posisble to set color via the color message or the "Color..." item menu
@@ -236,7 +236,7 @@ void *jslider_stdargs(t_dictionary *d, t_symbol *s, long argc, t_atom *argv)
 		// if it's hslider/uslider it does have an extra value which defines the color background
 		if (type && argc > 7) {
 			t_jrgba bgcolor;
-			long color = CLIP(atom_getlong(argv+7), 0, 15); // constrains colors to 0-15 zone
+			long color = CLAMP(atom_getlong(argv+7), 0, 15); // constrains colors to 0-15 zone
 			set_jrgba_from_boxcolor_index(color + 1, &bgcolor);
 			
 			dictionary_appendjrgba(d, gensym("bgcolor"), &bgcolor);
@@ -269,7 +269,6 @@ void *jslider_new(t_symbol *s, short argc, t_atom *argv)
 	//		| JBOX_HILITE
 			| JBOX_DRAWBACKGROUND
 			| JBOX_MOUSEDRAGDELTA
-			| JBOX_DEFAULTNAMES
 	//		| JBOX_NOFLOATINSPECTOR
 			;
 
@@ -319,11 +318,13 @@ void jslider_paint(t_jslider *x, t_object *view)
 	t_jgraphics *g;
 	int pos;
 	char ishoriz;
+	double val = x->j_val;
 	
 	g = (t_jgraphics*) patcherview_get_jgraphics(view); 
 	jbox_get_rect_for_view((t_object *)x, view, &rect);
 	ishoriz = jslider_ishorizontal(x, &rect);
-	pos = jslider_valtopos(x, x->j_val, &rect, ishoriz);
+	val = CLAMP(val, 0, x->j_size);
+	pos = jslider_valtopos(x, val, &rect, ishoriz);
 	if (ishoriz) {
 		jgraphics_move_to(g, pos,3);
 		jgraphics_line_to(g, pos,rect.height - 3);
@@ -340,7 +341,7 @@ void jslider_bang(t_jslider *x)
 {
 	double value;
 	
-	value = x->j_val * x->j_mult;
+	value = CLAMP(x->j_val, 0, x->j_size) * x->j_mult;
 	value += x->j_min;
 	
 	if (x->j_floatoutput)
@@ -370,6 +371,8 @@ void jslider_setminmax(t_jslider *x, t_symbol *s, long argc, t_atom *argv)
 	double a, b;
 	
 	if (argc > 1) {
+		double old_min = x->j_min;
+		double old_size = x->j_size;
 		a = b = 0;
 		
 		if (argv[0].a_type == A_LONG)
@@ -394,6 +397,9 @@ void jslider_setminmax(t_jslider *x, t_symbol *s, long argc, t_atom *argv)
 		}		
 
 		x->j_floatoutput = 1;
+		
+		if (old_min != x->j_min || old_size != x->j_size)
+			jbox_redraw(&x->j_box); 
 	}
 }
 

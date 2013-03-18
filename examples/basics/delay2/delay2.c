@@ -38,7 +38,7 @@ void delay2_clocktick(t_delay2 *x);
 
 static t_class *s_delay2_class = NULL;
 
-int main(void)
+int C74_EXPORT main(void)
 {
 	t_class *c = class_new(	"delay2", (method)delay2_new, (method)delay2_free, sizeof(t_delay2), (method)0L, A_GIMME, 0);
 

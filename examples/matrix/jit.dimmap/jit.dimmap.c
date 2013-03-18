@@ -46,7 +46,7 @@ t_jit_err jit_dimmap_init(void)
 	//add attributes	
 	attrflags = JIT_ATTR_GET_DEFER_LOW | JIT_ATTR_SET_USURP_LOW;
 
-	CLASS_STICKY_ATTR(_jit_dimmap_class,"category",0,"Behavior");
+	CLASS_STICKY_CATEGORY(_jit_dimmap_class,0,"Behavior");
 	CLASS_STICKY_ATTR(_jit_dimmap_class,"basic",0,"1");
 	
 	attr = jit_object_new(_jit_sym_jit_attr_offset_array,"map",_jit_sym_long,JIT_MATRIX_MAX_DIMCOUNT,attrflags,
@@ -60,7 +60,7 @@ t_jit_err jit_dimmap_init(void)
 	CLASS_ATTR_LABEL(_jit_dimmap_class,"invert",0,"Dimension Invert");	
 
 	CLASS_STICKY_ATTR_CLEAR(_jit_dimmap_class, "basic");
-	CLASS_STICKY_ATTR_CLEAR(_jit_dimmap_class, "category");
+	CLASS_STICKY_CATEGORY_CLEAR(_jit_dimmap_class);
 
 	jit_class_register(_jit_dimmap_class);
 

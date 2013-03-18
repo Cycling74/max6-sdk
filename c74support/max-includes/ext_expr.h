@@ -3,56 +3,17 @@
 #ifndef _EXT_EXPR_H_
 #define _EXT_EXPR_H_
 
-#ifdef __cplusplus
-extern "C" {
-#endif
+BEGIN_USING_C_LINKAGE
 
 #if C74_PRAGMA_STRUCT_PACKPUSH
     #pragma pack(push, 2)
 #elif C74_PRAGMA_STRUCT_PACK
     #pragma pack(2)
 #endif
+	
+#define	EXPR_MAX_VARS	9
 
-
-#define MAXMAX		/* <z> added to users of this stuff won't be screwed */
-
-#define	MAX_VARS	9
-
-
-struct ex_funcs {
-	char *f_name;		// function name
-	long (*f_func)();	// the real function performing the function
-	long f_argc;		// number of arguments
-};
-
-#define	name_ok(c)	(((c)=='_') || ((c)>='a' && (c)<='z') || \
-			((c)>='A' && (c)<='Z') || ((c) >= '0' && (c) <= '9'))
-#define unary_op(x)	((x) == OP_NOT || (x) == OP_NEG || (x) == OP_UMINUS)
-
-
-#define	ex_int	ex_cont.v_int	///< shortcut for accessing members of an #Ex_ex struct's ex_cont union.	@ingroup expr
-#define	ex_flt	ex_cont.v_flt	///< shortcut for accessing members of an #Ex_ex struct's ex_cont union.	@ingroup expr
-#define	ex_op	ex_cont.op		///< shortcut for accessing members of an #Ex_ex struct's ex_cont union.	@ingroup expr
-#define	ex_ptr	ex_cont.ptr		///< shortcut for accessing members of an #Ex_ex struct's ex_cont union.	@ingroup expr
-#define	exNULL	((struct ex_ex *)0)
-
-
-/**	ex_ex.
-	@ingroup expr
-*/
-typedef struct ex_ex {
-	union {
-		long v_int;
-		float v_flt;
-		long op;
-		char **ptr;
-	} ex_cont;			///< content
-	long ex_type;		///< type of the node
-} Ex_ex;
-
-
-
-/**	Defines for ex_type.
+	/**	Defines for ex_type.
 	We treat parenthesis and brackets special to keep a pointer to their match in the content.
 	@ingroup expr
 */
@@ -72,20 +33,30 @@ typedef enum {
 	ET_SI =		0x13	///< string inlet
 } e_max_expr_types;
 
-
+/**	ex_ex.
+	@ingroup expr
+*/
+typedef struct ex_ex {
+	union {
+		long v_int;
+		float v_flt;
+		long op;
+		char **ptr;
+	} ex_cont;			///< content
+	long ex_type;		///< type of the node
+} t_ex_ex;	
 
 
 /**	Struct for an instance of expr.
 	@ingroup expr
 */
 typedef struct expr {
-	struct object exp_ob;
+	t_object exp_ob;
 	void *exp_outlet;
-	struct ex_ex **exp_stack;
-	struct ex_ex exp_var[MAX_VARS];
-	struct ex_ex exp_res;		///< the result of last evaluation
-} Expr, t_expr;
-
+	t_ex_ex *exp_stack;
+	t_ex_ex exp_var[EXPR_MAX_VARS];
+	t_ex_ex exp_res;		///< the result of last evaluation
+} t_expr;
 
 /**	Create a new expr object.
 	@ingroup expr
@@ -100,7 +71,7 @@ typedef struct expr {
 					returns the type of any expr-style arguments contained in argv (i.e.
 					$i1, etc.) in atoms in an array pointed to by types.
 
-	@remark			types should already exist as an array of nine Atoms, all of which will be filled in by 
+	@remark			types should already exist as an array of nine t_atom values, all of which will be filled in by 
 					expr_new(). If an argument was not present, it will set to type 
 					#A_NOTHING. For example, suppose argv pointed to the following atoms: 
 	@code
@@ -125,7 +96,7 @@ typedef struct expr {
 	8	9		A_NOTHING	0
 	@endcode
 */
-void *expr_new(short argc, t_atom *argv, t_atom *types);
+void *expr_new(long argc, t_atom *argv, t_atom *types);
 
 
 /**	Evaluate an expression in an expr object.
@@ -133,24 +104,24 @@ void *expr_new(short argc, t_atom *argv, t_atom *types);
 	
 	@param	x		The expr object to evaluate.
 	@param	argc	Count of arguments in argv.
-	@param	argv	Array of nine Atoms that will be substituted for 
+	@param	argv	Array of nine t_atom values that will be substituted for 
 					variable arguments (such as $i1) in the expression. 
 					Unused arguments should be of type #A_NOTHING.
-	@param	result	A pre-existing Atom that will hold the type and value 
+	@param	result	A pre-existing t_atom that will hold the type and value 
 					of the result of evaluating the expression.
 	@return			.
 	
 	@remark			Evaluates the expression in an expr object with arguments in argv and 
 					returns the type and value of the evaluated expression as a t_atom in 
 					result. result need only point to a single #t_atom, but argv should 
-					contain at least argc Atoms. If, as in the example shown above under 
+					contain at least argc t_atom values. If, as in the example shown above under 
 					expr_new(), there are “gaps” between arguments, they should be filled 
 					in with t_atom of type #A_NOTHING.
 */
-short expr_eval(t_expr *x, short argc, t_atom *argv, t_atom *result);
+short expr_eval(t_expr *x, long argc, t_atom *argv, t_atom *result);
 
 
-void expr_install(exprmethod fun, const char *buf, short argc);
+void expr_install(method fun, const char *buf, long argc);
 
 
 
@@ -160,8 +131,6 @@ void expr_install(exprmethod fun, const char *buf, short argc);
     #pragma pack()
 #endif
 
-#ifdef __cplusplus
-}
-#endif
+END_USING_C_LINKAGE
 
 #endif // _EXT_EXPR_H_

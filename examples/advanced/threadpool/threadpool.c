@@ -21,7 +21,7 @@ void *threadpool_new(void);
 t_class *threadpool_class;
 
 
-int main(void) 
+int C74_EXPORT main(void) 
 {    
 	t_class *c;
 	

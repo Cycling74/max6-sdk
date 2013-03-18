@@ -30,11 +30,11 @@ typedef float t_sample;
 #define NAN_CHECK(n,o) \
 while (n--) { if ((*(o) & NAN_MASK) == NAN_MASK) *(o) = 0; (o)++; } // now post inc/dec -Rd jun 05
 
-#define IS_DENORM_FLOAT(v)		((((*(unsigned long *)&(v))&0x7f800000)==0)&&((v)!=0.f))
-#define IS_DENORM_DOUBLE(v)		((((((unsigned long *)&(v))[1])&0x7fe00000)==0)&&((v)!=0.))			
+#define IS_DENORM_FLOAT(v)		((((*(t_uint32 *)&(v))&0x7f800000)==0)&&((v)!=0.f))
+#define IS_DENORM_DOUBLE(v)		((((((t_uint32 *)&(v))[1])&0x7fe00000)==0)&&((v)!=0.))			
 
-#define IS_NAN_FLOAT(v)			(((*(unsigned long *)&(v))&0x7f800000)==0x7f800000)
-#define IS_NAN_DOUBLE(v)		(((((unsigned long *)&(v))[1])&0x7fe00000)==0x7fe00000) 
+#define IS_NAN_FLOAT(v)			(((*(t_uint32 *)&(v))&0x7f800000)==0x7f800000)
+#define IS_NAN_DOUBLE(v)		(((((t_uint32 *)&(v))[1])&0x7fe00000)==0x7fe00000) 
 
 #define IS_DENORM_NAN_FLOAT(v)		(IS_DENORM_FLOAT(v)||IS_NAN_FLOAT(v))
 #define IS_DENORM_NAN_DOUBLE(v)		(IS_DENORM_DOUBLE(v)||IS_NAN_DOUBLE(v))			

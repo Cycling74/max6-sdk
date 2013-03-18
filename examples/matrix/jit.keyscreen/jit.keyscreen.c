@@ -55,7 +55,7 @@ t_jit_err jit_keyscreen_init(void)
 	//add attributes	
 	attrflags = JIT_ATTR_GET_DEFER_LOW | JIT_ATTR_SET_USURP_LOW;
 
-	CLASS_STICKY_ATTR(_jit_keyscreen_class,"category",0,"Behavior");
+	CLASS_STICKY_CATEGORY(_jit_keyscreen_class,0,"Behavior");
 	CLASS_STICKY_ATTR(_jit_keyscreen_class,"basic",0,"1");
 
 	// mode -- switches keying states
@@ -63,7 +63,7 @@ t_jit_err jit_keyscreen_init(void)
 		(method)0L,(method)0L,calcoffset(t_jit_keyscreen,mode));
 	jit_class_addattr(_jit_keyscreen_class,attr);
 	CLASS_ATTR_LABEL(_jit_keyscreen_class,"mode",0,"Keying Mode");	
-	CLASS_ATTR_ENUMINDEX(_jit_keyscreen_class, "mode", 0, "Wrap Clip Fold");
+	CLASS_ATTR_ENUMINDEX3(_jit_keyscreen_class, "mode", 0, "Wrap", "Clip", "Fold");
 
 	// key,target,mask -- switches who gets keyed with whom by whom
 	attr = jit_object_new(_jit_sym_jit_attr_offset,"key",_jit_sym_long,attrflags,
@@ -122,7 +122,7 @@ t_jit_err jit_keyscreen_init(void)
 	jit_class_addattr(_jit_keyscreen_class,attr);
 	CLASS_ATTR_LABEL(_jit_keyscreen_class,"bluetol",0,"Blue Tolerance");	
 
-	CLASS_STICKY_ATTR_CLEAR(_jit_keyscreen_class, "category");
+	CLASS_STICKY_CATEGORY_CLEAR(_jit_keyscreen_class);
 	CLASS_STICKY_ATTR_CLEAR(_jit_keyscreen_class, "basic");
 		
 	jit_class_register(_jit_keyscreen_class);
@@ -318,7 +318,7 @@ void jit_keyscreen_calculate_ndim(t_jit_keyscreen *x, long dimcount, long *dim, 
 					for (j=0;j<width;j++, ip+=4, ip2+=4,ip3+=4) {			
 
 						// see if any of the planes fail any of the criteria, and key accordingly
-						*((long *)op)++ = (*ip<aMf) ? *((long *)ip2) : (*ip>aPf) ? *((long *)ip2) : (*(ip+1)<rMf) ? *((long *)ip2) : (*(ip+1)>rPf) ? *((long *)ip2) : (*(ip+2)<gMf) ? *((long *)ip2) : (*(ip+2)>gPf) ? *((long *)ip2) : (*(ip+3)<bMf) ? *((long *)ip2) : (*(ip+3)>bPf) ? *((long *)ip2) : *((long *)ip3);
+						*((t_uint32 *)op)++ = (*ip<aMf) ? *((t_uint32 *)ip2) : (*ip>aPf) ? *((t_uint32 *)ip2) : (*(ip+1)<rMf) ? *((t_uint32 *)ip2) : (*(ip+1)>rPf) ? *((t_uint32 *)ip2) : (*(ip+2)<gMf) ? *((t_uint32 *)ip2) : (*(ip+2)>gPf) ? *((t_uint32 *)ip2) : (*(ip+3)<bMf) ? *((t_uint32 *)ip2) : (*(ip+3)>bPf) ? *((t_uint32 *)ip2) : *((t_uint32 *)ip3);
 						
 					}
 				}

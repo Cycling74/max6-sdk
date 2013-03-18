@@ -3,9 +3,7 @@
 #ifndef _EXT_PATH_H_
 #define _EXT_PATH_H_
 
-#ifdef __cplusplus
-extern "C" {
-#endif
+BEGIN_USING_C_LINKAGE
 
 #if C74_PRAGMA_STRUCT_PACKPUSH
     #pragma pack(push, 2)
@@ -32,7 +30,6 @@ typedef short FILE_REF;
 
 #define PATH_SEPARATOR_CHAR			'/'
 #define PATH_SEPARATOR_STRING		"/"
-#define PATH_CROSS_PLAT_NAMES
 #define SEPARATOR_CHAR				PATH_SEPARATOR_CHAR		// for backwards compatibility
 
 
@@ -70,15 +67,14 @@ typedef enum {
 	PATH_TYPE_RELATIVE,			///< relative path
 	PATH_TYPE_BOOT,				///< boot path
 	PATH_TYPE_C74,				///< Cycling '74 folder
-	PATH_TYPE_PATH				///< path
+	PATH_TYPE_PATH,				///< path
+	PATH_TYPE_DESKTOP,			///< desktop
+	PATH_TYPE_TILDE,			///< "home"
+	PATH_TYPE_TEMPFOLDER		///< /tmp
 } e_max_path_types;
 
 
-#ifdef PATH_CROSS_PLAT_NAMES
 #define PATH_CHAR_IS_SEPARATOR(c) (((c) == ':') || ((c) == '/') || ((c) == '\\'))
-#else
-#define PATH_CHAR_IS_SEPARATOR(c) ((c) == PATH_SEPARATOR_CHAR)
-#endif
 
 
 /**
@@ -100,7 +96,8 @@ typedef enum {
 */
 typedef enum {	
 	PATH_REPORTPACKAGEASFOLDER = 1,	///< if not true, then a Mac OS package will be reported as a file rather than a folder.
-	PATH_FOLDER_SNIFF = 2			///< sniff
+	PATH_FOLDER_SNIFF = 2,			///< sniff
+	PATH_NOALIASRESOLUTION = 4		///< no alias resolution
 } e_max_path_folder_flags;
 
 
@@ -151,10 +148,10 @@ typedef enum {
 	@ingroup files
 */
 typedef struct _fileinfo {
-	long type;			///< type (four-char-code)
-	long creator;		///< Mac-only creator (four-char-code)
-	long date;			///< date
-	long flags;			///< One of the values defined in #e_max_fileinfo_flags
+	t_fourcc type;			///< type (four-char-code)
+	t_fourcc creator;		///< Mac-only creator (four-char-code)
+	t_uint32 unused;		///< this was date but it wasn't populated and it wasn't used
+	t_int32 flags;			///< One of the values defined in #e_max_fileinfo_flags
 } t_fileinfo;
 
 
@@ -181,7 +178,7 @@ typedef struct _pathlink {
 	struct _pathlink *l_next;
 	short l_parent;		// true parent folder
 	short l_recursive;	// true if is or was added from a parent recursively
-	void *l_watcher;	// watcher to see if this folder changes
+	// ddz -- this was not in the kernel -- void *l_watcher;	// watcher to see if this folder changes
 } t_pathlink;
 
 
@@ -257,9 +254,9 @@ short locatefile(C74_CONST char *name, short *outvol, short *binflag);
 
 	@see			locatefile_extended()
 */
-short locatefiletype(C74_CONST char *name, short *outvol, long filetype, long creator);
+short locatefiletype(C74_CONST char *name, short *outvol, t_fourcc filetype, t_fourcc creator);
 
-short locatefilelist(char *name, short *outvol, long *outtype, long *filetypelist, short numtypes);
+short locatefilelist(char *name, short *outvol, t_fourcc *outtype, t_fourcc *filetypelist, short numtypes);
 
 
 /**
@@ -307,9 +304,9 @@ short locatefilelist(char *name, short *outvol, long *outtype, long *filetypelis
 	result = locatefile_extended(filename,&path,&type,typelist,1); 
 	@endcode
 */
-short locatefile_extended(char *name, short *outvol, long *outtype, C74_CONST long *filetypelist, short numtypes);
+short locatefile_extended(char *name, short *outvol, t_fourcc *outtype, C74_CONST t_fourcc *filetypelist, short numtypes);
 
-short locatefile_pathlist(t_pathlink *list, char *name, short *outvol, long *outtype, long *filetypelist, short numtypes);
+short locatefile_pathlist(t_pathlink *list, char *name, short *outvol, t_fourcc *outtype, t_fourcc *filetypelist, short numtypes);
 
 
 /**
@@ -339,10 +336,12 @@ short path_resolvefile(char *name, C74_CONST short path, short *outpath);
 	
 	@return		 	Returns 0 if successful, otherwise it returns an OS-specific error code.
 */
-short path_fileinfo(C74_CONST char *name, C74_CONST short path, void *info);
+short path_fileinfo(C74_CONST char *name, C74_CONST short path, t_fileinfo *info);
 
-short path_tempfolder();
-short path_desktopfolder();
+short path_tempfolder(void);
+short path_desktopfolder(void);
+short path_userdocfolder(void);
+short path_usermaxfolder(void);
 short path_createfolder(C74_CONST short path, C74_CONST char *name, short *newpath);
 
 // internal use only -- not exported -- use path_createfolder()
@@ -430,7 +429,7 @@ void path_setdefaultlist(struct _pathlink *list);
 	@param	date	The last modification date of the directory.
 	@return			An error code.
 */
-short path_getmoddate(short path, unsigned long *date);
+short path_getmoddate(short path, t_ptr_uint *date);
 
 
 /**
@@ -442,11 +441,13 @@ short path_getmoddate(short path, unsigned long *date);
 	@param	date		The last modification date of the file upon return.
 	@return				An error code.
 */
-short path_getfilemoddate(C74_CONST char *filename, C74_CONST short path, unsigned long *date);
+short path_getfilemoddate(C74_CONST char *filename, C74_CONST short path, t_ptr_uint *date);
 
 
-short path_getfilecreationdate(C74_CONST char *filename, C74_CONST short path, unsigned long *date);
-short path_getfilesize(char *filename, short path, unsigned long *date);
+short path_getfiledatesandsize(C74_CONST char *filename, short path, t_uint64 *create, t_uint64 *mod, t_uint64 *access, t_uint64 *size);
+
+short path_getfilecreationdate(C74_CONST char *filename, C74_CONST short path, t_ptr_uint *date);
+short path_getfilesize(char *filename, short path, t_ptr_size *size);
 long path_listcount(t_pathlink *list);
 
 short nameinpath(char *name, short *ref);					// <-- use path_nameinpath()
@@ -480,7 +481,7 @@ void *path_openfolder(short path);
 	@return				Returns non-zero if successful, and zero when there are no more files. 
 	@see				#e_max_path_folder_flags
 */
-short path_foldernextfile(void *xx, long *filetype, char *name, short descend);
+short path_foldernextfile(void *xx, t_fourcc *filetype, char *name, short descend);
 
 
 /**
@@ -492,8 +493,8 @@ void path_closefolder(void *x);
 
 
 short path_renamefile(C74_CONST char *name, C74_CONST short path, C74_CONST char *newname);
-short path_getprefstring(short type, short index, t_symbol **s);
-void path_setprefstring(short type, short index, t_symbol *s, short update);
+long path_getprefstring(long preftype, long index, t_symbol **s);
+void path_setprefstring(long preftype, long index, t_symbol *s, long flags, t_symbol *label, short update);
 void path_makefromsymbol(long pathtype, t_symbol *sp, short recursive);
 
 /**
@@ -519,10 +520,10 @@ short path_opensysfile(C74_CONST char *name, C74_CONST short path, t_filehandle 
 	@param	ref		A #t_filehandle reference to the opened file will be returned in this parameter.
 	@return 		An error code.
 */
-short path_createsysfile(C74_CONST char *name, C74_CONST short path, long type, t_filehandle *ref);
+short path_createsysfile(C74_CONST char *name, short path, t_fourcc type, t_filehandle *ref);
 
 
-short path_createressysfile(C74_CONST char *name, C74_CONST short path, long type, t_filehandle *ref);
+short path_createressysfile(C74_CONST char *name, C74_CONST short path, t_fourcc type, t_filehandle *ref);
 
 
 /**
@@ -540,7 +541,7 @@ short path_createressysfile(C74_CONST char *name, C74_CONST short path, long typ
 short path_nameconform(C74_CONST char *src, char *dst, long style, long type);
 
 short path_deletefile(C74_CONST char *name, C74_CONST short path);
-short path_extendedfileinfo(char *name, short path, t_fileinfo *info, long *typelist, short numtypes, short sniff);
+short path_extendedfileinfo(C74_CONST char *name, short path, t_fileinfo *info, C74_CONST t_fourcc *typelist, short numtypes, short sniff);
 short path_getstyle(char *name);
 char path_getseparator(char *name);
 short path_fileisresource(char *name, short path);
@@ -560,141 +561,31 @@ short path_fileisresource(char *name, short path);
 */
 short path_topotentialname(C74_CONST short path, C74_CONST char *file, char *name, short check);
 
-
-#ifdef WIN_VERSION
 short path_topotentialunicodename(short path, char *file, unsigned short **name, long *outlen, short check);
 short path_fromunicodepathname(unsigned short *name, short *path, char *filename, short check);		// if check is non-zero then file must exist
-#endif
+	
+/**
+	Translates a Max path+filename combo into a correct absolutepath that can be used to pass to libraries
+	expecting system-native paths (i.e. POSIX on the Mac) that also handle multiple volumes correctly.
+ 
+	@ingroup files
+	@param	in_path			The Max path reference
+	@param	in_filename		The name of the file in that path.
+	@param	out_filepath	A string that is MAX_PATH_CHARS in length, which will receive the formatted absolute path upon return.
+	@return					Returns 0 if successful.
+ 
+	@see path_topotentialname()
+	@see path_nameconform()
+*/
+t_max_err path_toabsolutesystempath(const short in_path, const char *in_filename, char *out_filepath);
+
+
 void path_addsearchpath(short path, short parent);
 void path_addnamed(long pathtype, char *name, short recursive, short permanent);
 
 void path_removefromlist(t_pathlink **list, short parent);
 
 short defvolume(void);			// <--  use path_getdefault()
-short getfolder(short *vol);
-
-
-/**
-	Present the user with the standard open file dialog.
-	This function is convenient wrapper for using Mac OS Navigation 
-	Services or Standard File for opening files. 
-
-	The mapping of extensions to types is configured in the C74:/init/max-fileformats.txt file.
-	The standard types to use for Max files are 'maxb' for old-format binary files, 
-	'TEXT' for text files, and 'JSON' for newer format patchers or other .json files.
-
-	@ingroup files
-	@param	name	A C-string that will receive the name of the file the user wants to open.
-					The C-string should be allocated with a size of at least #MAX_FILENAME_CHARS.
-	@param	volptr	Receives the Path ID of the file the user wants to open.
-	@param	typeptr	The file type of the file the user wants to open.
-	@param	types	A list of file types to display. This is not limited to 4 
-					types as in the SFGetFile() trap. Pass NULL to display all types.
-	@param	ntypes	The number of file types in typelist. Pass 0 to display all types.
-	
-	@return			0 if the user clicked Open in the dialog box.  
-					If the user cancelled, open_dialog() returns a non-zero value.
-	
-	@see saveasdialog_extended()
-	@see locatefile_extended()
-*/
-short open_dialog(char *name, short *volptr, long *typeptr, long *types, short ntypes);
-
-
-/**
-	Present the user with the standard save file dialog.
-
-	The mapping of extensions to types is configured in the C74:/init/max-fileformats.txt file.
-	The standard types to use for Max files are 'maxb' for old-format binary files, 
-	'TEXT' for text files, and 'JSON' for newer format patchers or other .json files.
-
-	@ingroup files
-	@param	filename	A C-string containing a default name for the file to save.
-						If the user decides to save a file, its name is returned here.
-						The C-string should be allocated with a size of at least #MAX_FILENAME_CHARS.
-
-	@param	path		If the user decides to save the file, the Path ID of the location chosen is returned here.
-
-	@param	binptr		Pass NULL for this parameter.  
-						This parameter was used in Max 4 to allow the choice of saving binary or text format patchers.
-	
-	@return				0 if the user choose to save the file.  
-						If the user cancelled, returns a non-zero value.
-	
-	@see open_dialog()
-	@see saveasdialog_extended()
-	@see locatefile_extended()
-*/
-short saveas_dialog(char *filename, short *path, short *binptr);
-
-
-/**
-	Present the user with the standard save file dialog with your own list of file types.
-
-	saveasdialog_extended() is similar to saveas_dialog(), but allows the 
-	additional feature of specifying a list of possible types. These will be 
-	displayed in a pop-up menu. 
-	
-	File types found in the typelist argument that match known Max types 
-	will be displayed with descriptive text. Unmatched types will simply 
-	display the type name (for example, "foXx" is not a standard type so it 
-	would be shown in the pop-up menu as foXx) 
-	
-	Known file types include:
-	- TEXT: text file 
-	- maxb: Max binary patcher 
-	- maxc: Max collective 
-	- Midi: MIDI file 
-	- Sd2f: Sound Designer II audio file 
-	- NxTS: NeXT/Sun audio file 
-	- WAVE: WAVE audio file. 
-	- AIFF: AIFF audio file
-	- mP3f: Max preference file 
-	- PICT: PICT graphic file 
-	- MooV: Quicktime movie file 
-	- aPcs: VST plug-in 
-	- AFxP: VST effect patch data file 
-	- AFxB: VST effect bank data file 
-	- DATA: Raw data audio file 
-	- ULAW: NeXT/Sun audio file
-
-	@ingroup files
-	@param	name		A C-string containing a default name for the file to save.
-						If the user decides to save a file, its name is returned here.
-						The C-string should be allocated with a size of at least #MAX_FILENAME_CHARS.
-
-	@param	vol			If the user decides to save the file, the Path ID of the location chosen is returned here.
-
-	@param	type		Returns the type of file chosen by the user.
-	@param	typelist	The list of types provided to the user. 
-	@param	numtypes	The number of file types in typelist.
-	
-	@return				0 if the user choose to save the file.  
-						If the user cancelled, returns a non-zero value.
-	
-	@see open_dialog()
-	@see locatefile_extended()
-*/
-short saveasdialog_extended(char *name, short *vol, long *type, long *typelist, short numtypes);
-
-void saveas_autoextension(char way);
-void saveas_setselectedtype(long type);
-
-void typelist_make(long *types, long include, short *numtypes);
-
-
-
-short preferences_path(C74_CONST char *name, short create, short *path);
-short preferences_subpath(C74_CONST char *name, short path, short create, short *subpath);
-short textpreferences_read(C74_CONST char *filename, short path, short defaultid);
-short textpreferences_default(short id);
-void *textpreferences_open(void);
-void textpreferences_addraw(void *p, C74_CONST char *fmt, ...);
-void textpreferences_add(void *p, C74_CONST char *fmt, ...);
-void textpreferences_addoption(void *p, C74_CONST char *fmt, ...);
-void textpreferences_addrect(void *p, char *msg, short top, short left, short bottom, short right);
-short textpreferences_close(void *p, C74_CONST char *filename, short path);
-
 
 
 #if C74_PRAGMA_STRUCT_PACKPUSH
@@ -703,9 +594,6 @@ short textpreferences_close(void *p, C74_CONST char *filename, short path);
     #pragma pack()
 #endif
 
-#ifdef __cplusplus
-}
-#endif
-
+END_USING_C_LINKAGE
 
 #endif // _EXT_PATH_H_

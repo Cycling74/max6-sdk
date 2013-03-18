@@ -11,7 +11,7 @@
 
 #include "jit.byteorder.h"
 
-typedef long t_jit_err;
+typedef t_atom_long t_jit_err;
 
 //errors
 #define JIT_ERR_NONE 				0

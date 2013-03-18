@@ -9,6 +9,8 @@
 #ifndef __JIT_GWORLD_H__
 #define __JIT_GWORLD_H__
 
+#ifdef C74_USING_QUICKTIME
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -43,5 +45,7 @@ t_jit_err jit_coerce_matrix_pixmap(void *m, PixMap *pm);
 #ifdef __cplusplus
 }
 #endif
+
+#endif // #ifdef C74_USING_QUICKTIME
 
 #endif //__JIT_GWORLD_H__

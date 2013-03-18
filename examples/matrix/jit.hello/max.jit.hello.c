@@ -11,7 +11,7 @@ typedef struct _max_jit_hello
 	void			*obex;
 } t_max_jit_hello;
 
-void *class_max_jit_hello;
+t_messlist *class_max_jit_hello;
 
 void max_jit_hello_assist(t_max_jit_hello *x, void *b, long m, long a, char *s);
 void *max_jit_hello_new(t_symbol *s, long argc, t_atom *argv);
@@ -20,7 +20,7 @@ void max_jit_hello_free(t_max_jit_hello *x);
 //from jit.hello.c
 t_jit_err jit_hello_init(void); 
 
-void main(fptr *f)
+void C74_EXPORT main()
 {	
 	void *p,*q,*attr;
 	long attrflags;

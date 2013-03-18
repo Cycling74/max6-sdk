@@ -40,7 +40,7 @@ void *fftinfo_class;
 int fftinfo_warning;	// so it only posts a warning once to the Max window if not inside a pfft
 
 
-int main(void)
+int C74_EXPORT main(void)
 {
 	t_class *c;	
 	

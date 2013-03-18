@@ -31,8 +31,8 @@ typedef struct _jit_print
 	char			mode;
 	char			zeropad;
 	char			info; // 0 - body no info, 1 - body + info, 2 - info no body
-	Boolean			write_cherry;
-	Boolean			read_cherry;
+	t_bool			write_cherry;
+	t_bool			read_cherry;
 } t_jit_print;
 
 t_jit_print *jit_print_new(void);
@@ -524,7 +524,7 @@ t_jit_err jit_print_packtext_long(t_jit_print *x, long *dim, t_jit_matrix_info *
 	char planedelim = x->planedelim->s_name[0];
 	char dimdelim = x->dimdelim->s_name[0];
 	char delimchar;
-	long *ip;
+	t_int32 *ip;
 	long tmp, err = 0;
 	char tmp1_string[BYTE_WRITE_COUNT + 1] = "";
 	char tmp2_string[BYTE_WRITE_COUNT + 1] = "";
@@ -542,7 +542,7 @@ t_jit_err jit_print_packtext_long(t_jit_print *x, long *dim, t_jit_matrix_info *
 	x->write_cherry = false;
 	
 	for (i = 0; i < height; i++) {
-		ip = (long *)(bip + i * info->dimstride[1]);
+		ip = (t_int32 *)(bip + i * info->dimstride[1]);
 		for (j = 0; j < width; j++) {
 			delimchar = planedelim;
 			for (k = 0; k < planecount - 1; k++) {

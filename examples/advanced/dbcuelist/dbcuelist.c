@@ -51,11 +51,10 @@ static t_symbol	*ps_event = NULL;
 /**********************************************************************/
 // Class Definition and Life Cycle
 
-int main(void)
+int C74_EXPORT main(void)
 {
 	t_class *c; 
 	
-	common_symbols_init();
 	c = class_new("dbcuelist", 
 				  (method)dbcuelist_new,
 				  (method)dbcuelist_free,
@@ -75,7 +74,7 @@ int main(void)
 	CLASS_ATTR_SYM(c,		"name",	0,	t_dbcuelist, d_name);
 	CLASS_ATTR_ACCESSORS(c,	"name",	NULL,	dbcuelist_attr_name_set);
 	
-	class_register(_sym_box, c);
+	class_register(CLASS_BOX, c);
 	s_dbcuelist_class = c;
 	ps_event = gensym("event");
 	return 0;

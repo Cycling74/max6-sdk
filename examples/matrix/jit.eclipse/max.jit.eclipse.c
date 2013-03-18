@@ -18,9 +18,9 @@ t_jit_err jit_eclipse_init(void);
 
 void *max_jit_eclipse_new(t_symbol *s, long argc, t_atom *argv);
 void max_jit_eclipse_free(t_max_jit_eclipse *x);
-void *max_jit_eclipse_class;
+t_messlist *max_jit_eclipse_class;
 		 	
-void main(void)
+void C74_EXPORT main(void)
 {	
 	void *p,*q;
 	
@@ -56,7 +56,7 @@ void *max_jit_eclipse_new(t_symbol *s, long argc, t_atom *argv)
 			max_jit_attr_args(x,argc,argv);
 		} else {
 			jit_object_error((t_object *)x,"jit.eclipse: could not allocate object");
-			freeobject(x);
+			freeobject((t_object *) x);
 			x = NULL;
 		}
 	}

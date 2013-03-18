@@ -98,7 +98,7 @@ t_jit_err jit_findbounds_init(void)
 	//add attributes	
 	attrflags = JIT_ATTR_GET_DEFER_LOW | JIT_ATTR_SET_USURP_LOW;
 	
-	CLASS_STICKY_ATTR(_jit_findbounds_class,"category",0,"Behavior");
+	CLASS_STICKY_CATEGORY(_jit_findbounds_class,0,"Behavior");
 	CLASS_STICKY_ATTR(_jit_findbounds_class,"basic",0,"1");
 
 	attr = jit_object_new(_jit_sym_jit_attr_offset_array,"min",_jit_sym_float64,JIT_MATRIX_MAX_PLANECOUNT,attrflags,
@@ -113,7 +113,7 @@ t_jit_err jit_findbounds_init(void)
 
 	CLASS_STICKY_ATTR_CLEAR(_jit_findbounds_class, "basic");
 	
-	CLASS_STICKY_ATTR(_jit_findbounds_class,"category",0,"Value");
+	CLASS_STICKY_CATEGORY(_jit_findbounds_class,0,"Value");
 
 	attrflags = JIT_ATTR_GET_DEFER_LOW | JIT_ATTR_SET_OPAQUE_USER;
 	attr = jit_object_new(_jit_sym_jit_attr_offset_array,"boundmin",_jit_sym_long,JIT_MATRIX_MAX_DIMCOUNT,attrflags,
@@ -126,7 +126,7 @@ t_jit_err jit_findbounds_init(void)
 	jit_class_addattr(_jit_findbounds_class,attr);
 	CLASS_ATTR_LABEL(_jit_findbounds_class,"boundmax",0,"Bounding Box Maximum");	
 	
-	CLASS_STICKY_ATTR_CLEAR(_jit_findbounds_class, "category");
+	CLASS_STICKY_CATEGORY_CLEAR(_jit_findbounds_class);
 	
 	jit_class_register(_jit_findbounds_class);
 
@@ -427,7 +427,7 @@ long jit_findbounds_calc2d_long(t_jit_findbounds *x, long dimcount, long *dim, t
 {
 	long i,j,k,planecount,n;
 	long min0,min1,max0,max1,inrange0,inrange1,inrange2;
-	long *ip;
+	t_int32 *ip;
 	long *cmin,*cmax;
 	
 	
@@ -440,7 +440,7 @@ long jit_findbounds_calc2d_long(t_jit_findbounds *x, long dimcount, long *dim, t
 	cmin = vecdata->v_long.min;
 	cmax = vecdata->v_long.max;
 	for (i=0;i<dim[1];i++) {
-		ip = bip + i*in_minfo->dimstride[1];
+		ip = (t_int32*)(bip + i*in_minfo->dimstride[1]);
 		inrange1 = FALSE;
 		for (j=0;j<n;j++) {
 			inrange0 = TRUE;
@@ -488,7 +488,7 @@ long jit_findbounds_calc2d_float32(t_jit_findbounds *x, long dimcount, long *dim
 	cmin = vecdata->v_float32.min;
 	cmax = vecdata->v_float32.max;
 	for (i=0;i<dim[1];i++) {
-		ip = bip + i*in_minfo->dimstride[1];
+		ip = (float*) (bip + i*in_minfo->dimstride[1]);
 		inrange1 = FALSE;
 		for (j=0;j<n;j++) {
 			inrange0 = TRUE;
@@ -536,7 +536,7 @@ long jit_findbounds_calc2d_float64(t_jit_findbounds *x, long dimcount, long *dim
 	cmin = vecdata->v_float64.min;
 	cmax = vecdata->v_float64.max;
 	for (i=0;i<dim[1];i++) {
-		ip = bip + i*in_minfo->dimstride[1];
+		ip = (double*) (bip + i*in_minfo->dimstride[1]);
 		inrange1 = FALSE;
 		for (j=0;j<n;j++) {
 			inrange0 = TRUE;

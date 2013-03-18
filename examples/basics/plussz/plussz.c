@@ -39,7 +39,7 @@ t_class *plussz_class;		// global pointer to the object class - so max can refer
 
 //--------------------------------------------------------------------------
 
-int main(void)
+int C74_EXPORT main(void)
 {
 	t_class *c;
 	

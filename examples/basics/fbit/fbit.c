@@ -26,7 +26,7 @@ void *fconv_new(long n);
 
 /*==========================================================================*/
 
-int main(void)
+int C74_EXPORT main(void)
 {	
 	setup((t_messlist **)&fconv_class, (method)fconv_new, 0L, (short)sizeof(t_fconv), 0L, A_DEFLONG, 0);
 	

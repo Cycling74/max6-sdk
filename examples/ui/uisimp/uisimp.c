@@ -37,7 +37,7 @@ void uisimp_int(t_uisimp *x, long n);
 
 static t_class *s_uisimp_class;
 
-int main(void)
+int C74_EXPORT main(void)
 {	
 	t_class *c;
 		

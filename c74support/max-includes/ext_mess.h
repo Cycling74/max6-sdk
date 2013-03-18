@@ -1,7 +1,3 @@
-/*************************/
-/* Copyright 1988 IRCAM. */
-/*************************/
-
 #ifndef _EXT_MESS_H_
 #define _EXT_MESS_H_
 
@@ -14,6 +10,8 @@ extern "C" {
 #elif C74_PRAGMA_STRUCT_PACK
     #pragma pack(2)
 #endif
+	
+#include "max_types.h"
 
 /* mess.h -- define a symbol table and message-passing system.  */
 
@@ -27,38 +25,7 @@ typedef void *(*method)(void *, ...);
 /**	Function pointer type for methods returning a long.
 	@ingroup datatypes
 */
-typedef long (*longmethod)(void *, ...);
-
-
-/**	Function pointer type for a function with no arguments, returning a generic pointer.
-	@ingroup datatypes
-*/
-typedef void *(*voidstarvoid)();
-
-
-/**	Generic pointer type.
-	@ingroup datatypes
-*/
-typedef char *t_ptr;
-typedef char *ptr;
-
-
-/**	Generic pointer-to-a-pointer type.
-	@ingroup datatypes
-*/
-typedef char **t_handle;
-
-
-#ifndef VPTR_TYPEDEF
-/**	Void pointer type.
-	@ingroup datatypes
-*/
-typedef void *t_vptr;
-typedef void *vptr;
-
-#define VPTR_TYPEDEF
-#endif 
-
+typedef t_ptr_int (*t_intmethod)(void *, ...);
 
 /** The symbol. 
 	
@@ -73,7 +40,8 @@ typedef struct symbol
 {
 	char *s_name;			///< name: a c-string
 	struct object *s_thing;	///< possible binding to a t_object
-} Symbol, t_symbol;
+} t_symbol;
+C74_DEPRECATED( typedef struct symbol Symbol );
 
 #define CAREFUL
 
@@ -81,6 +49,8 @@ typedef struct symbol
 	@ingroup obj
 */
 #define MAGIC 1758379419L	/* random (but odd) */
+	
+#define OB_MAGIC MAGIC
 
 #ifdef  WIN_VERSION
 /**	Returns true if a pointer is not a valid object. 
@@ -91,14 +61,15 @@ typedef struct symbol
 /**	Returns true if a pointer is not a valid object. 
 	@ingroup obj
 */
-#define NOGOOD(x) (((struct object *)x)->o_magic != MAGIC)
+#define NOGOOD(x) ( (!(x)) || ((struct object *)(x))->o_magic != MAGIC )
 #endif
 
+#define OB_INVALID NOGOOD
 
 /**	Maximum number of arguments that can be passed as a typed-list rather than using #A_GIMME.  It is generally recommended to use #A_GIMME. 
 	@ingroup obj
 */
-#define MAXARG 7
+#define MSG_MAXARG 7
 
 
 /** A list of symbols and their corresponding methods,
@@ -109,8 +80,9 @@ typedef struct messlist
 {
 	struct symbol *m_sym;		///< Name of the message
 	method m_fun;				///< Method associated with the message
-	char m_type[MAXARG + 1];	///< Argument type information
-} Messlist, t_messlist;
+	char m_type[MSG_MAXARG + 1];	///< Argument type information
+} t_messlist;
+C74_DEPRECATED( typedef struct messlist Messlist );
 
 
 /**	The tiny object structure sits at the head of any object to which you may
@@ -125,7 +97,8 @@ typedef struct tinyobject
 #ifdef CAREFUL
 	long t_magic;					///< magic number
 #endif
-} Tinyobject, t_tinyobject;
+} t_tinyobject;
+C74_DEPRECATED( typedef struct tinyobject Tinyobject );
 
 
 /** The structure for the head of any object which wants to have inlets or outlets,
@@ -137,12 +110,12 @@ typedef struct object
 	struct messlist *o_messlist;	///<  list of messages and methods. The -1 entry of the message list of an object contains a pointer to its #t_class entry.
 									// (also used as freelist link)
 #ifdef CAREFUL
-	long o_magic;					///< magic number
+	t_ptr_int o_magic;					///< magic number
 #endif
 	struct inlet *o_inlet;			///<  list of inlets
 	struct outlet *o_outlet;		///<  list of outlets
-} Object, t_object;
-
+} t_object;
+C74_DEPRECATED( typedef struct object Object );
 
 /** 
 	The data structure for a Max class. This struct is provided for debugging convenience, 
@@ -155,7 +128,7 @@ typedef struct maxclass
 	struct symbol *c_sym;			///< symbol giving name of class
 	struct object **c_freelist;		// linked list of free ones
 	method c_freefun;				// function to call when freeing
-	short c_size;					// size of an instance
+	t_getbytes_size c_size;			// size of an instance
 	char c_tiny;					// flag indicating tiny header
 	char c_noinlet;					// flag indicating no first inlet for patcher
 	struct symbol *c_filename;		///< name of file associated with this class
@@ -171,8 +144,9 @@ typedef struct maxclass
 	method c_attr_get;				// if not set, NULL, if not present CLASS_NO_METHOD
 	method c_attr_gettarget;		// if not set, NULL, if not present CLASS_NO_METHOD
 	method c_attr_getnames;			// if not set, NULL, if not present CLASS_NO_METHOD
-	struct mclass *c_superclass;	// a superclass point if this is a derived class
-} Maxclass, t_class;
+	struct maxclass *c_superclass;	// a superclass point if this is a derived class
+} t_class;
+C74_DEPRECATED( typedef struct maxclass Maxclass );
 
 
 /** Class flags. If not box or polyglot, class is only accessible in C via known interface
@@ -185,8 +159,8 @@ typedef enum {
 	CLASS_FLAG_REGISTERED =				0x00000008L,	///< for backward compatible messlist implementation (once reg'd can't grow)
 	CLASS_FLAG_UIOBJECT =				0x00000010L,	///< for objects that don't go inside a newobj box. 
 	CLASS_FLAG_ALIAS =					0x00000020L,	///< for classes that are just copies of some other class (i.e. del is a copy of delay)
-	CLASS_FLAG_SCHED_PURGE =			0x00000040L,	///< for classes that have called clock_new() or qelem_new() (don't need to set this yourself)
 	CLASS_FLAG_DO_NOT_PARSE_ATTR_ARGS =	0x00000080L, 	///< override dictionary based constructor attr arg parsing
+	CLASS_FLAG_DO_NOT_ZERO =			0x00000100L, 	///< don't zero the object struct on construction (for efficiency)
 	CLASS_FLAG_NOATTRIBUTES =			0x00010000L,	///< for efficiency
 	CLASS_FLAG_OWNATTRIBUTES =			0x00020000L,	///< for classes which support a custom attr interface (e.g. jitter)
 	CLASS_FLAG_PARAMETER =				0x00040000L,	///< for classes which have a parameter
@@ -234,14 +208,12 @@ typedef enum {
 	@ingroup atom */
 #define ATOM_MAX_STRLEN		(32768)
 
-typedef float t_atom_float;			// the type that an A_FLOAT represents
-
 /** Union for packing any of the datum defined in #e_max_atomtypes.
 	@ingroup atom
 */
 union word		
 {
-	long w_long;			///< long integer
+	t_atom_long w_long;			///< long integer
 	t_atom_float w_float;	///< 32-bit float
 	struct symbol *w_sym;	///< pointer to a symbol in the Max symbol table
 	struct object *w_obj;	///< pointer to a #t_object or other generic pointer
@@ -251,13 +223,12 @@ union word
 /** An atom is a typed datum.
 	@ingroup atom
 */
-typedef struct atom	
+typedef struct atom		// and an atom which is a typed datum
 {
-	short a_type;			///< a value as defined in #e_max_atomtypes
-	union word a_w;			///< the actual data
-} Atom, t_atom;
-
-
+	short			a_type;	
+	union word		a_w;
+} t_atom;
+C74_DEPRECATED( typedef struct atom Atom );	
 
 /**	Function pointer type for methods with no arguments.
 	@ingroup datatypes
@@ -287,8 +258,6 @@ typedef long *(*gimmeback_meth)(void *x, t_symbol *s, long ac, t_atom *av, t_ato
 
 // legacy macros...
 
-#define BAG(s) {error(s); return (0);}
-#define BAG2(s,t) {error(s,t); return (0);}
 #define ob_messlist(x) (((struct object *)(x))->o_messlist - 1)
 #define ob_class(x) ((struct maxclass *) \
 	(((struct object *)(x))->o_messlist[-1].m_sym))
@@ -296,21 +265,25 @@ typedef long *(*gimmeback_meth)(void *x, t_symbol *s, long ac, t_atom *av, t_ato
 #define ob_sym(x) (ob_class(x)->c_sym)
 #define ob_filename(x) (ob_class(x)->c_filename->s_name)
 #define ob_filesym(x) (ob_class(x)->c_filename)
-#define mess0(x, y)  (*((zero_meth)(getfn(x, y))))(x)
-#define mess1(x, y, z1) (*((one_meth)(getfn(x, y))))(x, z1)
-#define mess2(x, y, z1,z2) (*((two_meth)(getfn(x, y))))(x, z1,z2)
-#define mess3(x, y, z1,z2,z3) (*(getfn(x, y)))(x, z1,z2,z3)
-#define mess4(x, y, z1,z2,z3,z4) (*(getfn(x, y)))(x, z1,z2,z3,z4)
-#define mess5(x, y, z1,z2,z3,z4,z5) (*(getfn(x, y)))(x, z1,z2,z3,z4,z5)
+#define OB_MESS0(x, y) (*(getfn((struct object *)x, y)))((struct object *)x)
+#define mess0 OB_MESS0
+#define OB_MESS1(x, y, z1) (*(getfn((struct object *)x, y)))((struct object *)x, z1)
+#define mess1 OB_MESS1
+#define OB_MESS2(x, y, z1,z2) (*(getfn((struct object *)x, y)))((struct object *)x, z1,z2)
+#define mess2 OB_MESS2
+#define mess3(x, y, z1,z2,z3) (*(getfn((struct object *)x, y)))(x, z1,z2,z3)
+#define mess4(x, y, z1,z2,z3,z4) (*(getfn((struct object *)x, y)))(x, z1,z2,z3,z4)
+#define mess5(x, y, z1,z2,z3,z4,z5) (*(getfn((struct object *)x, y)))(x, z1,z2,z3,z4,z5)
+#define floatmess1(x,y,z1)  ((floatmeth)(*(getfn((struct object *)x, y))))((struct object *)x, z1)
 #define NIL ((void *)0)
-#define SETCOMMA(ap) ((ap)->a_type = A_COMMA)
-#define SETSEMI(ap) ((ap)->a_type = A_SEMI)
-#define SETSYM(ap, x) ((ap)->a_type = A_SYM, (ap)->a_w.w_sym = (x))
-#define SETOBJ(ap, x) ((ap)->a_type = A_OBJ, (ap)->a_w.w_obj = (x))
-#define SETLONG(ap, x) ((ap)->a_type = A_LONG, (ap)->a_w.w_long = (x))
-#define SETFLOAT(ap, x) ((ap)->a_type = A_FLOAT, (ap)->a_w.w_float = (x))
-#define SETDOLLAR(ap, x) ((ap)->a_type = A_DOLLAR, (ap)->a_w.w_long = (x))
-
+#define A_SETCOMMA(ap) ((ap)->a_type = A_COMMA)
+#define A_SETSEMI(ap) ((ap)->a_type = A_SEMI)
+#define A_SETSYM(ap, x) ((ap)->a_type = A_SYM, (ap)->a_w.w_sym = (x))
+#define A_SETOBJ(ap, x) ((ap)->a_type = A_OBJ, (ap)->a_w.w_obj = (x))
+#define A_SETLONG(ap, x) ((ap)->a_type = A_LONG, (ap)->a_w.w_long = (x))
+#define A_SETFLOAT(ap, x) ((ap)->a_type = A_FLOAT, (ap)->a_w.w_float = (x))
+#define A_SETDOLLAR(ap, x) ((ap)->a_type = A_DOLLAR, (ap)->a_w.w_long = (x))
+#define A_SETDOLLSYM(ap,x) ((ap)->a_type = A_DOLLSYM, (ap)->a_w.w_sym = (x))
 
 #if C74_PRAGMA_STRUCT_PACKPUSH
     #pragma pack(pop)

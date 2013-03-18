@@ -5,13 +5,10 @@
  *
  */
 
-#ifndef __OBEX_UTIL_H__
-#define __OBEX_UTIL_H__
+#ifndef _EXT_OBEX_UTIL_H_
+#define _EXT_OBEX_UTIL_H_
 
-#ifdef __cplusplus
-	extern "C" {
-#endif // __cplusplus
-
+BEGIN_USING_C_LINKAGE
 
 // symbol macros which may be swapped to use common symbol pointers for performance
 #define USESYM(x)	gensym(#x)
@@ -36,7 +33,7 @@
 
 
 /**
-	Create a long integer attribute and add it to a Max class.
+	Create a t_atom_long integer attribute and add it to a Max class.
 
 	@ingroup	attr
 	@param	c				The class pointer.
@@ -45,9 +42,52 @@
 	@param	structname		The C identifier for the struct (containing a valid #t_object header) representing an instance of this class.
 	@param	structmember	The C identifier of the member in the struct that holds the value of this attribute.
 */
-#define CLASS_ATTR_LONG(c,attrname,flags,structname,structmember) \
-	class_addattr((c),attr_offset_new(attrname,USESYM(long),(flags),(method)0L,(method)0L,calcoffset(structname,structmember)))
 
+#define CLASS_ATTR_LONG(c,attrname,flags,structname,structmember) \
+		{		\
+			C74_STATIC_ASSERT(structmembersize(structname,structmember)==sizeof(long), "structmember must be long type"); \
+			class_addattr((c),attr_offset_new(attrname,USESYM(long),(flags),(method)0L,(method)0L,calcoffset(structname,structmember))); \
+		}
+
+/**
+	Create a t_atom_long integer attribute and add it to a Max class.
+
+	@ingroup	attr
+	@param	c				The class pointer.
+	@param	attrname		The name of this attribute as a C-string.
+	@param	flags			Any flags you wish to declare for this attribute, as defined in #e_max_attrflags.
+	@param	structname		The C identifier for the struct (containing a valid #t_object header) representing an instance of this class.
+	@param	structmember	The C identifier of the member in the struct that holds the value of this attribute.
+*/
+
+#define CLASS_ATTR_ATOM_LONG(c,attrname,flags,structname,structmember) \
+		{		\
+			C74_STATIC_ASSERT(structmembersize(structname,structmember)==sizeof(t_atom_long), "structmember must be t_atom_long type"); \
+			class_addattr((c),attr_offset_new(attrname,USESYM(atom_long),(flags),(method)0L,(method)0L,calcoffset(structname,structmember))); \
+		}
+
+/**
+	Create a t_int32 integer attribute and add it to a Max class.
+
+	@ingroup	attr
+	@param	c				The class pointer.
+	@param	attrname		The name of this attribute as a C-string.
+	@param	flags			Any flags you wish to declare for this attribute, as defined in #e_max_attrflags.
+	@param	structname		The C identifier for the struct (containing a valid #t_object header) representing an instance of this class.
+	@param	structmember	The C identifier of the member in the struct that holds the value of this attribute.
+*/
+
+#define CLASS_ATTR_INT32(c,attrname,flags,structname,structmember) \
+		{		\
+			C74_STATIC_ASSERT(structmembersize(structname,structmember)==sizeof(t_int32), "structmember must be t_int32 type"); \
+			class_addattr((c),attr_offset_new(attrname,USESYM(int32),(flags),(method)0L,(method)0L,calcoffset(structname,structmember))); \
+		}
+
+#define CLASS_ATTR_FILEPATH(c,attrname,flags,structname,structmember) \
+		{		\
+			C74_STATIC_ASSERT(structmembersize(structname,structmember)==sizeof(t_filepath), "structmember must be t_filepath type"); \
+			class_addattr((c),attr_offset_new(attrname,USESYM(filepath),(flags),(method)0L,(method)0L,calcoffset(structname,structmember))); \
+		}
 
 /**
 	Create a 32-bit float attribute and add it to a Max class.
@@ -148,7 +188,27 @@
 	@param	size			The number of longs in the array.
 */
 #define CLASS_ATTR_LONG_ARRAY(c,attrname,flags,structname,structmember,size) \
-	class_addattr((c),attr_offset_array_new(attrname,USESYM(long),(size),(flags),(method)0L,(method)0L,0/*fix*/,calcoffset(structname,structmember)))
+		{		\
+			C74_STATIC_ASSERT(structmembersize(structname,structmember[0])==sizeof(long), "structmember must be long type"); \
+			class_addattr((c),attr_offset_array_new(attrname,USESYM(long),(size),(flags),(method)0L,(method)0L,0/*fix*/,calcoffset(structname,structmember))); \
+		}
+
+/**
+	Create an array-of-t_atom_long-integers attribute of fixed length, and add it to a Max class.
+
+	@ingroup	attr
+	@param	c				The class pointer.
+	@param	attrname		The name of this attribute as a C-string.
+	@param	flags			Any flags you wish to declare for this attribute, as defined in #e_max_attrflags.
+	@param	structname		The C identifier for the struct (containing a valid #t_object header) representing an instance of this class.
+	@param	structmember	The C identifier of the member in the struct that holds the value of this attribute.
+	@param	size			The number of longs in the array.
+*/
+#define CLASS_ATTR_ATOM_LONG_ARRAY(c,attrname,flags,structname,structmember,size) \
+		{		\
+			C74_STATIC_ASSERT(structmembersize(structname,structmember[0])==sizeof(t_atom_long), "structmember must be t_atom_long type"); \
+			class_addattr((c),attr_offset_array_new(attrname,USESYM(atom_long),(size),(flags),(method)0L,(method)0L,0/*fix*/,calcoffset(structname,structmember))); \
+		}
 
 
 /**
@@ -257,8 +317,10 @@
 	@param	maxsize			The maximum number of items in the long array, i.e. the number of members allocated for the array in the struct.
 */
 #define CLASS_ATTR_LONG_VARSIZE(c,attrname,flags,structname,structmember,sizemember,maxsize) \
-	class_addattr((c),attr_offset_array_new(attrname,USESYM(long),(maxsize),(flags),(method)0L,(method)0L,calcoffset(structname,sizemember),calcoffset(structname,structmember)))
-
+		{		\
+			C74_STATIC_ASSERT(structmembersize(structname,structmember[0])==sizeof(long), "structmember must be t_atom_long type"); \
+			class_addattr((c),attr_offset_array_new(attrname,USESYM(long),(maxsize),(flags),(method)0L,(method)0L,calcoffset(structname,sizemember),calcoffset(structname,structmember))); \
+		}
 
 /**
 	Create an array-of-32bit-floats attribute of variable length, and add it to a Max class.
@@ -372,6 +434,17 @@
 */
 #define STRUCT_ATTR_LONG(c,flags,structname,structmember)		CLASS_ATTR_LONG(c,#structmember,flags,structname,structmember)
 
+/**
+	Create a t_atom_long integer attribute and add it to a Max class.
+	The name of the attribute is automatically determined by the name of the struct member.
+
+	@ingroup	attr
+	@param	c				The class pointer.
+	@param	flags			Any flags you wish to declare for this attribute, as defined in #e_max_attrflags.
+	@param	structname		The C identifier for the struct (containing a valid #t_object header) representing an instance of this class.
+	@param	structmember	The C identifier of the member in the struct that holds the value of this attribute.
+*/
+#define STRUCT_ATTR_ATOM_LONG(c,flags,structname,structmember)		CLASS_ATTR_ATOM_LONG(c,#structmember,flags,structname,structmember)
 
 /**
 	Create a 32bit float attribute and add it to a Max class.
@@ -1411,7 +1484,30 @@
 #define CLASS_ATTR_ENUMINDEX(c,attrname,flags,parsestr) \
 	{ CLASS_ATTR_STYLE(c,attrname,flags,"enumindex"); CLASS_ATTR_ATTR_PARSE(c,attrname,"enumvals",USESYM(atom),flags,parsestr); }
 
-
+// localizable versions
+#define CLASS_ATTR_ENUMINDEX2(c,attrname,flags,enum1,enum2) \
+{ t_atom aaa[2]; CLASS_ATTR_STYLE(c,attrname,flags,"enumindex"); atom_setsym(aaa,gensym_tr(enum1)); atom_setsym(aaa+1,gensym_tr(enum2)); \
+CLASS_ATTR_ATTR_ATOMS(c,attrname,"enumvals",USESYM(atom),flags,2,aaa); }
+		
+#define CLASS_ATTR_ENUMINDEX3(c,attrname,flags,enum1,enum2,enum3) \
+{ t_atom aaa[3]; CLASS_ATTR_STYLE(c,attrname,flags,"enumindex"); atom_setsym(aaa,gensym_tr(enum1)); atom_setsym(aaa+1,gensym_tr(enum2)); atom_setsym(aaa+2,gensym_tr(enum3));\
+CLASS_ATTR_ATTR_ATOMS(c,attrname,"enumvals",USESYM(atom),flags,3,aaa); }
+		
+#define CLASS_ATTR_ENUMINDEX4(c,attrname,flags,enum1,enum2,enum3,enum4) \
+{ t_atom aaa[4]; CLASS_ATTR_STYLE(c,attrname,flags,"enumindex"); atom_setsym(aaa,gensym_tr(enum1)); atom_setsym(aaa+1,gensym_tr(enum2)); atom_setsym(aaa+2,gensym_tr(enum3)); atom_setsym(aaa+3,gensym_tr(enum4));\
+CLASS_ATTR_ATTR_ATOMS(c,attrname,"enumvals",USESYM(atom),flags,4,aaa); }
+		
+#define CLASS_ATTR_ENUMINDEX5(c,attrname,flags,enum1,enum2,enum3,enum4,enum5) \
+{ t_atom aaa[5]; CLASS_ATTR_STYLE(c,attrname,flags,"enumindex"); atom_setsym(aaa,gensym_tr(enum1)); atom_setsym(aaa+1,gensym_tr(enum2)); atom_setsym(aaa+2,gensym_tr(enum3));\
+atom_setsym(aaa+3,gensym_tr(enum4)); atom_setsym(aaa+4,gensym_tr(enum5));\
+CLASS_ATTR_ATTR_ATOMS(c,attrname,"enumvals",USESYM(atom),flags,5,aaa); }
+		
+#define CLASS_ATTR_ENUMINDEX6(c,attrname,flags,enum1,enum2,enum3,enum4,enum5,enum6) \
+{ t_atom aaa[6]; CLASS_ATTR_STYLE(c,attrname,flags,"enumindex"); atom_setsym(aaa,gensym_tr(enum1)); atom_setsym(aaa+1,gensym_tr(enum2)); atom_setsym(aaa+2,gensym_tr(enum3));\
+atom_setsym(aaa+3,gensym_tr(enum4)); atom_setsym(aaa+4,gensym_tr(enum5)); atom_setsym(aaa+5,gensym_tr(enum6));\
+CLASS_ATTR_ATTR_ATOMS(c,attrname,"enumvals",USESYM(atom),flags,6,aaa); }
+		
+		
 /**
 	Add a new attribute to the specified attribute to specify a category to which the attribute is assigned
 	in the Max inspector.  
@@ -1616,6 +1712,10 @@ CLASS_ATTR_ATTR_PARSE(c,attrname,"basic",USESYM(long),flags,"1")
 */
 #define CLASS_STICKY_ATTR_CLEAR(c,name) class_sticky_clear(c,gensym("sticky_attr"),name?gensym(name):NULL)
 
+#define CLASS_STICKY_CATEGORY(c,flags,name) \
+{ t_object *attr = attribute_new_format("category",NULL,flags,"s",gensym_tr(name)); class_sticky(c,gensym("sticky_attr"),gensym("category"),attr); }
+
+#define CLASS_STICKY_CATEGORY_CLEAR(c) class_sticky_clear(c,gensym("sticky_attr"),gensym("category"))
 
 /**
 	Create an attribute, and add it to all following method declarations.
@@ -1653,14 +1753,14 @@ CLASS_ATTR_ATTR_PARSE(c,attrname,"basic",USESYM(long),flags,"1")
 	@param		name			The name of the sticky attribute as a C-string.
 	@see		CLASS_STICKY_METHOD
 */
-#define CLASS_STICKY_METHOD_CLEAR(c,name) class_sticky_clear(c,gensym("sticky_method"),name?gensym(name):clear)
+#define CLASS_STICKY_METHOD_CLEAR(c,name) class_sticky_clear(c,gensym("sticky_method"),name?gensym(name):NULL)
 
 
 
 
 // support for long lists
 
-#define OBEX_UTIL_MAX_ATOM_GETBYTES 	4095 
+#define OBEX_UTIL_MAX_ATOM_GETBYTES 	1048576 		
 #define OBEX_UTIL_MAX_ATOM_STATIC		2048
 
 
@@ -1669,7 +1769,6 @@ CLASS_ATTR_ATTR_PARSE(c,attrname,"basic",USESYM(long),flags,"1")
 #define OBEX_UTIL_ATOM_CLEANUP_VAR_STATIC 
 #define OBEX_UTIL_ATOM_SETUP_ARRAY_STATIC(ac) t_atom atemp[OBEX_UTIL_MAX_ATOM_STATIC]; t_atom *av2=atemp; long ac2; ac2 = MIN(ac,OBEX_UTIL_MAX_ATOM_STATIC);
 #define OBEX_UTIL_ATOM_CLEANUP_ARRAY_STATIC(ac)  
-
 
 //dynamic memory case
 #define OBEX_UTIL_ATOM_SETUP_VAR_DYN t_atom *av2=NULL; long ac2=0;
@@ -1709,7 +1808,8 @@ typedef enum{
 	OBEX_UTIL_ATOM_GETTEXT_SYM_FORCE_QUOTE =	0x00000004, ///< always introduce quotes around symbols (useful for JSON)
 	OBEX_UTIL_ATOM_GETTEXT_COMMA_DELIM =		0x00000008, ///< separate atoms with commas (useful for JSON)
 	OBEX_UTIL_ATOM_GETTEXT_FORCE_ZEROS =		0x00000010, ///< always print the zeros
-	OBEX_UTIL_ATOM_GETTEXT_NUM_HI_RES =			0x00000020	///< print more decimal places
+	OBEX_UTIL_ATOM_GETTEXT_NUM_HI_RES =			0x00000020,	///< print more decimal places
+	OBEX_UTIL_ATOM_GETTEXT_NUM_LO_RES =			0x00000040  ///< // print fewer decimal places (HI_RES will win though)
 } e_max_atom_gettext_flags;
 
 
@@ -1740,7 +1840,7 @@ t_max_err atom_setchar_array(long ac, t_atom *av, long count, unsigned char *val
 	@param		vals			The array from which to copy the values into the array of atoms at av.
 	@return						A Max error code.
 */
-t_max_err atom_setlong_array(long ac, t_atom *av, long count, long *vals);
+t_max_err atom_setlong_array(long ac, t_atom *av, long count, t_atom_long *vals);
 
 
 /**
@@ -1875,6 +1975,9 @@ t_max_err atom_setobjval(long *ac, t_atom **av, t_object *obj);
 */
 t_max_err atom_setformat(long *ac, t_atom **av, C74_CONST char *fmt, ...); 
 
+// same as atom_setformat using va_list
+t_max_err atom_setformat_va(long *ac, t_atom **av, C74_CONST char *fmt, va_list args);
+
 
 /**
 	Retrieve values from an array of atoms using sscanf-like syntax.
@@ -1894,6 +1997,9 @@ t_max_err atom_setformat(long *ac, t_atom **av, C74_CONST char *fmt, ...);
 	@see		atom_setformat()
 */
 t_max_err atom_getformat(long ac, t_atom *av, C74_CONST char *fmt, ...);
+
+// same as atom_getformat using va_list
+t_max_err atom_getformat_va(long ac, t_atom *av, C74_CONST char *fmt, va_list args);
 
 
 /**
@@ -1937,7 +2043,7 @@ t_max_err atom_getchar_array(long ac, t_atom *av, long count, unsigned char *val
 	@param		vals			The address of the array to which is copied the values from av.
 	@return						A Max error code.
 */
-t_max_err atom_getlong_array(long ac, t_atom *av, long count, long *vals);
+t_max_err atom_getlong_array(long ac, t_atom *av, long count, t_atom_long *vals);
 
 
 /**
@@ -2036,10 +2142,8 @@ long atomisatomarray(t_atom *a);
 long atomisdictionary(t_atom *a);
 
 
-
 // quick object programming macros
-#define msg(x,p)	object_method_parse(x,NULL,p,NULL);
-
+#define OB_MSG(x,p)	object_method_parse(x,NULL,p,NULL);
 
 //object_method_typed utilities
 
@@ -2199,7 +2303,7 @@ t_max_err object_method_char_array(t_object *x, t_symbol *s, long ac, unsigned c
 	@return		A Max error code.
 	@see		object_method_typed()
 */
-t_max_err object_method_long_array(t_object *x, t_symbol *s, long ac, long *av, t_atom *rv);
+t_max_err object_method_long_array(t_object *x, t_symbol *s, long ac, t_atom_long *av, t_atom *rv);
 
 
 /**
@@ -2283,7 +2387,7 @@ t_max_err call_method_sym(method m, t_object *x, t_symbol *s, t_symbol *v, t_ato
 t_max_err call_method_obj(method m, t_object *x, t_symbol *s, t_object *v, t_atom *rv);
 
 t_max_err call_method_char_array(method m, t_object *x, t_symbol *s, long ac, unsigned char *av, t_atom *rv);
-t_max_err call_method_long_array(method m, t_object *x, t_symbol *s, long ac, long *av, t_atom *rv);
+t_max_err call_method_long_array(method m, t_object *x, t_symbol *s, long ac, t_atom_long *av, t_atom *rv);
 t_max_err call_method_float_array(method m, t_object *x, t_symbol *s, long ac, float *av, t_atom *rv);
 t_max_err call_method_double_array(method m, t_object *x, t_symbol *s, long ac, double *av, t_atom *rv);
 t_max_err call_method_sym_array(method m, t_object *x, t_symbol *s, long ac, t_symbol **av, t_atom *rv);
@@ -2358,14 +2462,14 @@ t_max_err object_attr_enforcelocal(t_object *x, t_symbol *attrname);
 
 t_max_err class_addattr_atoms(t_class *c, C74_CONST char *attrname, t_symbol *type, long flags, long ac, t_atom *av);
 t_max_err class_addattr_parse(t_class *c, C74_CONST char *attrname, t_symbol *type, long flags, C74_CONST char *parsestr);
-t_max_err class_addattr_format(t_class *c, C74_CONST char *attrname, t_symbol *type, long flags, char *fmt, ...);
+t_max_err class_addattr_format(t_class *c, C74_CONST char *attrname, t_symbol *type, long flags, C74_CONST char *fmt, ...);
 t_max_err class_attr_addattr_atoms(t_class *c, C74_CONST char *attrname, C74_CONST char *attrname2, t_symbol *type, long flags, long ac, t_atom *av);
 t_max_err class_attr_addattr_parse(t_class *c, C74_CONST char *attrname, C74_CONST char *attrname2, t_symbol *type, long flags, C74_CONST char *parsestr);
 t_max_err class_attr_addattr_format(t_class *c, C74_CONST char *attrname, C74_CONST char *attrname2, C74_CONST t_symbol *type, long flags, C74_CONST char *fmt, ...);
 
 t_max_err object_addattr_atoms(t_object *x, C74_CONST char *attrname, t_symbol *type, long flags, long ac, t_atom *av);
 t_max_err object_addattr_parse(t_object *x, C74_CONST char *attrname, t_symbol *type, long flags, C74_CONST char *parsestr);
-t_max_err object_addattr_format(t_object *x, C74_CONST char *attrname, t_symbol *type, long flags, char *fmt, ...);
+t_max_err object_addattr_format(t_object *x, C74_CONST char *attrname, t_symbol *type, long flags, C74_CONST char *fmt, ...);
 t_max_err object_attr_addattr_atoms(t_object *x, C74_CONST char *attrname, C74_CONST char *attrname2, t_symbol *type, long flags, long ac, t_atom *av);
 t_max_err object_attr_addattr_parse(t_object *x, C74_CONST char *attrname, C74_CONST char *attrname2, t_symbol *type, long flags, C74_CONST char *parsestr);
 t_max_err object_attr_addattr_format(t_object *x, C74_CONST char *attrname, C74_CONST char *attrname2, t_symbol *type, long flags, C74_CONST char *fmt, ...);
@@ -2389,8 +2493,9 @@ void *object_handlecommand(t_object *o, t_symbol *s, long argc, t_atom *argv, t_
 
 t_max_err object_attr_setdisabled(t_object *o, t_symbol *attrname, long way);
 
-#ifdef __cplusplus
-}
-#endif // __cplusplus
+// arg replacing (for objects that save their own way in dictionaries and want values treated as "attributes" would be)		
+t_max_err object_replaceargs(t_object *x, long argc, t_atom *argv, char match, char poundfill);
 
-#endif //__OBEX_UTIL_H__
+END_USING_C_LINKAGE
+
+#endif //_EXT_OBEX_UTIL_H_

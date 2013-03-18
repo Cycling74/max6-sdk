@@ -86,7 +86,7 @@ t_jit_err jit_gl_cache_reset(t_jit_gl_cache *x);
 long jit_gl_cache_compare(t_jit_gl_cache *x, long a, long b, double epsilon);
 t_jit_err jit_gl_cache_weld(t_jit_gl_cache *x, double epsilon);
 t_jit_err jit_gl_cache_grow(t_jit_gl_cache *x, long bytes, long copy);
-t_jit_err jit_gl_cache_resize(t_jit_gl_cache *x, long count, long coords, long datatype, long copy);
+t_jit_err jit_gl_cache_resize(t_jit_gl_cache *x, long elements, long coords, long datatype, long copy);
 t_jit_err jit_gl_cache_append(t_jit_gl_cache *x, char *data, long count, long coords, long datatype);
 t_jit_err jit_gl_cache_replace(t_jit_gl_cache *x, long index, char *data, long count, long coords, long datatype);
 GLenum jit_gl_cache_datatype_from_symbol(t_symbol *s);

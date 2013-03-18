@@ -47,40 +47,43 @@ extern "C" {
 #define JIT_BIN_TYPE_FLOAT32  			FOUR_CHAR('FL32')
 #define JIT_BIN_TYPE_FLOAT64  			FOUR_CHAR('FL64')
 
+#define JIT_BIN_HEADER_SIZE				(6*SIZE_INT32)
+#define JIT_BIN_CKINFO_SIZE				(2*SIZE_INT32)
+
 typedef struct _jit_bin_chunk_container
 {
-	ulong	ckid; 		//'FORM'
-	long	cksize;		//filesize
-	ulong	formtype;	//'JIT!'
+	t_uint32	ckid; 		//'FORM'
+	t_int32		cksize;		//filesize
+	t_uint32	formtype;	//'JIT!'
 } t_jit_bin_chunk_container;
 
 typedef struct _jit_bin_chunk_format_version
 {
-	ulong	ckid; 		//'FVER'
-	long	cksize;		//12
-	ulong	vers;		//timestamp
+	t_uint32	ckid; 		//'FVER'
+	t_int32		cksize;		//12
+	t_uint32	vers;		//timestamp
 } t_jit_bin_chunk_format_version;
 
 typedef struct _jit_bin_chunk_matrix
 {
-	ulong	ckid; 		//'MTRX'
-	long	cksize;		//varies(should be equal to 24+(4*dimcount)+(typesize*planecount*totalpoints))
-	long 	offset;		//data offset(should be equal to 24+(4*dimcount))
-	ulong	type;		//'CHAR','LONG','FL32','FL64'
-	long	planecount;
-	long	dimcount;
-	long	dim[1];
+	t_uint32	ckid; 		//'MTRX'
+	t_int32		cksize;		//varies(should be equal to 24+(4*dimcount)+(typesize*planecount*totalpoints))
+	t_int32		offset;		//data offset(should be equal to 24+(4*dimcount))
+	t_uint32	type;		//'CHAR','LONG','FL32','FL64'
+	t_int32		planecount;
+	t_int32		dimcount;
+	t_int32		dim[1];
 } t_jit_bin_chunk_matrix;
 
 
 //later we can add things like variable/value pairs, attributes, 
 //time code, comments, metadata, atom lists, audio, etc.
 
-t_jit_err jit_bin_read_header(t_filehandle fh, ulong *version, long *filesize);
-t_jit_err jit_bin_read_chunk_info(t_filehandle fh, ulong *ckid, long *cksize);
+t_jit_err jit_bin_read_header(t_filehandle fh, t_uint32 *version, t_int32 *filesize);
+t_jit_err jit_bin_read_chunk_info(t_filehandle fh, t_uint32 *ckid, t_int32 *cksize);
 t_jit_err jit_bin_read_matrix(t_filehandle fh, void *matrix);
 
-t_jit_err jit_bin_write_header(t_filehandle fh, long filesize);
+t_jit_err jit_bin_write_header(t_filehandle fh, t_int32 filesize);
 t_jit_err jit_bin_write_matrix(t_filehandle fh, void *matrix);
 
 

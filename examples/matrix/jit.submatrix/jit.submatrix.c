@@ -75,14 +75,14 @@ t_jit_err jit_submatrix_matrix_calc(t_jit_submatrix *x, void *inputs, void *outp
 		if (!(out_minfo.flags&JIT_MATRIX_DATA_REFERENCE)) 
 			{ err=JIT_ERR_INVALID_OUTPUT; goto out; }
 		
-		CLIP(x->dimcount,1,JIT_MATRIX_MAX_DIMCOUNT);
+		CLIP_ASSIGN(x->dimcount,1,JIT_MATRIX_MAX_DIMCOUNT);
 		out_minfo.type = in_minfo.type;
 		out_minfo.planecount = in_minfo.planecount;
 		out_minfo.dimcount = x->dimcount;
 		out_minfo.size = out_minfo.size;
 
 		for (i=0;i<x->offsetcount;i++) {
-			CLIP(x->offset[i], 0, in_minfo.dim[i] - 1);
+			CLIP_ASSIGN(x->offset[i], 0, in_minfo.dim[i] - 1);
 //			x->offset[i] = MAX(x->offset[i],0);
 		} 
 		
@@ -94,7 +94,7 @@ t_jit_err jit_submatrix_matrix_calc(t_jit_submatrix *x, void *inputs, void *outp
 			x->dim[i] = MAX(x->dim[i],1);
 			out_minfo.dim[i] = x->dim[i];
 			c = MAX(in_minfo.dim[i]-x->offset[i],1);
-			CLIP(out_minfo.dim[i],1,c);
+			CLIP_ASSIGN(out_minfo.dim[i],1,c);
 		} 
 		
 		for (;i<JIT_MATRIX_MAX_DIMCOUNT;i++) {

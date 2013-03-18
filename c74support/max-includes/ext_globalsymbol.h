@@ -1,12 +1,7 @@
-#ifndef __GLOBALSYMBOL_H__
-#define __GLOBALSYMBOL_H__
+#ifndef __EXT_GLOBALSYMBOL_H__
+#define __EXT_GLOBALSYMBOL_H__
 
 BEGIN_USING_C_LINKAGE
-
-
-// private
-void globalsymbol_initclass();
-
 
 /**	Get a reference to an object that is bound to a #t_symbol.
 	@ingroup misc
@@ -76,5 +71,5 @@ void globalsymbol_notify(t_object *x, C74_CONST char *name, t_symbol *msg, void 
 
 END_USING_C_LINKAGE
 
-#endif // __GLOBALSYMBOL_H__
+#endif // __EXT_GLOBALSYMBOL_H__
 
