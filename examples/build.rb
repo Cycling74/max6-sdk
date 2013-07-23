@@ -84,5 +84,33 @@ def build_projects_for_dir(path)
 end
 
 
+def copy_help_patchers(dir)
+  puts "Copying Help Patchers"
+  puts
+  
+  if $mac 
+    `mkdir -p ../sdk-build/help`
+    `cp */*/*.maxhelp ../sdk-build/help`
+  else # $win
+    `mkdir ../sdk-build/help`
+    Dir.foreach dir do |category|
+      if File.directory?("#{category}") && category != "." && category != ".." && category != "build" && category != "sysbuild" && !category.match(/.*\.xcodeproj/)
+        Dir.foreach category do |example_dir|
+          if  File.directory?("#{category}/#{example_dir}") && example_dir != "." && example_dir != ".." && example_dir != "build" && example_dir != "sysbuild" && !example_dir.match(/.*\.xcodeproj/)
+            puts `copy #{category}\\#{example_dir}\\*.maxhelp ..\\sdk-build\\help /Y`
+          end
+        end
+      end
+    end
+  end
+end
+
+
 build_projects_for_dir(sdk_examples_dir)
+copy_help_patchers(sdk_examples_dir)
+
+
+puts "You now have a Max Package that you can use."
+puts "For more information on how to use a Max Package, see the Appendix on Distribution in the SDK documentation"
+puts
 

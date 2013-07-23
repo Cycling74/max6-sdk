@@ -69,7 +69,7 @@ void buffer_ref_set(t_buffer_ref *x, t_symbol *name);
 	@param	x		the buffer reference
 	@return			non-zero if the buffer~ exists, otherwise zero
 */
-t_atom_long buffer_ref_getexists(t_buffer_ref *x);
+t_atom_long buffer_ref_exists(t_buffer_ref *x);
 
 
 /**	Query a buffer reference to get the actual buffer~ object being referenced, if it exists.
@@ -174,6 +174,15 @@ t_atom_float buffer_getmillisamplerate(t_buffer_obj *buffer_object);
 	@return					an error code
 */
 t_max_err buffer_setpadding(t_buffer_obj *buffer_object, t_atom_long samplecount);
+
+
+/**	Set the buffer's dirty flag, indicating that changes have been made.
+ 
+	@ingroup buffers
+	@param	buffer_object	the buffer object
+	@return					an error code
+ */
+t_max_err buffer_setdirty(t_buffer_obj *buffer_object);
 
 
 #endif //  C74_BUFFER_INTERNAL

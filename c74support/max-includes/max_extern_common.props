@@ -5,7 +5,7 @@
   </PropertyGroup>
   <PropertyGroup>
     <_ProjectFileVersion>10.0.40219.1</_ProjectFileVersion>
-    <OutDir>$(C74SUPPORT)..\sdk-build\</OutDir>
+    <OutDir>$(C74SUPPORT)..\sdk-build\externals\</OutDir>
     <IntDir>..\..\sysbuild\intermediate\$(Configuration)_$(PlatformName)\$(ProjectName)\</IntDir>
     <EmbedManifest>false</EmbedManifest>
   </PropertyGroup>

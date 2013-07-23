@@ -553,7 +553,8 @@ t_jit_err jit_gl_gridshape_attr_setcolor(t_jit_gl_gridshape *x, void *attr, long
 	long i=0;
 	
 	ob3d_get_color(ob3d, color);
-	for(i=0; i < 4; i++) {
+	if (argc>4) argc=4;
+	for(i=0; i < argc; i++) {
 		color[i] = jit_atom_getfloat(argv+i);
 	}
 	

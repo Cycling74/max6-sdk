@@ -3,6 +3,27 @@
 #define _EXT_COMMON_H_
 
 
+#if C74_NO_CONST == 0
+#define C74_CONST const
+#else
+#define C74_CONST
+#endif
+
+#ifdef C74_NO_DEPRECATION
+#define C74_DEPRECATED(func) func
+#endif
+
+#ifndef C74_DEPRECATED
+#ifdef __GNUC__
+#define C74_DEPRECATED(func) func __attribute__ ((deprecated))
+#elif defined(_MSC_VER)
+#define C74_DEPRECATED(func) __declspec(deprecated) func
+#else
+#define C74_DEPRECATED(func) func
+#endif
+#endif // C74_DEPRECATED
+
+
 /**
 	If a value is within the specified range, then return true.  Otherwise return false.
 

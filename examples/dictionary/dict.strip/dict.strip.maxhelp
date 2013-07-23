@@ -8,7 +8,7 @@
 			"architecture" : "x86"
 		}
 ,
-		"rect" : [ 92.0, 100.0, 702.0, 506.0 ],
+		"rect" : [ 100.0, 100.0, 702.0, 506.0 ],
 		"bglocked" : 0,
 		"openinpresentation" : 0,
 		"default_fontsize" : 13.0,
@@ -46,7 +46,7 @@
 							"architecture" : "x86"
 						}
 ,
-						"rect" : [ 0.0, 26.0, 702.0, 480.0 ],
+						"rect" : [ 100.0, 126.0, 702.0, 480.0 ],
 						"bglocked" : 0,
 						"openinpresentation" : 0,
 						"default_fontsize" : 13.0,
@@ -1094,7 +1094,7 @@
 									"numinlets" : 1,
 									"numoutlets" : 0,
 									"patching_rect" : [ 10.0, 65.0, 273.0, 21.0 ],
-									"text" : "working with heirarchical dictionaries"
+									"text" : "working with hierarchical dictionaries"
 								}
 
 							}
@@ -1213,7 +1213,7 @@
 						"tags" : ""
 					}
 ,
-					"text" : "p heirarchy",
+					"text" : "p hierarchy",
 					"varname" : "basic_tab[1]"
 				}
 
@@ -1254,7 +1254,7 @@
 							"architecture" : "x86"
 						}
 ,
-						"rect" : [ 92.0, 126.0, 702.0, 480.0 ],
+						"rect" : [ 0.0, 26.0, 702.0, 480.0 ],
 						"bglocked" : 0,
 						"openinpresentation" : 0,
 						"default_fontsize" : 13.0,
@@ -1582,29 +1582,29 @@
 		"lines" : [  ],
 		"dependency_cache" : [ 			{
 				"name" : "helpargs.js",
-				"bootpath" : "/Users/tim/code74/max/maxmsp-misc/help/resources",
-				"patcherrelativepath" : "../resources",
+				"bootpath" : "/Applications/Max 6.1/Cycling '74/help-resources",
+				"patcherrelativepath" : "../../../../../../Applications/Max 6.1/Cycling '74/help-resources",
 				"type" : "TEXT",
 				"implicit" : 1
 			}
 , 			{
 				"name" : "helpdetails.js",
-				"bootpath" : "/Users/tim/code74/max/maxmsp-misc/help/resources",
-				"patcherrelativepath" : "../resources",
+				"bootpath" : "/Applications/Max 6.1/Cycling '74/help-resources",
+				"patcherrelativepath" : "../../../../../../Applications/Max 6.1/Cycling '74/help-resources",
 				"type" : "TEXT",
 				"implicit" : 1
 			}
 , 			{
 				"name" : "helpstarter.js",
-				"bootpath" : "/Users/tim/code74/max/maxmsp-misc/help/resources",
-				"patcherrelativepath" : "../resources",
+				"bootpath" : "/Applications/Max 6.1/Cycling '74/help-resources",
+				"patcherrelativepath" : "../../../../../../Applications/Max 6.1/Cycling '74/help-resources",
 				"type" : "TEXT",
 				"implicit" : 1
 			}
 , 			{
 				"name" : "helpname.js",
-				"bootpath" : "/Users/tim/code74/max/maxmsp-misc/help/resources",
-				"patcherrelativepath" : "../resources",
+				"bootpath" : "/Applications/Max 6.1/Cycling '74/help-resources",
+				"patcherrelativepath" : "../../../../../../Applications/Max 6.1/Cycling '74/help-resources",
 				"type" : "TEXT",
 				"implicit" : 1
 			}

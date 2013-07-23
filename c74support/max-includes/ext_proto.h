@@ -299,6 +299,7 @@ void disposhandle(char **h);
 
 // symbol/string/text/error functions
 
+#ifndef gensym
 /**
 	Given a C-string, fetch the matching #t_symbol pointer from the symbol table,
 	generating the symbol if neccessary.
@@ -308,6 +309,7 @@ void disposhandle(char **h);
 	@return		A pointer to the #t_symbol in the symbol table.
 */
 t_symbol *gensym(C74_CONST char *s);
+#endif
 
 /**
  Given a C-string, fetch the matching #t_symbol pointer from the symbol table,
@@ -326,9 +328,16 @@ t_symbol *gensym_tr(const char *s);
 
 // other translation stuff, to be documented...
 	
+#ifdef NO_TRANSLATION_SUPPORT
+#define str_tr(s) (s)
+#define symbol_tr(s) (s)
+#define sprintf_tr snprintf
+#else
 char *str_tr(const char *s);
 t_symbol *symbol_tr(t_symbol *s);
 int sprintf_tr(char *d, const char *fmt, ...);
+#endif
+
 char *mayquote(char *s);
 	
 /**
@@ -765,7 +774,9 @@ void *outlet_bang(void *o);
 	@param	n	Integer value to send.
 	@return		Returns 0 if a stack overflow occurred, otherwise returns 1.
 */
+#ifndef outlet_int
 void *outlet_int(void *o, t_atom_long n);
+#endif
 
 
 /**
@@ -776,7 +787,9 @@ void *outlet_int(void *o, t_atom_long n);
 	@param	f	Float value to send.
 	@return		Returns 0 if a stack overflow occurred, otherwise returns 1.
 */
+#ifndef outlet_float
 void *outlet_float(void *o, double f);
+#endif
 
 
 /**
@@ -816,7 +829,9 @@ void *outlet_float(void *o, double f);
 					lists, it might make sense to keep an array of t_atoms inside your 
 					object's data structure.	
 */
+#ifndef outlet_list
 void *outlet_list(void *o, t_symbol *s, short ac, t_atom *av);
+#endif
 
 
 /**
@@ -856,7 +871,9 @@ void *outlet_list(void *o, t_symbol *s, short ac, t_atom *av);
 					Also, do not send lists using outlet_anything() with list as 
 					the selector argument. Use the outlet_list() function instead. 
 */
+#ifndef outlet_anything
 void *outlet_anything(void *o, t_symbol *s, short ac, t_atom *av);
+#endif
 
 
 void *inlet4(void *x, void *w, char *s, char *s1);

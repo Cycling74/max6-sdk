@@ -56,7 +56,7 @@
 #include "jit.mac.h"
 #define ushort ushort
 #define FREDDIE ushort
-#define GetPixRowBytes(x) (0x3FFF&((*(x))->rowBytes)) //win_todo
+#define GetPixRowBytes QTGetPixMapHandleRowBytes
 #endif  // #ifdef C74_USING_QUICKTIME
 #endif //WIN_JITLIB
 #endif

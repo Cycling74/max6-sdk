@@ -3,7 +3,7 @@
 	ProjectType="Visual C++"
 	Version="8.00"
 	Name="max_extern_common"
-	OutputDirectory="$(C74SUPPORT)..\sdk-build\"
+	OutputDirectory="$(C74SUPPORT)..\sdk-build\externals"
 	IntermediateDirectory="..\..\sysbuild\intermediate\$(ConfigurationName)_$(PlatformName)\$(ProjectName)\"
 	>
 	<Tool

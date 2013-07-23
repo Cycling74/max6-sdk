@@ -91,7 +91,7 @@ void *simplemax_new(t_symbol *s, long argc, t_atom *argv)
 	
 	// object instantiation, NEW STYLE
 	if (x = (t_simplemax *)object_alloc(simplemax_class)) {
-        object_post((t_object *)x, "a new %s object was instantiated: 0x%X", s->s_name, x);
+        object_post((t_object *)x, "a new %s object was instantiated: %p", s->s_name, x);
         object_post((t_object *)x, "it has %ld arguments", argc);
         
         for (i = 0; i < argc; i++) {

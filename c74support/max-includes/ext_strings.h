@@ -3,6 +3,7 @@
 
 BEGIN_USING_C_LINKAGE
 
+#ifndef strncpy_zero
 /**	Copy the contents of one string to another, in a manner safer than the standard strcpy() or strncpy().
  	This is the prefered function to use for this operation in Max.
 	@ingroup misc
@@ -11,6 +12,7 @@ BEGIN_USING_C_LINKAGE
 	@param	size	The number of chars allocated to the dst string.
 */
 char *strncpy_zero(char *dst, const char* src, long size);
+#endif
 
 
 /**	Concatenate the contents of one string onto the end of another, 

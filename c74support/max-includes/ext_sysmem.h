@@ -4,6 +4,7 @@
 
 BEGIN_USING_C_LINKAGE
 
+#ifndef sysmem_newptr
 /**
 	Allocate memory.
 	This function is similar to NewPtr() or malloc(). It allocates a pointer of 
@@ -14,6 +15,7 @@ BEGIN_USING_C_LINKAGE
 	@return			A pointer to the allocated memory, or NULL if the allocation fails.
 */
 extern t_ptr sysmem_newptr(long size);
+#endif
 
 
 /**
@@ -74,6 +76,7 @@ extern long sysmem_ptrsize(void *ptr);
 extern void sysmem_freeptr(void *ptr);
 
 
+#ifndef sysmem_copyptr
 /**
 	Copy memory the contents of one pointer to another pointer.
 	This function is similar to BlockMove() or memcpy(). 
@@ -85,6 +88,7 @@ extern void sysmem_freeptr(void *ptr);
 	@param	bytes	The size in bytes of the data to be copied.
 */
 extern void sysmem_copyptr(const void *src, void *dst, long bytes);
+#endif
 
 
 /**

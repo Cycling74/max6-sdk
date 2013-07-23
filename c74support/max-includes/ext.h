@@ -7,31 +7,12 @@
 #define MAC_VERSION 1 // we'll assume that if we aren't requesting the windows version, that we build the mac version(s) of the product
 #endif  // WIN_VERSION
 
-#if C74_NO_CONST == 0
-#define C74_CONST const
-#else
-#define C74_CONST
-#endif
-
-#ifdef C74_NO_DEPRECATION
-#define C74_DEPRECATED(func) func
-#endif
-
-#ifndef C74_DEPRECATED
-#ifdef __GNUC__
-#define C74_DEPRECATED(func) func __attribute__ ((deprecated))
-#elif defined(_MSC_VER)
-#define C74_DEPRECATED(func) __declspec(deprecated) func
-#else
-#define C74_DEPRECATED(func) func
-#endif
-#endif // C74_DEPRECATED
+#include "ext_common.h"
 
 #ifdef WIN_VERSION
 #define C74_EXPORT __declspec(dllexport) 
-#else
-// on the mac the project settings export everything, so we need do nothing
-#define C74_EXPORT
+#else // MAC_VERSION
+#define C74_EXPORT __attribute__((visibility("default")))
 #endif
 
 // include max_types before ext_prefix to get C74_X64 definition
@@ -53,8 +34,6 @@
 	@ingroup memory
 */
 #define MM_UNIFIED
-
-#include "ext_common.h"
 
 #include "ext_maxtypes.h"
 #include "ext_byteorder.h"
@@ -82,5 +61,11 @@
 #include "ext_drag.h"
 #include "jpatcher_api.h"
 #include "ext_charset.h"
+
+// the old post() and error() functions should be avoided since their names are generic and
+// could be overloaded by earlier-loading frameworks/dlls in the plugin context.
+// for now, we simply redefine post() and error() usage to the object_ variation. See #4779.
+#define post(...)	object_post(NULL, __VA_ARGS__)
+#define error(...)	object_error(NULL, __VA_ARGS__)
 
 #endif /* _EXT_H_ */

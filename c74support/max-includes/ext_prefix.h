@@ -264,11 +264,13 @@
 #define C74DebugBreak DebugBreak
 #endif
 
+#ifndef C74_ASSERT
 #if defined(_DEBUG) || defined(DEBUG)
 #define C74_ASSERT(condition) \
 	if (!(condition)) { C74DebugBreak(); }
 #else
 #define C74_ASSERT(condition) 
+#endif
 #endif
 
 // the following are convenient before casting to a smaller size 

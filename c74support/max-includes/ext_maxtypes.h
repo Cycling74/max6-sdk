@@ -46,7 +46,8 @@ enum {
 	PI_DEEP = 1,						///< descend into subpatchers (not used by audio library)
 	PI_REQUIREFIRSTIN = 2,	///< if b->b_firstin is NULL, do not call function
 	PI_WANTBOX = 4,					///< instead, of b->b_firstin, pass b to function, whether or not b->b_firstin is NULL
-	PI_SKIPGEN = 8
+	PI_SKIPGEN = 8,
+	PI_WANTPATCHER = 16
 };
 
 /** A simple doubly-linked list used by the #t_funbuff object.

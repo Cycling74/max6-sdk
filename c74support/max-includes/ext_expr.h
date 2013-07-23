@@ -39,7 +39,7 @@ typedef enum {
 typedef struct ex_ex {
 	union {
 		long v_int;
-		float v_flt;
+		double v_flt;
 		long op;
 		char **ptr;
 	} ex_cont;			///< content

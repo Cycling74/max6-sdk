@@ -413,6 +413,20 @@ void jit_mat3_tangent_basis(t_jit_mat3 *basis,
 	t_jit_vec3 *v0, t_jit_vec3 *v1, t_jit_vec3 *v2,
 	t_jit_vec2 *t0, t_jit_vec2 *t1, t_jit_vec2 *t2,  
 	t_jit_vec3 *n);
+	
+t_bool jit_mat3_to_eulerxyz(t_jit_mat3 *m, float *xyz);
+t_bool jit_mat3_to_eulerxzy(t_jit_mat3 *m, float *xyz);
+t_bool jit_mat3_to_euleryxz(t_jit_mat3 *m, float *xyz);
+t_bool jit_mat3_to_euleryzx(t_jit_mat3 *m, float *xyz);
+t_bool jit_mat3_to_eulerzxy(t_jit_mat3 *m, float *xyz);
+t_bool jit_mat3_to_eulerzyx(t_jit_mat3 *m, float *xyz);
+void jit_mat3_from_eulerxyz(t_jit_mat3 *m, double fYAngle, double fPAngle, double fRAngle);
+void jit_mat3_from_eulerxzy(t_jit_mat3 *m, double fYAngle, double fPAngle, double fRAngle);
+void jit_mat3_from_euleryxz(t_jit_mat3 *m, double fYAngle, double fPAngle, double fRAngle);
+void jit_mat3_from_euleryzx(t_jit_mat3 *m, double fYAngle, double fPAngle, double fRAngle);
+void jit_mat3_from_eulerzxy(t_jit_mat3 *m, double fYAngle, double fPAngle, double fRAngle);
+void jit_mat3_from_eulerzyx(t_jit_mat3 *m, double fYAngle, double fPAngle, double fRAngle);
+
 void jit_vec3_mult_mat4_pos(t_jit_vec3 *u,  t_jit_vec3 *v,  t_jit_mat4 *m);
 void jit_mat4_mult_vec3_pos(t_jit_vec3 *u,  t_jit_mat4 *m,  t_jit_vec3 *v);
 void jit_vec3_mult_mat4_dir(t_jit_vec3 *u,  t_jit_vec3 *v,  t_jit_mat4 *m);

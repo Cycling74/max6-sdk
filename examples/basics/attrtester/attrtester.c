@@ -158,10 +158,9 @@ void attrtester_free(t_attrtester *x)
 
 void *attrtester_new(t_symbol *s, long argc, t_atom *argv)
 {
-	t_attrtester *x = NULL;
-    t_dictionary *d;
+	t_attrtester *x = (t_attrtester *)object_alloc(attrtester_class);
 	
-	if (x = (t_attrtester *)object_alloc(attrtester_class)) {
+	if (x) {
 		x->a_val = 0;
 		x->a_min = -52;
 		x->a_max = 0;
@@ -169,10 +168,7 @@ void *attrtester_new(t_symbol *s, long argc, t_atom *argv)
 		x->a_usemax = 0;
         x->a_out = outlet_new(x, NULL); // then to the left
 		
-		d = (t_dictionary *)gensym("#D")->s_thing;
-		if (d) {
-			attr_dictionary_process(x, d);
-		}
+		attr_args_process(x, argc, argv);
 	}
 	return (x);
 }

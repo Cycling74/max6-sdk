@@ -2491,6 +2491,7 @@ t_max_err object_getenabler(t_object *c, t_symbol *cmd, method *m);
 t_max_err object_getcommand(t_object *o, t_symbol *cmd, method *m);
 void *object_handlecommand(t_object *o, t_symbol *s, long argc, t_atom *argv, t_atom *rv);
 
+t_ptr_int object_attr_getdisabled(t_object *o, t_symbol *attrname);
 t_max_err object_attr_setdisabled(t_object *o, t_symbol *attrname, long way);
 
 // arg replacing (for objects that save their own way in dictionaries and want values treated as "attributes" would be)		

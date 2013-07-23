@@ -125,6 +125,7 @@ t_atom_long method_true(void *x);
 t_atom_long method_false(void *x);
 
 
+#ifndef class_new
 /**
 	Initializes a class by informing Max of its name, instance creation and free functions, size and argument types. 
 	Developers wishing to use obex class features (attributes, etc.) <em>must</em> use class_new() 
@@ -151,6 +152,7 @@ t_atom_long method_false(void *x);
 	 				stored in a global or static variable.</em>
 */
 t_class *class_new(C74_CONST char *name, C74_CONST method mnew, C74_CONST method mfree, long size, C74_CONST method mmenu, short type, ...);
+#endif
 
 
 /**
@@ -164,6 +166,7 @@ t_class *class_new(C74_CONST char *name, C74_CONST method mnew, C74_CONST method
 t_max_err class_free(t_class *c);
 
 
+#ifndef class_register
 /**
 	Registers a previously defined object class. This function is required, and should be called at the end of <tt>main()</tt>.
 
@@ -182,6 +185,7 @@ t_max_err class_free(t_class *c);
 						or one of the other error codes defined in #e_max_errorcodes if unsuccessful.
 */
 t_max_err class_register(t_symbol *name_space, t_class *c);
+#endif
 
 
 /**
@@ -212,7 +216,9 @@ t_max_err class_alias(t_class *c, t_symbol *aliasname);
  *
  */
 t_max_err class_copy(t_symbol *src_name_space, t_symbol *src_classname, t_symbol *dst_name_space, t_symbol *dst_classname);	
-		
+
+
+#ifndef class_addmethod
 /**
 	Adds a method to a previously defined object class. 
 	
@@ -234,6 +240,7 @@ t_max_err class_copy(t_symbol *src_name_space, t_symbol *src_classname, t_symbol
 	 				leftmost inlet of the object. 
 */
 t_max_err class_addmethod(t_class *c, C74_CONST method m, C74_CONST char *name, ...);
+#endif
 
 
 /**
@@ -354,6 +361,7 @@ t_max_err class_setpath(t_class *x, short vol);
 short class_getpath(t_class *x);
  	
 
+#ifndef object_alloc
 /**
 	Allocates the memory for an instance of an object class and initialize its object header. 
 	It is used like the traditional function newobject, inside of an object's <tt>new</tt> method, but its use is required with obex-class objects.
@@ -363,6 +371,7 @@ short class_getpath(t_class *x);
 	@return 		This function returns a new instance of an object class if successful, or NULL if unsuccessful.
 */
 void *object_alloc(t_class *c);
+#endif
 
 
 /**
@@ -418,6 +427,7 @@ void *object_new_typed(t_symbol *name_space, t_symbol *classname, long ac, t_ato
 void *object_new_menufun(t_symbol *name_space, t_symbol *classname, void *p, long h, long v, long f);
 
 
+#ifndef object_free
 /**
 	Call the free function and release the memory for an instance of an internal object class previously instantiated using object_new(), 
 	object_new_typed() or other new-style object constructor functions (e.g. hashtab_new()). 
@@ -429,6 +439,7 @@ void *object_new_menufun(t_symbol *name_space, t_symbol *classname, void *p, lon
 	 				or one of the other error codes defined in #e_max_errorcodes if unsuccessful.
 */
 t_max_err object_free(void *x);
+#endif
 
 
 /**
@@ -1188,6 +1199,7 @@ C74_DEPRECATED( void object_obex_free(void *x) );
 
 //atom functions 
 
+#ifndef atom_setlong
 /**
 	Inserts an integer into a #t_atom and change the t_atom's type to #A_LONG. 
 
@@ -1200,8 +1212,10 @@ C74_DEPRECATED( void object_obex_free(void *x) );
 	 			or one of the other error codes defined in #e_max_errorcodes if unsuccessful.
 */
 t_max_err atom_setlong(t_atom *a, t_atom_long b);
+#endif
 
 
+#ifndef atom_setfloat
 /**
 	Inserts a floating point number into a #t_atom and change the t_atom's type to #A_FLOAT. 
 
@@ -1214,8 +1228,10 @@ t_max_err atom_setlong(t_atom *a, t_atom_long b);
 	 				or one of the other error codes defined in #e_max_errorcodes if unsuccessful.
 */
 t_max_err atom_setfloat(t_atom *a, double b);
+#endif
 
 
+#ifndef atom_setsym
 /**
 	Inserts a #t_symbol * into a #t_atom and change the t_atom's type to #A_SYM. 
 
@@ -1228,6 +1244,7 @@ t_max_err atom_setfloat(t_atom *a, double b);
 	 				or one of the other error codes defined in #e_max_errorcodes if unsuccessful.
 */
 t_max_err atom_setsym(t_atom *a, t_symbol *b);				
+#endif
 
 
 /**
@@ -1244,6 +1261,7 @@ t_max_err atom_setsym(t_atom *a, t_symbol *b);
 t_max_err atom_setobj(t_atom *a, void *b);
 
 
+#ifndef atom_getlong
 /**
 	Retrieves a long integer value from a #t_atom. 
 
@@ -1257,8 +1275,10 @@ t_max_err atom_setobj(t_atom *a, void *b);
 					An attempt is also made to coerce #t_symbol data.
 */
 t_atom_long atom_getlong(const t_atom *a);
+#endif
 
 
+#ifndef atom_getfloat
 /**
 	Retrieves a floating point value from a #t_atom. 
 
@@ -1272,8 +1292,10 @@ t_atom_long atom_getlong(const t_atom *a);
 					An attempt is also made to coerce #t_symbol data.
 */
 t_atom_float atom_getfloat(const t_atom *a);
+#endif
 
 
+#ifndef atom_getsym
 /**
 	Retrieves a t_symbol * value from a t_atom. 
 
@@ -1285,6 +1307,7 @@ t_atom_float atom_getfloat(const t_atom *a);
 	@remark 		No attempt is made to coerce non-matching data types. 
 */
 t_symbol *atom_getsym(const t_atom *a);
+#endif
 
 
 /**
@@ -1314,6 +1337,7 @@ void *atom_getobj(const t_atom *a);
 long atom_getcharfix(const t_atom *a);
 
 
+#ifndef atom_gettype
 /**
 	Retrieves type from a #t_atom. 
 
@@ -1322,6 +1346,7 @@ long atom_getcharfix(const t_atom *a);
 	@return 		This function returns the type of the specified t_atom as defined in #e_max_atomtypes
 */
 long atom_gettype(const t_atom *a);
+#endif
 
 
 //the following are useful for setting the values _only_ if there is an arg
@@ -2179,6 +2204,18 @@ void attr_args_dictionary(t_dictionary *x, short ac, t_atom *av);
 	@see	attr_args_process()
 */
 void attr_dictionary_process(void *x, t_dictionary *d);
+
+/**
+	Check that a dictionary only contains values for existing attributes 
+	of an object. If a key in the dictionary doesn't correspond an one of 
+	the object's attributes, an error will be posted to the Max window.
+	
+	@ingroup attr
+	@param	x	The object instance pointer.
+	@param	d	The dictionary containing the attributes.
+	@see	attr_dictionary_process()
+*/
+void attr_dictionary_check(void *x, t_dictionary *d);
 
 
 /**
