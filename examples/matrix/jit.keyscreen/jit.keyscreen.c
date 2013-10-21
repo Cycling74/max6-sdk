@@ -310,16 +310,17 @@ void jit_keyscreen_calculate_ndim(t_jit_keyscreen *x, long dimcount, long *dim, 
 			case(0): // cell-by-cell
 			default:
 				for (i=0;i<height;i++){
+					t_uint32 *op32;
+
 					ip = ksrc + i * kstride;
 					ip2 = tsrc + i * tstride;
 					ip3 = msrc + i * mstride;
 					op = bop + i*ostride;
+					op32 = (t_uint32*)op;
 						
 					for (j=0;j<width;j++, ip+=4, ip2+=4,ip3+=4) {			
-
 						// see if any of the planes fail any of the criteria, and key accordingly
-						*((t_uint32 *)op)++ = (*ip<aMf) ? *((t_uint32 *)ip2) : (*ip>aPf) ? *((t_uint32 *)ip2) : (*(ip+1)<rMf) ? *((t_uint32 *)ip2) : (*(ip+1)>rPf) ? *((t_uint32 *)ip2) : (*(ip+2)<gMf) ? *((t_uint32 *)ip2) : (*(ip+2)>gPf) ? *((t_uint32 *)ip2) : (*(ip+3)<bMf) ? *((t_uint32 *)ip2) : (*(ip+3)>bPf) ? *((t_uint32 *)ip2) : *((t_uint32 *)ip3);
-						
+						*op32++ = (*ip<aMf) ? *((t_uint32 *)ip2) : (*ip>aPf) ? *((t_uint32 *)ip2) : (*(ip+1)<rMf) ? *((t_uint32 *)ip2) : (*(ip+1)>rPf) ? *((t_uint32 *)ip2) : (*(ip+2)<gMf) ? *((t_uint32 *)ip2) : (*(ip+2)>gPf) ? *((t_uint32 *)ip2) : (*(ip+3)<bMf) ? *((t_uint32 *)ip2) : (*(ip+3)>bPf) ? *((t_uint32 *)ip2) : *((t_uint32 *)ip3);
 					}
 				}
 			break;

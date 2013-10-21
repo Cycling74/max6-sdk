@@ -41,6 +41,9 @@ int C74_EXPORT main(void)
 	// add methods for 3d drawing
     max_ob3d_setup();
 	
+	class_register(CLASS_BOX, maxclass);
+	max_jit_gl_cube_class = maxclass;
+	
 	return 0;
 }
 

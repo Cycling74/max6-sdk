@@ -3,11 +3,12 @@
 		"fileversion" : 1,
 		"appversion" : 		{
 			"major" : 6,
-			"minor" : 0,
-			"revision" : 4
+			"minor" : 1,
+			"revision" : 3,
+			"architecture" : "x86"
 		}
 ,
-		"rect" : [ 132.0, 48.0, 619.0, 686.0 ],
+		"rect" : [ 861.0, 65.0, 619.0, 686.0 ],
 		"bglocked" : 0,
 		"openinpresentation" : 0,
 		"default_fontsize" : 12.0,
@@ -40,11 +41,12 @@
 						"fileversion" : 1,
 						"appversion" : 						{
 							"major" : 6,
-							"minor" : 0,
-							"revision" : 4
+							"minor" : 1,
+							"revision" : 3,
+							"architecture" : "x86"
 						}
 ,
-						"rect" : [ 0.0, 26.0, 619.0, 660.0 ],
+						"rect" : [ 861.0, 91.0, 619.0, 660.0 ],
 						"bglocked" : 0,
 						"openinpresentation" : 0,
 						"default_fontsize" : 13.0,
@@ -68,6 +70,7 @@
 								"box" : 								{
 									"fontname" : "Arial",
 									"fontsize" : 13.0,
+									"frgb" : 0.0,
 									"id" : "obj-6",
 									"linecount" : 2,
 									"maxclass" : "comment",
@@ -82,13 +85,14 @@
 								"box" : 								{
 									"fontname" : "Arial",
 									"fontsize" : 13.0,
+									"frgb" : 0.0,
 									"id" : "obj-1",
 									"linecount" : 6,
 									"maxclass" : "comment",
 									"numinlets" : 1,
 									"numoutlets" : 0,
-									"patching_rect" : [ 350.0, 310.0, 223.0, 97.0 ],
-									"text" : ">p: greater than(pass);\r<p: less than(pass);\r>=p: greater than or equal to(pass);\r<=p: less than or equal to(pass);\r==p: equal(pass);\r!=p not equal(pass)"
+									"patching_rect" : [ 350.0, 310.0, 223.0, 94.0 ],
+									"text" : ">p: greater than (pass);\r<p: less than(pass);\r>=p: greater than or equal to (pass);\r<=p: less than or equal to (pass);\r==p: equal (pass);\r!=p not equal (pass)"
 								}
 
 							}
@@ -96,6 +100,7 @@
 								"box" : 								{
 									"fontname" : "Arial",
 									"fontsize" : 13.0,
+									"frgb" : 0.0,
 									"id" : "obj-3",
 									"maxclass" : "comment",
 									"numinlets" : 1,
@@ -109,6 +114,7 @@
 								"box" : 								{
 									"fontname" : "Arial",
 									"fontsize" : 13.0,
+									"frgb" : 0.0,
 									"id" : "obj-4",
 									"linecount" : 2,
 									"maxclass" : "comment",
@@ -124,6 +130,7 @@
 									"fontface" : 1,
 									"fontname" : "Arial",
 									"fontsize" : 13.0,
+									"frgb" : 0.0,
 									"id" : "obj-5",
 									"maxclass" : "comment",
 									"numinlets" : 1,
@@ -137,13 +144,14 @@
 								"box" : 								{
 									"fontname" : "Arial",
 									"fontsize" : 13.0,
+									"frgb" : 0.0,
 									"id" : "obj-7",
 									"linecount" : 13,
 									"maxclass" : "comment",
 									"numinlets" : 1,
 									"numoutlets" : 0,
-									"patching_rect" : [ 10.0, 453.0, 195.0, 201.0 ],
-									"text" : "sin: sine;\rcos: cosine;\rtan: tangent;\rasin: arcsine;\racos: arccosine;\ratan: arctangent;\ratan2: arctangent(binary);\rsinh: hyperbolic sine;\rcosh: hyperbolic cosine;\rtanh: hyperbolic tangent;\rasinh: hyperbolic arcsine;\racosh: hyperbolic arccosine;\ratanh: hyperbolic arctangent;\r"
+									"patching_rect" : [ 10.0, 453.0, 195.0, 211.0 ],
+									"text" : "sin: sine;\rcos: cosine;\rtan: tangent;\rasin: arcsine;\racos: arccosine;\ratan: arctangent;\ratan2: arctangent (binary);\rsinh: hyperbolic sine;\rcosh: hyperbolic cosine;\rtanh: hyperbolic tangent;\rasinh: hyperbolic arcsine;\racosh: hyperbolic arccosine;\ratanh: hyperbolic arctangent;\r"
 								}
 
 							}
@@ -151,13 +159,14 @@
 								"box" : 								{
 									"fontname" : "Arial",
 									"fontsize" : 13.0,
+									"frgb" : 0.0,
 									"id" : "obj-8",
 									"linecount" : 9,
 									"maxclass" : "comment",
 									"numinlets" : 1,
 									"numoutlets" : 0,
-									"patching_rect" : [ 350.0, 172.0, 188.0, 142.0 ],
-									"text" : "&&: logical and;\r||: logical or;\r!: logical not(unary);\r>: greater than;\r<: less than;\r>=: greater than or equal to;\r<=: less than or equal to;\r==: equal;\r!=: not equal"
+									"patching_rect" : [ 350.0, 172.0, 188.0, 138.0 ],
+									"text" : "&&: logical and;\r||: logical or;\r!: logical not (unary);\r>: greater than;\r<: less than;\r>=: greater than or equal to;\r<=: less than or equal to;\r==: equal;\r!=: not equal"
 								}
 
 							}
@@ -166,6 +175,7 @@
 									"fontface" : 1,
 									"fontname" : "Arial",
 									"fontsize" : 13.0,
+									"frgb" : 0.0,
 									"id" : "obj-9",
 									"maxclass" : "comment",
 									"numinlets" : 1,
@@ -179,13 +189,14 @@
 								"box" : 								{
 									"fontname" : "Arial",
 									"fontsize" : 13.0,
+									"frgb" : 0.0,
 									"id" : "obj-10",
 									"linecount" : 12,
 									"maxclass" : "comment",
 									"numinlets" : 1,
 									"numoutlets" : 0,
-									"patching_rect" : [ 350.0, 461.0, 200.0, 186.0 ],
-									"text" : "exp: e to the x;\rexp2: 2 to the x;\rln: log base e;\rlog2: log base 2;\rlog10: log base 10;\rhypot: hypotenuse(binary);\rpow: x to the y(binary);\rsqrt: square root;\rceil: integer ceiling;\rfloor: integer floor;\rround: round to nearest integer;\rtrunc: truncate to integer"
+									"patching_rect" : [ 350.0, 461.0, 200.0, 182.0 ],
+									"text" : "exp: e to the x;\rexp2: 2 to the x;\rln: log base e;\rlog2: log base 2;\rlog10: log base 10;\rhypot: hypotenuse (binary);\rpow: x to the y (binary);\rsqrt: square root;\rceil: integer ceiling;\rfloor: integer floor;\rround: round to nearest integer;\rtrunc: truncate to integer"
 								}
 
 							}
@@ -194,6 +205,7 @@
 									"fontface" : 1,
 									"fontname" : "Arial",
 									"fontsize" : 13.0,
+									"frgb" : 0.0,
 									"id" : "obj-11",
 									"maxclass" : "comment",
 									"numinlets" : 1,
@@ -207,13 +219,14 @@
 								"box" : 								{
 									"fontname" : "Arial",
 									"fontsize" : 13.0,
+									"frgb" : 0.0,
 									"id" : "obj-12",
 									"linecount" : 6,
 									"maxclass" : "comment",
 									"numinlets" : 1,
 									"numoutlets" : 0,
-									"patching_rect" : [ 350.0, 48.0, 187.0, 97.0 ],
-									"text" : "&: bitwise and;\r|: bitwise or;\r^: bitwise xor;\r~: bitwise compliment(unary);\r>>: right shift;\r<<: left shift"
+									"patching_rect" : [ 350.0, 48.0, 187.0, 94.0 ],
+									"text" : "&: bitwise and;\r|: bitwise or;\r^: bitwise xor;\r~: bitwise compliment (unary);\r>>: right shift;\r<<: left shift"
 								}
 
 							}
@@ -221,13 +234,14 @@
 								"box" : 								{
 									"fontname" : "Arial",
 									"fontsize" : 13.0,
+									"frgb" : 0.0,
 									"id" : "obj-14",
 									"linecount" : 20,
 									"maxclass" : "comment",
 									"numinlets" : 1,
 									"numoutlets" : 0,
-									"patching_rect" : [ 10.0, 88.0, 271.0, 306.0 ],
-									"text" : "pass: pass left input, no operator;\r*: multiplication;\r/: division;\r+: addition;\r-: subtraction;\r+m: addition modulo(char only);\r-m: subtraction modulo(char only);\r%: modulo;\rmin: minimum;\rmax: maximum;\rabs: absolute value(unary);\ravg: average;\rabsdiff: absolute value of difference;\r!pass: pass right input, no operator;\r!/: right input/left input(filpped);\r!-: right input-left input(filpped);\r!%:right input/left input(filpped);\rignore: leave previous output value;\rfold: mirrored modulo (float32/float64 only);\rwrap: positive modulo (float32/float64 only);\r"
+									"patching_rect" : [ 10.0, 88.0, 271.0, 312.0 ],
+									"text" : "pass: pass left input, no operator;\r*: multiplication;\r/: division;\r+: addition;\r-: subtraction;\r+m: addition modulo (char only);\r-m: subtraction modulo (char only);\r%: modulo;\rmin: minimum;\rmax: maximum;\rabs: absolute value (unary);\ravg: average;\rabsdiff: absolute value of difference;\r!pass: pass right input, no operator;\r!/: right input/left input (flipped);\r!-: right input-left input (flipped);\r!%:right input/left input (flipped);\rignore: leave previous output value;\rfold: mirrored modulo (float32/float64 only);\rwrap: positive modulo (float32/float64 only);\r"
 								}
 
 							}
@@ -236,6 +250,7 @@
 									"fontface" : 1,
 									"fontname" : "Arial",
 									"fontsize" : 13.0,
+									"frgb" : 0.0,
 									"id" : "obj-15",
 									"maxclass" : "comment",
 									"numinlets" : 1,
@@ -250,6 +265,7 @@
 									"fontface" : 1,
 									"fontname" : "Arial",
 									"fontsize" : 13.0,
+									"frgb" : 0.0,
 									"id" : "obj-16",
 									"maxclass" : "comment",
 									"numinlets" : 1,
@@ -264,44 +280,33 @@
 									"border" : 0,
 									"filename" : "helpname.js",
 									"id" : "obj-17",
+									"ignoreclick" : 1,
 									"jsarguments" : [ "jit.op" ],
 									"maxclass" : "jsui",
 									"numinlets" : 1,
 									"numoutlets" : 1,
 									"outlettype" : [ "" ],
 									"parameter_enable" : 0,
-									"patching_rect" : [ 10.0, 10.0, 305.0, 55.0 ]
+									"patching_rect" : [ 10.0, 10.0, 106.390625, 53.625 ]
 								}
 
 							}
  ],
-						"lines" : [  ],
-						"parameters" : 						{
-
-						}
-,
-						"dependency_cache" : [ 							{
-								"name" : "helpname.js",
-								"bootpath" : "/Applications/Max6/Cycling '74/help-resources",
-								"type" : "TEXT",
-								"implicit" : 1
-							}
- ]
+						"lines" : [  ]
 					}
 ,
 					"patching_rect" : [ 44.0, 115.0, 71.0, 20.0 ],
-					"presentation_rect" : [ 146.0, 87.0, 0.0, 0.0 ],
 					"saved_object_attributes" : 					{
-						"fontname" : "Arial",
-						"tags" : "",
+						"default_fontface" : 0,
+						"default_fontname" : "Arial",
 						"default_fontsize" : 13.0,
 						"description" : "",
-						"globalpatchername" : "",
-						"fontface" : 0,
-						"fontsize" : 13.0,
-						"default_fontface" : 0,
 						"digest" : "",
-						"default_fontname" : "Arial"
+						"fontface" : 0,
+						"fontname" : "Arial",
+						"fontsize" : 13.0,
+						"globalpatchername" : "",
+						"tags" : ""
 					}
 ,
 					"text" : "p operators",
@@ -321,8 +326,9 @@
 						"fileversion" : 1,
 						"appversion" : 						{
 							"major" : 6,
-							"minor" : 0,
-							"revision" : 4
+							"minor" : 1,
+							"revision" : 3,
+							"architecture" : "x86"
 						}
 ,
 						"rect" : [ 0.0, 26.0, 619.0, 660.0 ],
@@ -350,6 +356,7 @@
 									"border" : 0,
 									"filename" : "helpname.js",
 									"id" : "obj-2",
+									"ignoreclick" : 1,
 									"jsarguments" : [ "jit.op" ],
 									"maxclass" : "jsui",
 									"numinlets" : 1,
@@ -604,34 +611,21 @@
 								}
 
 							}
- ],
-						"dependency_cache" : [ 							{
-								"name" : "demovideo.maxpat",
-								"bootpath" : "/Applications/Max6/Cycling '74/jitter-help",
-								"type" : "JSON",
-								"implicit" : 1
-							}
-, 							{
-								"name" : "helpname.js",
-								"bootpath" : "/Applications/Max6/Cycling '74/help-resources",
-								"type" : "TEXT",
-								"implicit" : 1
-							}
  ]
 					}
 ,
 					"patching_rect" : [ 70.0, 147.0, 156.0, 20.0 ],
 					"saved_object_attributes" : 					{
-						"fontname" : "Arial",
-						"tags" : "",
+						"default_fontface" : 0,
+						"default_fontname" : "Arial",
 						"default_fontsize" : 13.0,
 						"description" : "",
-						"globalpatchername" : "",
-						"fontface" : 0,
-						"fontsize" : 13.0,
-						"default_fontface" : 0,
 						"digest" : "",
-						"default_fontname" : "Arial"
+						"fontface" : 0,
+						"fontname" : "Arial",
+						"fontsize" : 13.0,
+						"globalpatchername" : "",
+						"tags" : ""
 					}
 ,
 					"text" : "p \"using multiple operators\"",
@@ -650,6 +644,7 @@
 					"outlettype" : [ "" ],
 					"patching_rect" : [ 208.0, 218.0, 123.0, 20.0 ],
 					"saved_object_attributes" : 					{
+						"filename" : "helpstarter.js",
 						"parameter_enable" : 0
 					}
 ,
@@ -669,11 +664,12 @@
 						"fileversion" : 1,
 						"appversion" : 						{
 							"major" : 6,
-							"minor" : 0,
-							"revision" : 4
+							"minor" : 1,
+							"revision" : 3,
+							"architecture" : "x86"
 						}
 ,
-						"rect" : [ 132.0, 74.0, 619.0, 660.0 ],
+						"rect" : [ 0.0, 26.0, 619.0, 660.0 ],
 						"bglocked" : 0,
 						"openinpresentation" : 0,
 						"default_fontsize" : 13.0,
@@ -697,6 +693,7 @@
 								"box" : 								{
 									"fontname" : "Arial",
 									"fontsize" : 13.0,
+									"frgb" : 0.0,
 									"id" : "obj-46",
 									"maxclass" : "comment",
 									"numinlets" : 1,
@@ -756,7 +753,7 @@
 									"numinlets" : 1,
 									"numoutlets" : 2,
 									"outlettype" : [ "", "" ],
-									"patching_rect" : [ 10.0, 606.572266, 80.0, 37.0 ]
+									"patching_rect" : [ 10.0, 606.572266, 80.0, 36.0 ]
 								}
 
 							}
@@ -836,6 +833,7 @@
 									"bubble" : 1,
 									"fontname" : "Arial",
 									"fontsize" : 13.0,
+									"frgb" : 0.0,
 									"id" : "obj-45",
 									"maxclass" : "comment",
 									"numinlets" : 1,
@@ -850,6 +848,7 @@
 									"border" : 0,
 									"filename" : "helpdetails.js",
 									"id" : "obj-2",
+									"ignoreclick" : 1,
 									"jsarguments" : [ "jit.op" ],
 									"maxclass" : "jsui",
 									"numinlets" : 1,
@@ -976,40 +975,21 @@
 								}
 
 							}
- ],
-						"dependency_cache" : [ 							{
-								"name" : "helpdetails.js",
-								"bootpath" : "/Applications/Max6/Cycling '74/help-resources",
-								"type" : "TEXT",
-								"implicit" : 1
-							}
-, 							{
-								"name" : "demovideo.maxpat",
-								"bootpath" : "/Applications/Max6/Cycling '74/jitter-help",
-								"type" : "JSON",
-								"implicit" : 1
-							}
-, 							{
-								"name" : "helpargs.js",
-								"bootpath" : "/Applications/Max6/Cycling '74/help-resources",
-								"type" : "TEXT",
-								"implicit" : 1
-							}
  ]
 					}
 ,
 					"patching_rect" : [ 15.0, 86.0, 50.0, 20.0 ],
 					"saved_object_attributes" : 					{
-						"fontname" : "Arial",
-						"tags" : "",
+						"default_fontface" : 0,
+						"default_fontname" : "Arial",
 						"default_fontsize" : 13.0,
 						"description" : "",
-						"globalpatchername" : "",
-						"fontface" : 0,
-						"fontsize" : 13.0,
-						"default_fontface" : 0,
 						"digest" : "",
-						"default_fontname" : "Arial"
+						"fontface" : 0,
+						"fontname" : "Arial",
+						"fontsize" : 13.0,
+						"globalpatchername" : "",
+						"tags" : ""
 					}
 ,
 					"text" : "p basic",
@@ -1022,6 +1002,7 @@
 					"border" : 0,
 					"filename" : "helpname.js",
 					"id" : "obj-4",
+					"ignoreclick" : 1,
 					"jsarguments" : [ "jit.op" ],
 					"maxclass" : "jsui",
 					"numinlets" : 1,
@@ -1044,8 +1025,9 @@
 						"fileversion" : 1,
 						"appversion" : 						{
 							"major" : 6,
-							"minor" : 0,
-							"revision" : 4
+							"minor" : 1,
+							"revision" : 3,
+							"architecture" : "x86"
 						}
 ,
 						"rect" : [ 0.0, 26.0, 619.0, 660.0 ],
@@ -1069,22 +1051,21 @@
 						"tags" : "",
 						"showontab" : 1,
 						"boxes" : [  ],
-						"lines" : [  ],
-						"dependency_cache" : [  ]
+						"lines" : [  ]
 					}
 ,
 					"patching_rect" : [ 183.0, 182.0, 50.0, 20.0 ],
 					"saved_object_attributes" : 					{
-						"fontname" : "Arial",
-						"tags" : "",
+						"default_fontface" : 0,
+						"default_fontname" : "Arial",
 						"default_fontsize" : 13.0,
 						"description" : "",
-						"globalpatchername" : "",
-						"fontface" : 0,
-						"fontsize" : 13.0,
-						"default_fontface" : 0,
 						"digest" : "",
-						"default_fontname" : "Arial"
+						"fontface" : 0,
+						"fontname" : "Arial",
+						"fontsize" : 13.0,
+						"globalpatchername" : "",
+						"tags" : ""
 					}
 ,
 					"text" : "p ?",
@@ -1095,52 +1076,52 @@
  ],
 		"lines" : [  ],
 		"parameters" : 		{
-			"obj-2::obj-7::obj-4::obj-21" : [ "number[2]", "number", 0 ],
-			"obj-2::obj-4::obj-4::obj-20" : [ "live.tab[1]", "live.tab[1]", 0 ],
 			"obj-3::obj-4::obj-4::obj-20" : [ "live.tab[4]", "live.tab[1]", 0 ],
-			"obj-2::obj-7::obj-4::obj-20" : [ "live.tab[2]", "live.tab[1]", 0 ],
-			"obj-3::obj-7::obj-4::obj-21" : [ "number[5]", "number", 0 ],
-			"obj-3::obj-7::obj-4::obj-18" : [ "number[7]", "number[1]", 0 ],
-			"obj-2::obj-7::obj-4::obj-18" : [ "number[3]", "number[1]", 0 ],
-			"obj-3::obj-7::obj-4::obj-20" : [ "live.tab[3]", "live.tab[1]", 0 ],
+			"obj-2::obj-7::obj-4::obj-21" : [ "number[2]", "number", 0 ],
+			"obj-3::obj-4::obj-4::obj-18" : [ "number[6]", "number[1]", 0 ],
 			"obj-2::obj-4::obj-4::obj-21" : [ "number", "number", 0 ],
 			"obj-2::obj-4::obj-4::obj-18" : [ "number[1]", "number[1]", 0 ],
+			"obj-2::obj-7::obj-4::obj-18" : [ "number[3]", "number[1]", 0 ],
+			"obj-3::obj-7::obj-4::obj-21" : [ "number[5]", "number", 0 ],
+			"obj-2::obj-4::obj-4::obj-20" : [ "live.tab[1]", "live.tab[1]", 0 ],
+			"obj-2::obj-7::obj-4::obj-20" : [ "live.tab[2]", "live.tab[1]", 0 ],
+			"obj-3::obj-7::obj-4::obj-18" : [ "number[7]", "number[1]", 0 ],
 			"obj-3::obj-4::obj-4::obj-21" : [ "number[4]", "number", 0 ],
-			"obj-3::obj-4::obj-4::obj-18" : [ "number[6]", "number[1]", 0 ]
+			"obj-3::obj-7::obj-4::obj-20" : [ "live.tab[3]", "live.tab[1]", 0 ]
 		}
 ,
 		"dependency_cache" : [ 			{
 				"name" : "helpname.js",
-				"bootpath" : "/Applications/Max6/Cycling '74/help-resources",
-				"patcherrelativepath" : "../../../../../../Applications/Max6/Cycling '74/help-resources",
+				"bootpath" : "/Applications/Max 6.1/Cycling '74/help-resources",
+				"patcherrelativepath" : "../../../../../../Applications/Max 6.1/Cycling '74/help-resources",
 				"type" : "TEXT",
 				"implicit" : 1
 			}
 , 			{
 				"name" : "helpdetails.js",
-				"bootpath" : "/Applications/Max6/Cycling '74/help-resources",
-				"patcherrelativepath" : "../../../../../../Applications/Max6/Cycling '74/help-resources",
+				"bootpath" : "/Applications/Max 6.1/Cycling '74/help-resources",
+				"patcherrelativepath" : "../../../../../../Applications/Max 6.1/Cycling '74/help-resources",
 				"type" : "TEXT",
 				"implicit" : 1
 			}
 , 			{
 				"name" : "demovideo.maxpat",
-				"bootpath" : "/Applications/Max6/Cycling '74/jitter-help",
-				"patcherrelativepath" : "../../../../../../Applications/Max6/Cycling '74/jitter-help",
+				"bootpath" : "/Applications/Max 6.1/Cycling '74/jitter-help",
+				"patcherrelativepath" : "../../../../../../Applications/Max 6.1/Cycling '74/jitter-help",
 				"type" : "JSON",
 				"implicit" : 1
 			}
 , 			{
 				"name" : "helpargs.js",
-				"bootpath" : "/Applications/Max6/Cycling '74/help-resources",
-				"patcherrelativepath" : "../../../../../../Applications/Max6/Cycling '74/help-resources",
+				"bootpath" : "/Applications/Max 6.1/Cycling '74/help-resources",
+				"patcherrelativepath" : "../../../../../../Applications/Max 6.1/Cycling '74/help-resources",
 				"type" : "TEXT",
 				"implicit" : 1
 			}
 , 			{
 				"name" : "helpstarter.js",
-				"bootpath" : "/Applications/Max6/Cycling '74/help-resources",
-				"patcherrelativepath" : "../../../../../../Applications/Max6/Cycling '74/help-resources",
+				"bootpath" : "/Applications/Max 6.1/Cycling '74/help-resources",
+				"patcherrelativepath" : "../../../../../../Applications/Max 6.1/Cycling '74/help-resources",
 				"type" : "TEXT",
 				"implicit" : 1
 			}

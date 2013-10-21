@@ -3,11 +3,12 @@
 		"fileversion" : 1,
 		"appversion" : 		{
 			"major" : 6,
-			"minor" : 0,
-			"revision" : 0
+			"minor" : 1,
+			"revision" : 4,
+			"architecture" : "x64"
 		}
 ,
-		"rect" : [ 25.0, 69.0, 700.0, 454.0 ],
+		"rect" : [ 100.0, 100.0, 700.0, 454.0 ],
 		"bglocked" : 0,
 		"openinpresentation" : 0,
 		"default_fontsize" : 12.0,
@@ -39,6 +40,7 @@
 					"outlettype" : [ "" ],
 					"patching_rect" : [ 140.0, 97.0, 126.0, 20.0 ],
 					"saved_object_attributes" : 					{
+						"filename" : "helpstarter.js",
 						"parameter_enable" : 0
 					}
 ,
@@ -58,11 +60,12 @@
 						"fileversion" : 1,
 						"appversion" : 						{
 							"major" : 6,
-							"minor" : 0,
-							"revision" : 0
+							"minor" : 1,
+							"revision" : 4,
+							"architecture" : "x64"
 						}
 ,
-						"rect" : [ 50.0, 94.0, 640.0, 480.0 ],
+						"rect" : [ 100.0, 126.0, 700.0, 428.0 ],
 						"bglocked" : 0,
 						"openinpresentation" : 0,
 						"default_fontsize" : 13.0,
@@ -86,7 +89,7 @@
 								"box" : 								{
 									"fontname" : "Arial",
 									"fontsize" : 13.0,
-									"frgb" : [ 0.501961, 0.501961, 0.501961, 1.0 ],
+									"frgb" : 0.0,
 									"id" : "obj-24",
 									"maxclass" : "comment",
 									"numinlets" : 1,
@@ -101,7 +104,7 @@
 								"box" : 								{
 									"fontname" : "Arial",
 									"fontsize" : 13.0,
-									"frgb" : [ 0.501961, 0.501961, 0.501961, 1.0 ],
+									"frgb" : 0.0,
 									"id" : "obj-23",
 									"maxclass" : "comment",
 									"numinlets" : 1,
@@ -116,7 +119,7 @@
 								"box" : 								{
 									"fontname" : "Arial",
 									"fontsize" : 13.0,
-									"frgb" : [ 0.501961, 0.501961, 0.501961, 1.0 ],
+									"frgb" : 0.0,
 									"id" : "obj-22",
 									"maxclass" : "comment",
 									"numinlets" : 1,
@@ -359,7 +362,7 @@
 									"numinlets" : 0,
 									"numoutlets" : 1,
 									"outlettype" : [ "jit_matrix" ],
-									"patching_rect" : [ 205.0, 135.0, 230.0, 125.0 ]
+									"patching_rect" : [ 205.0, 149.0, 230.0, 125.0 ]
 								}
 
 							}
@@ -368,29 +371,14 @@
 									"border" : 0,
 									"filename" : "helpdetails.js",
 									"id" : "obj-2",
-									"jsarguments" : [ "jit.3m" ],
-									"maxclass" : "jsui",
-									"numinlets" : 1,
-									"numoutlets" : 1,
-									"outlettype" : [ "" ],
-									"parameter_enable" : 0,
-									"patching_rect" : [ 10.0, 10.0, 620.0, 125.0 ]
-								}
-
-							}
-, 							{
-								"box" : 								{
-									"border" : 0,
-									"filename" : "helpargs.js",
-									"id" : "obj-4",
 									"ignoreclick" : 1,
-									"jsarguments" : [ "jit.3m" ],
+									"jsarguments" : [ "jit.3m", 115 ],
 									"maxclass" : "jsui",
 									"numinlets" : 1,
 									"numoutlets" : 1,
 									"outlettype" : [ "" ],
 									"parameter_enable" : 0,
-									"patching_rect" : [ 400.0, 284.0, 102.0, 23.0 ]
+									"patching_rect" : [ 10.0, 10.0, 684.0, 131.0 ]
 								}
 
 							}
@@ -539,37 +527,21 @@
 								}
 
 							}
- ],
-						"dependency_cache" : [ 							{
-								"name" : "helpargs.js",
-								"type" : "TEXT",
-								"implicit" : 1
-							}
-, 							{
-								"name" : "helpdetails.js",
-								"type" : "TEXT",
-								"implicit" : 1
-							}
-, 							{
-								"name" : "demovideo.maxpat",
-								"type" : "JSON",
-								"implicit" : 1
-							}
  ]
 					}
 ,
 					"patching_rect" : [ 10.0, 85.0, 50.0, 20.0 ],
 					"saved_object_attributes" : 					{
-						"fontface" : 0,
-						"fontsize" : 13.0,
 						"default_fontface" : 0,
-						"digest" : "",
 						"default_fontname" : "Arial",
-						"fontname" : "Arial",
 						"default_fontsize" : 13.0,
-						"tags" : "",
 						"description" : "",
-						"globalpatchername" : ""
+						"digest" : "",
+						"fontface" : 0,
+						"fontname" : "Arial",
+						"fontsize" : 13.0,
+						"globalpatchername" : "",
+						"tags" : ""
 					}
 ,
 					"text" : "p basic",
@@ -582,6 +554,7 @@
 					"border" : 0,
 					"filename" : "helpname.js",
 					"id" : "obj-4",
+					"ignoreclick" : 1,
 					"jsarguments" : [ "jit.3m" ],
 					"maxclass" : "jsui",
 					"numinlets" : 1,
@@ -604,11 +577,12 @@
 						"fileversion" : 1,
 						"appversion" : 						{
 							"major" : 6,
-							"minor" : 0,
-							"revision" : 0
+							"minor" : 1,
+							"revision" : 4,
+							"architecture" : "x64"
 						}
 ,
-						"rect" : [ 50.0, 94.0, 640.0, 480.0 ],
+						"rect" : [ 0.0, 26.0, 700.0, 428.0 ],
 						"bglocked" : 0,
 						"openinpresentation" : 0,
 						"default_fontsize" : 13.0,
@@ -629,22 +603,21 @@
 						"tags" : "",
 						"showontab" : 1,
 						"boxes" : [  ],
-						"lines" : [  ],
-						"dependency_cache" : [  ]
+						"lines" : [  ]
 					}
 ,
 					"patching_rect" : [ 205.0, 205.0, 50.0, 20.0 ],
 					"saved_object_attributes" : 					{
-						"fontface" : 0,
-						"fontsize" : 13.0,
 						"default_fontface" : 0,
-						"digest" : "",
 						"default_fontname" : "Arial",
-						"fontname" : "Arial",
 						"default_fontsize" : 13.0,
-						"tags" : "",
 						"description" : "",
-						"globalpatchername" : ""
+						"digest" : "",
+						"fontface" : 0,
+						"fontname" : "Arial",
+						"fontsize" : 13.0,
+						"globalpatchername" : "",
+						"tags" : ""
 					}
 ,
 					"text" : "p ?",
@@ -655,33 +628,36 @@
  ],
 		"lines" : [  ],
 		"parameters" : 		{
-			"obj-2::obj-3::obj-4::obj-20" : [ "live.tab[1]", "live.tab[1]", 0 ],
+			"obj-2::obj-3::obj-4::obj-18" : [ "number[1]", "number[1]", 0 ],
 			"obj-2::obj-3::obj-4::obj-21" : [ "number", "number", 0 ],
-			"obj-2::obj-3::obj-4::obj-18" : [ "number[1]", "number[1]", 0 ]
+			"obj-2::obj-3::obj-4::obj-20" : [ "live.tab[1]", "live.tab[1]", 0 ]
 		}
 ,
 		"dependency_cache" : [ 			{
 				"name" : "helpname.js",
-				"type" : "TEXT",
-				"implicit" : 1
-			}
-, 			{
-				"name" : "helpargs.js",
+				"bootpath" : "/Applications/Max 6.1/Cycling '74/help-resources",
+				"patcherrelativepath" : "../../../../../../Applications/Max 6.1/Cycling '74/help-resources",
 				"type" : "TEXT",
 				"implicit" : 1
 			}
 , 			{
 				"name" : "helpdetails.js",
+				"bootpath" : "/Applications/Max 6.1/Cycling '74/help-resources",
+				"patcherrelativepath" : "../../../../../../Applications/Max 6.1/Cycling '74/help-resources",
 				"type" : "TEXT",
 				"implicit" : 1
 			}
 , 			{
 				"name" : "demovideo.maxpat",
+				"bootpath" : "/Applications/Max 6.1/Cycling '74/jitter-help",
+				"patcherrelativepath" : "../../../../../../Applications/Max 6.1/Cycling '74/jitter-help",
 				"type" : "JSON",
 				"implicit" : 1
 			}
 , 			{
 				"name" : "helpstarter.js",
+				"bootpath" : "/Applications/Max 6.1/Cycling '74/help-resources",
+				"patcherrelativepath" : "../../../../../../Applications/Max 6.1/Cycling '74/help-resources",
 				"type" : "TEXT",
 				"implicit" : 1
 			}

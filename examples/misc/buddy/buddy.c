@@ -87,10 +87,10 @@ void buddy_anything(t_buddy *x, t_symbol *s, short argc, t_atom *argv)
 	
 	m = x->b_mem + in;
 	m->m_on = TRUE;
-	m->m_argc = argc + 1;
 	atom_setsym(&m->m_argv[0], s);
 	if (argc > 127)
 		argc = 127;
+	m->m_argc = argc + 1;
 	sysmem_copyptr(argv,m->m_argv+1,argc * sizeof(t_atom));
 	if (buddy_all(x)) {
 		buddy_off(x);

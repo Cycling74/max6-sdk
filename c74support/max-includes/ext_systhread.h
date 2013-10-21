@@ -24,6 +24,8 @@ typedef void *t_systhread_cond;
 
 typedef void *t_systhread_rwlock;	
 
+typedef void *t_systhread_key;
+
 /** systhread_mutex_new() flags
 	@ingroup threading
 */
@@ -237,6 +239,11 @@ long systhread_cond_free(t_systhread_cond pcond);
 long systhread_cond_wait(t_systhread_cond pcond, t_systhread_mutex pmutex);
 long systhread_cond_signal(t_systhread_cond pcond);
 long systhread_cond_broadcast(t_systhread_cond pcond);
+
+long systhread_key_create(t_systhread_key *key, void (*destructor)(void*));
+long systhread_key_delete(t_systhread_key key); 
+void* systhread_getspecific(t_systhread_key key);
+long systhread_setspecific(t_systhread_key key, const void *value); 
 
 END_USING_C_LINKAGE
 

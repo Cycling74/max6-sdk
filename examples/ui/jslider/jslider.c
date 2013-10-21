@@ -14,7 +14,7 @@
 #endif
 
 static t_class	*s_jslider_class = 0;
-static t_symbol *ps_slider, *ps_hslider, *ps_preset;
+static t_symbol *ps_slider, *ps_hslider, *ps_preset, *ps_min, *ps_sizeattr, *ps_floatoutput;
 
 // mouse tracking stuff
 
@@ -183,6 +183,9 @@ int C74_EXPORT main()
 	ps_hslider = gensym("hslider");
 	ps_slider = gensym("slider");
 	ps_preset = gensym("_preset");
+	ps_min = gensym("min");
+	ps_sizeattr = gensym("size");
+	ps_floatoutput = gensym("floatoutput");
 	return 0;
 }
 
@@ -397,6 +400,10 @@ void jslider_setminmax(t_jslider *x, t_symbol *s, long argc, t_atom *argv)
 		}		
 
 		x->j_floatoutput = 1;
+		
+		object_attr_touch((t_object *)x, ps_min);
+		object_attr_touch((t_object *)x, ps_sizeattr);
+		object_attr_touch((t_object *)x, ps_floatoutput);
 		
 		if (old_min != x->j_min || old_size != x->j_size)
 			jbox_redraw(&x->j_box); 

@@ -3,11 +3,12 @@
 		"fileversion" : 1,
 		"appversion" : 		{
 			"major" : 6,
-			"minor" : 0,
-			"revision" : 0
+			"minor" : 1,
+			"revision" : 3,
+			"architecture" : "x86"
 		}
 ,
-		"rect" : [ 688.0, 345.0, 700.0, 454.0 ],
+		"rect" : [ 100.0, 100.0, 700.0, 454.0 ],
 		"bglocked" : 0,
 		"openinpresentation" : 0,
 		"default_fontsize" : 12.0,
@@ -39,6 +40,7 @@
 					"outlettype" : [ "" ],
 					"patching_rect" : [ 137.0, 123.0, 130.0, 20.0 ],
 					"saved_object_attributes" : 					{
+						"filename" : "helpstarter.js",
 						"parameter_enable" : 0
 					}
 ,
@@ -58,11 +60,12 @@
 						"fileversion" : 1,
 						"appversion" : 						{
 							"major" : 6,
-							"minor" : 0,
-							"revision" : 0
+							"minor" : 1,
+							"revision" : 3,
+							"architecture" : "x86"
 						}
 ,
-						"rect" : [ 25.0, 69.0, 640.0, 480.0 ],
+						"rect" : [ 100.0, 126.0, 700.0, 428.0 ],
 						"bglocked" : 0,
 						"openinpresentation" : 0,
 						"default_fontsize" : 13.0,
@@ -91,7 +94,7 @@
 									"numinlets" : 0,
 									"numoutlets" : 1,
 									"outlettype" : [ "" ],
-									"patching_rect" : [ 378.0, 207.0, 64.0, 20.0 ],
+									"patching_rect" : [ 378.0, 207.0, 64.0, 19.0 ],
 									"text" : "r unknown"
 								}
 
@@ -105,7 +108,7 @@
 									"numinlets" : 0,
 									"numoutlets" : 1,
 									"outlettype" : [ "" ],
-									"patching_rect" : [ 465.0, 207.0, 64.0, 20.0 ],
+									"patching_rect" : [ 465.0, 207.0, 64.0, 19.0 ],
 									"text" : "r unknown"
 								}
 
@@ -119,7 +122,7 @@
 									"numinlets" : 2,
 									"numoutlets" : 2,
 									"outlettype" : [ "", "" ],
-									"patching_rect" : [ 378.0, 255.333313, 106.0, 20.0 ],
+									"patching_rect" : [ 378.0, 255.333313, 106.0, 19.0 ],
 									"text" : "buddy"
 								}
 
@@ -132,7 +135,7 @@
 									"maxclass" : "newobj",
 									"numinlets" : 1,
 									"numoutlets" : 0,
-									"patching_rect" : [ 465.0, 322.333313, 60.0, 20.0 ],
+									"patching_rect" : [ 465.0, 322.333313, 60.0, 19.0 ],
 									"text" : "print first"
 								}
 
@@ -145,7 +148,7 @@
 									"maxclass" : "newobj",
 									"numinlets" : 1,
 									"numoutlets" : 0,
-									"patching_rect" : [ 378.0, 322.333313, 74.0, 20.0 ],
+									"patching_rect" : [ 378.0, 322.333313, 74.0, 19.0 ],
 									"text" : "print second"
 								}
 
@@ -160,7 +163,7 @@
 									"numinlets" : 2,
 									"numoutlets" : 1,
 									"outlettype" : [ "" ],
-									"patching_rect" : [ 465.0, 231.333313, 33.0, 18.0 ],
+									"patching_rect" : [ 465.0, 231.333313, 33.0, 17.0 ],
 									"text" : "35.6"
 								}
 
@@ -175,7 +178,7 @@
 									"numinlets" : 2,
 									"numoutlets" : 1,
 									"outlettype" : [ "" ],
-									"patching_rect" : [ 378.0, 231.333313, 32.0, 18.0 ],
+									"patching_rect" : [ 378.0, 231.333313, 32.0, 17.0 ],
 									"text" : "22"
 								}
 
@@ -189,7 +192,7 @@
 									"numinlets" : 4,
 									"numoutlets" : 4,
 									"outlettype" : [ "", "", "", "" ],
-									"patching_rect" : [ 47.0, 370.0, 88.0, 20.0 ],
+									"patching_rect" : [ 47.0, 370.0, 88.0, 19.0 ],
 									"text" : "buddy 4"
 								}
 
@@ -204,7 +207,7 @@
 									"numinlets" : 2,
 									"numoutlets" : 1,
 									"outlettype" : [ "" ],
-									"patching_rect" : [ 116.0, 346.0, 20.0, 18.0 ],
+									"patching_rect" : [ 116.0, 346.0, 20.0, 17.0 ],
 									"text" : "4"
 								}
 
@@ -219,7 +222,7 @@
 									"numinlets" : 2,
 									"numoutlets" : 1,
 									"outlettype" : [ "" ],
-									"patching_rect" : [ 93.0, 346.0, 20.0, 18.0 ],
+									"patching_rect" : [ 93.0, 346.0, 20.0, 17.0 ],
 									"text" : "3"
 								}
 
@@ -234,7 +237,7 @@
 									"numinlets" : 2,
 									"numoutlets" : 1,
 									"outlettype" : [ "" ],
-									"patching_rect" : [ 70.0, 346.0, 20.0, 18.0 ],
+									"patching_rect" : [ 70.0, 346.0, 20.0, 17.0 ],
 									"text" : "2"
 								}
 
@@ -249,7 +252,7 @@
 									"numinlets" : 2,
 									"numoutlets" : 1,
 									"outlettype" : [ "" ],
-									"patching_rect" : [ 47.0, 346.0, 20.0, 18.0 ],
+									"patching_rect" : [ 47.0, 346.0, 20.0, 17.0 ],
 									"text" : "1"
 								}
 
@@ -284,7 +287,7 @@
 									"maxclass" : "newobj",
 									"numinlets" : 1,
 									"numoutlets" : 0,
-									"patching_rect" : [ 230.0, 209.0, 85.0, 20.0 ],
+									"patching_rect" : [ 230.0, 209.0, 85.0, 19.0 ],
 									"text" : "send unknown"
 								}
 
@@ -293,12 +296,13 @@
 								"box" : 								{
 									"fontname" : "Arial",
 									"fontsize" : 11.595187,
+									"frgb" : 0.0,
 									"id" : "obj-29",
 									"linecount" : 3,
 									"maxclass" : "comment",
 									"numinlets" : 1,
 									"numoutlets" : 0,
-									"patching_rect" : [ 202.0, 134.0, 107.0, 46.0 ],
+									"patching_rect" : [ 202.0, 134.0, 107.0, 45.0 ],
 									"text" : "Click here and watch the order in the Max window"
 								}
 
@@ -307,12 +311,13 @@
 								"box" : 								{
 									"fontname" : "Arial",
 									"fontsize" : 11.595187,
+									"frgb" : 0.0,
 									"id" : "obj-30",
 									"linecount" : 4,
 									"maxclass" : "comment",
 									"numinlets" : 1,
 									"numoutlets" : 0,
-									"patching_rect" : [ 334.0, 134.0, 237.0, 60.0 ],
+									"patching_rect" : [ 334.0, 134.0, 237.0, 58.0 ],
 									"text" : "When messages go through a send, their order to receive objects is unknown. With buddy, you can ensure that the two values come out in a specified order."
 								}
 
@@ -321,12 +326,13 @@
 								"box" : 								{
 									"fontname" : "Arial",
 									"fontsize" : 11.595187,
+									"frgb" : 0.0,
 									"id" : "obj-31",
-									"linecount" : 7,
+									"linecount" : 6,
 									"maxclass" : "comment",
 									"numinlets" : 1,
 									"numoutlets" : 0,
-									"patching_rect" : [ 25.0, 114.0, 117.0, 100.0 ],
+									"patching_rect" : [ 25.0, 114.0, 121.0, 84.0 ],
 									"text" : "With MIDI objects such as ctlin, buddy allows you to reverse the order of the controller value and the controller number."
 								}
 
@@ -335,12 +341,13 @@
 								"box" : 								{
 									"fontname" : "Arial",
 									"fontsize" : 11.595187,
+									"frgb" : 0.0,
 									"id" : "obj-32",
 									"linecount" : 3,
 									"maxclass" : "comment",
 									"numinlets" : 1,
 									"numoutlets" : 0,
-									"patching_rect" : [ 140.0, 356.0, 290.0, 46.0 ],
+									"patching_rect" : [ 140.0, 356.0, 294.0, 45.0 ],
 									"text" : "buddy only sends its input when all inputs have been received. note that the button doesn't fire until you click on all the numbers. Then all inputs are cleared."
 								}
 
@@ -354,7 +361,7 @@
 									"numinlets" : 1,
 									"numoutlets" : 3,
 									"outlettype" : [ "int", "int", "int" ],
-									"patching_rect" : [ 49.0, 220.0, 46.0, 20.0 ],
+									"patching_rect" : [ 49.0, 220.0, 46.0, 19.0 ],
 									"text" : "ctlin"
 								}
 
@@ -363,12 +370,13 @@
 								"box" : 								{
 									"fontname" : "Arial",
 									"fontsize" : 11.595187,
+									"frgb" : 0.0,
 									"id" : "obj-34",
 									"linecount" : 4,
 									"maxclass" : "comment",
 									"numinlets" : 1,
 									"numoutlets" : 0,
-									"patching_rect" : [ 94.0, 263.0, 96.0, 60.0 ],
+									"patching_rect" : [ 94.0, 263.0, 96.0, 58.0 ],
 									"text" : "the list starts with the controller value, then the number"
 								}
 
@@ -381,7 +389,7 @@
 									"maxclass" : "newobj",
 									"numinlets" : 1,
 									"numoutlets" : 0,
-									"patching_rect" : [ 49.0, 302.0, 33.0, 20.0 ],
+									"patching_rect" : [ 49.0, 302.0, 33.0, 19.0 ],
 									"text" : "print"
 								}
 
@@ -395,7 +403,7 @@
 									"numinlets" : 2,
 									"numoutlets" : 2,
 									"outlettype" : [ "", "" ],
-									"patching_rect" : [ 49.0, 248.0, 42.0, 20.0 ],
+									"patching_rect" : [ 49.0, 248.0, 42.0, 19.0 ],
 									"text" : "buddy"
 								}
 
@@ -409,7 +417,7 @@
 									"numinlets" : 2,
 									"numoutlets" : 1,
 									"outlettype" : [ "" ],
-									"patching_rect" : [ 49.0, 273.0, 42.0, 20.0 ],
+									"patching_rect" : [ 49.0, 273.0, 42.0, 19.0 ],
 									"text" : "pack"
 								}
 
@@ -419,6 +427,7 @@
 									"border" : 0,
 									"filename" : "helpdetails.js",
 									"id" : "obj-2",
+									"ignoreclick" : 1,
 									"jsarguments" : [ "buddy" ],
 									"maxclass" : "jsui",
 									"numinlets" : 1,
@@ -441,7 +450,7 @@
 									"numoutlets" : 1,
 									"outlettype" : [ "" ],
 									"parameter_enable" : 0,
-									"patching_rect" : [ 490.0, 255.333313, 105.0, 43.0 ]
+									"patching_rect" : [ 490.0, 255.333313, 143.0, 36.666687 ]
 								}
 
 							}
@@ -601,32 +610,21 @@
 								}
 
 							}
- ],
-						"dependency_cache" : [ 							{
-								"name" : "helpargs.js",
-								"type" : "TEXT",
-								"implicit" : 1
-							}
-, 							{
-								"name" : "helpdetails.js",
-								"type" : "TEXT",
-								"implicit" : 1
-							}
  ]
 					}
 ,
 					"patching_rect" : [ 10.0, 85.0, 50.0, 20.0 ],
 					"saved_object_attributes" : 					{
 						"default_fontface" : 0,
-						"digest" : "",
 						"default_fontname" : "Arial",
-						"tags" : "",
-						"fontname" : "Arial",
 						"default_fontsize" : 13.0,
 						"description" : "",
-						"globalpatchername" : "",
+						"digest" : "",
 						"fontface" : 0,
-						"fontsize" : 13.0
+						"fontname" : "Arial",
+						"fontsize" : 13.0,
+						"globalpatchername" : "",
+						"tags" : ""
 					}
 ,
 					"text" : "p basic",
@@ -639,6 +637,7 @@
 					"border" : 0,
 					"filename" : "helpname.js",
 					"id" : "obj-4",
+					"ignoreclick" : 1,
 					"jsarguments" : [ "buddy" ],
 					"maxclass" : "jsui",
 					"numinlets" : 1,
@@ -661,11 +660,12 @@
 						"fileversion" : 1,
 						"appversion" : 						{
 							"major" : 6,
-							"minor" : 0,
-							"revision" : 0
+							"minor" : 1,
+							"revision" : 3,
+							"architecture" : "x86"
 						}
 ,
-						"rect" : [ 25.0, 69.0, 640.0, 480.0 ],
+						"rect" : [ 0.0, 26.0, 700.0, 428.0 ],
 						"bglocked" : 0,
 						"openinpresentation" : 0,
 						"default_fontsize" : 12.0,
@@ -686,22 +686,21 @@
 						"tags" : "",
 						"showontab" : 1,
 						"boxes" : [  ],
-						"lines" : [  ],
-						"dependency_cache" : [  ]
+						"lines" : [  ]
 					}
 ,
 					"patching_rect" : [ 205.0, 205.0, 50.0, 20.0 ],
 					"saved_object_attributes" : 					{
 						"default_fontface" : 0,
-						"digest" : "",
 						"default_fontname" : "Arial",
-						"tags" : "",
-						"fontname" : "Arial",
 						"default_fontsize" : 12.0,
 						"description" : "",
-						"globalpatchername" : "",
+						"digest" : "",
 						"fontface" : 0,
-						"fontsize" : 12.0
+						"fontname" : "Arial",
+						"fontsize" : 12.0,
+						"globalpatchername" : "",
+						"tags" : ""
 					}
 ,
 					"text" : "p ?",
@@ -713,21 +712,29 @@
 		"lines" : [  ],
 		"dependency_cache" : [ 			{
 				"name" : "helpname.js",
+				"bootpath" : "/gitc74/repository/max/maxmsp-misc/help/resources",
+				"patcherrelativepath" : "../resources",
 				"type" : "TEXT",
 				"implicit" : 1
 			}
 , 			{
 				"name" : "helpargs.js",
+				"bootpath" : "/gitc74/repository/max/maxmsp-misc/help/resources",
+				"patcherrelativepath" : "../resources",
 				"type" : "TEXT",
 				"implicit" : 1
 			}
 , 			{
 				"name" : "helpdetails.js",
+				"bootpath" : "/gitc74/repository/max/maxmsp-misc/help/resources",
+				"patcherrelativepath" : "../resources",
 				"type" : "TEXT",
 				"implicit" : 1
 			}
 , 			{
 				"name" : "helpstarter.js",
+				"bootpath" : "/gitc74/repository/max/maxmsp-misc/help/resources",
+				"patcherrelativepath" : "../resources",
 				"type" : "TEXT",
 				"implicit" : 1
 			}
